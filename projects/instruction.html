@@ -32,7 +32,7 @@
     <div><dt class="kr-label">내 역할</dt><dd><b>시스템 프로그래밍 · 시스템 기획</b></dd></div>
   </dl>
   <p class="award"><span class="chip">우수상 · 참여 팀 중 1위</span><span>고용노동부 주최 · 대한상공회의소 주관 「2026 미래내일 일경험사업(프로젝트형)」 Design Your World : VARCO로 완성하는 게임 직무 (참여기업 NC AI), 2조 BrokenCompass</span></p>
-  <p class="ai-line"><b>AI 사용</b> — 코드는 대부분 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI로 에디터에 연결해 AI가 작성했습니다. 직접 플레이로 찾은 문제, 수치 기준, 검증 기준, 채택 · 기각은 제가 맡았습니다. 제 담당은 수칙 판정 · 공포 축 · 조우(몬스터 · 사건 이벤트) 편성(그날 나올 조우와 수칙 배정) · 공포 디렉터, 그리고 판정 결과로 조명 · CCTV · 조우 · 붙잡힘을 움직이는 코드입니다.</p>
+  <p class="ai-line"><b>AI 사용</b> — 코드는 대부분 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI로 에디터에 연결해 AI가 작성했습니다. 직접 플레이하며 찾은 문제와 수치 · 검증 기준, 채택 · 기각은 제가 맡았습니다. 제가 맡은 부분은 수칙 판정, 공포 축, 조우(몬스터 · 사건 이벤트) 편성(그날 나올 조우와 수칙 배정), 공포 디렉터, 그리고 판정 결과로 조명 · CCTV · 조우 · 붙잡힘을 움직이는 코드입니다.</p>
   <div class="btns">
     <a class="btn btn-main" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">플레이 영상</a>
     <a class="btn" href="https://github.com/KimJinsun610/NCAI_BrokenCompass" target="_blank" rel="noopener">팀 저장소</a>
@@ -61,8 +61,8 @@
       <h2><span class="num">01 — Summary</span>이 페이지의 요점</h2>
       <ul>
         <li><b>규칙과 화면을 나눈 구조.</b> 판정 로직을 Unity를 모르는 일반 C#으로 두어, 게임을 켜지 않고 <b>EditMode 테스트 666개</b>와 수백 판 단위 밸런스 시뮬레이션을 돌렸습니다.</li>
-        <li><b>빌드에서만 난 문제.</b> 에디터에서는 보이지 않던 문제 3건을 고쳤습니다. 두 건은 빌드에서 직접 발견해 증상을 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다. 그중 하나는 근본 원인을 남겨 둔 한계까지 적었습니다.</li>
-        <li><b>AI 제안을 고르고 되돌린 기록.</b> 조우 편성 보정안은 기획 의도로 기각했고, 먼저 적용된 조명 해결안은 같은 조건에서 비교해 되돌렸습니다. 작은 결정은 AI 추천에 맡긴 것까지 그대로 적었습니다.</li>
+        <li><b>빌드에서만 난 문제.</b> 에디터에서는 보이지 않던 문제 3건을 고쳤습니다. 두 건은 빌드에서 직접 발견해 증상을 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다. 그중 한 건은 근본 원인을 고치지 않고 남겼고, 그 한계도 적었습니다.</li>
+        <li><b>AI 제안을 고르고 되돌린 기록.</b> 조우 편성 보정안은 기획 의도와 맞지 않아 기각했고, 먼저 적용된 조명 해결안은 같은 조건에서 비교해 되돌렸습니다. AI 추천대로 정한 작은 결정도 함께 적었습니다.</li>
       </ul>
       <a class="video no-print" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">
         <img src="../assets/img/ins/video-poster.jpg" alt="" width="1280" height="720" loading="lazy">
@@ -92,7 +92,7 @@
           </tbody>
         </table>
       </div>
-      <p>프로그래머 둘은 <b>판정 · 런타임 연동</b>(저)과 <b>조작 · UI · 컷신</b>(김진선 님)으로 나눴습니다. 김진선 님이 무엇을 어떻게 보여 줄지(연출 프리셋, 컷신, 화면 효과, UI)를 만들었고, 저는 판정과 언제 · 어디서 무엇을 부를지(디렉터 · 편성), 그리고 판정 결과에 따라 조명 · CCTV · 조우 몬스터를 움직이는 코드를 맡았습니다. 두 파트는 서로의 파일을 고치지 않는 것을 원칙으로 두고 이벤트(<code>EventBus</code>)와 공개 API로 연결했습니다. 예외는 두 번입니다. 디버그 화면을 하나로 합칠 때 제 결정으로 김진선 님 개발자 모드 파일에 직접 합쳤고, 공개 API가 없던 근무 종료 시각은 <code>GameTime</code>의 비공개 필드를 리플렉션으로 바꿨습니다(<code>NightRunDriver.MatchShiftEnd</code>). 다시 한다면 API를 요청하겠습니다.</p>
+      <p>프로그래머 둘은 <b>판정 · 런타임 연동</b>(저)과 <b>조작 · UI · 컷신</b>(김진선 님)으로 나눴습니다. 김진선 님이 무엇을 어떻게 보여 줄지(연출 프리셋, 컷신, 화면 효과, UI)를 만들었고, 저는 판정과 언제 · 어디서 무엇을 부를지(디렉터 · 편성), 그리고 판정 결과에 따라 조명 · CCTV · 조우 몬스터를 움직이는 코드를 맡았습니다. 서로의 파일은 고치지 않기로 정하고, 두 파트는 이벤트(<code>EventBus</code>)와 공개 API로 연결했습니다. 예외는 두 번입니다. 디버그 화면을 하나로 합칠 때 제 결정으로 김진선 님 개발자 모드 파일에 직접 합쳤고, 공개 API가 없던 근무 종료 시각은 <code>GameTime</code>의 비공개 필드를 리플렉션으로 바꿨습니다(<code>NightRunDriver.MatchShiftEnd</code>). 다시 한다면 API를 요청하겠습니다.</p>
       <ul>
         <li><b>고치지 않고 확장하기.</b> 김진선 님의 1인칭 조작 코드는 그대로 두고 실행 순서 앞뒤에서 감도를 보정했고, 사망 컷신 Timeline도 그대로 둔 채 재생되는 인스턴스만 보정했습니다.</li>
         <li><b>씬 충돌 줄이기.</b> 근무 씬 전용 컴포넌트는 씬 파일 대신 실행 시 코드로 붙여(<code>RuntimeInitializeOnLoadMethod</code>) 씬 병합 충돌과 Git LFS 잠금 대기를 줄였습니다.</li>
@@ -123,7 +123,7 @@
       <ul>
         <li><b>게임을 켜지 않고 검증.</b> Core는 <code>new</code>만 하면 돌아가므로 자동 테스트와 밸런스 시뮬레이션을 에디터에서 바로 돌렸습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/tree/main/horror%20house/Assets/_Game/Tests/EditMode" target="_blank" rel="noopener">테스트 폴더</a></li>
         <li><b>의존 방향을 컴파일 단계에서 강제.</b> asmdef로 Core가 Flow를 참조하지 못하게 막아, 「축이 올랐으니 Core에서 바로 불을 끄자」 같은 우회를 차단했습니다.</li>
-        <li><b>새 코드의 자리가 정해짐.</b> 고르는 것(편성 · 디렉터), 판단하는 것(판정 · 점검), 숫자를 올리는 것(축), 그리는 것(Flow)으로 위치를 정했습니다.</li>
+        <li><b>새 코드의 자리가 정해짐.</b> 새 코드가 고르는 일이면 편성 · 디렉터, 판단하는 일이면 판정 · 점검, 숫자를 올리는 일이면 축, 그리는 일이면 Flow에 둡니다.</li>
       </ul>
       <div class="note"><span class="kr-label">다시 만든다면</span>Core 입구(<code>NightRun</code>)가 정적 클래스라 테스트마다 초기화가 필요했고 플레이 세션 사이 리셋도 따로 처리했습니다. 인스턴스로 만들고 주입하는 구조를 쓰겠습니다.</div>
     </section>
@@ -151,7 +151,7 @@ _scaled = true;
 
 <span class="c">// LateUpdate — FPController가 돈 뒤 원래 감도로</span>
 private void LateUpdate() { Restore(); }</code></pre>
-            <span class="code-cap"><span>감도 × (보통 dt ÷ 이번 dt) → 끊긴 프레임은 쌓인 마우스 이동만큼만 회전</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Player/LookSpikeGuard.cs" target="_blank" rel="noopener">LookSpikeGuard.cs</a></span></dd>
+            <span class="code-cap"><span>감도 × (보통 dt ÷ 이번 dt) → 끊긴 프레임은 쌓인 마우스 이동만큼만 회전</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Player/LookSpikeGuard.cs" target="_blank" rel="noopener">LookSpikeGuard.cs · AI 작성</a></span></dd>
           <dt class="limit">한계</dt><dd>이 보정은 끊긴 프레임만 상쇄하므로, 프레임이 고르면 원래 식이 남아 60fps로 꾸준히 도는 PC는 144fps보다 계산상(16.7 ÷ 6.9ms) 약 2.4배 더 돕니다(실측 아님). 프레임이 고르면 배수가 1이라 원래 식이 그대로 남아, 같은 손 움직임에도 초당 회전량이 프레임 시간에 비례합니다. 144fps 고정이 이 차이를 가렸습니다. 근본 원인은 마우스 값에 <code>deltaTime</code>을 곱하는 한 줄인데, 마감 직전이라 팀원 코드를 고치지 않는다는 경계를 지켰습니다. 근본 원인인 <code>deltaTime</code> 곱은 팀원 코드라 마감 직전에 고치지 않았고, 다시 한다면 담당자와 합의해 그 곱을 빼고 보정 컴포넌트는 지우겠습니다.</dd>
         </dl>
       </div>
@@ -174,7 +174,7 @@ private void LateUpdate() { Restore(); }</code></pre>
         </dl>
       </div>
       <figure class="fig-mid"><video src="../assets/img/ins/boy-headbang.mp4" poster="../assets/img/ins/boy-headbang.jpg" autoplay muted loop playsinline width="640" height="360"></video><figcaption>교실 소년이 책상에 머리를 박는 장면</figcaption></figure>
-      <p>「에디터에서 된다」는 「빌드에서 된다」가 아니었습니다. 플랫폼 차이가 의심되면 작은 빌드로 재현하고 숫자로 확인합니다.</p>
+      <p>에디터에서 된다고 빌드에서도 되는 건 아니었습니다. 플랫폼 차이가 의심되면 작은 빌드로 재현해 숫자로 확인합니다.</p>
     </section>
 
     <section id="impl">
@@ -225,7 +225,7 @@ private void LateUpdate() { Restore(); }</code></pre>
         <div class="card">
           <h3>구운 조명에서 실시간 정전</h3>
           <ul>
-            <li>출발점은 직접 플레이에서 본 문제였습니다. <span class="said">「소등 조우 때 소등은 되는데 라이팅은 계속 유지돼」</span> — 구운 빛이 남는다는 진단과 구현은 AI가 했습니다.</li>
+            <li>직접 플레이하다 본 문제에서 시작했습니다. <span class="said">「소등 조우 때 소등은 되는데 라이팅은 계속 유지돼」</span> 구운 빛이 남는다는 진단과 구현은 AI가 했습니다.</li>
             <li>라이트맵은 실행 중에 끌 수 없어, 씬 시작 때 어둡게 만든 라이트맵 사본을 만들고 정전 때 <code>lightmapIndex</code>만 교체(앞서 불 꺼진 교실에 쓰던 방식을 소등 방으로 넓힘)</li>
             <li>라이트 프로브 SH 계수도 낮추고, 형광등 발광은 <code>MaterialPropertyBlock</code>으로 끔(공유 재질 오염 방지)</li>
           </ul>
@@ -244,7 +244,7 @@ private void LateUpdate() { Restore(); }</code></pre>
           <h3>경비실 버티기 방지</h3>
           <ul>
             <li>수치를 정해 지시했습니다. <span class="said">「약 30초 형광등 깜빡임·무전 잡음(문구 없음) · 약 60초 CCTV가 검은 남자 얼굴 · 약 90초 정전, 그래도 남으면 붙잡힘 …」</span></li>
-            <li>그대로 상수가 됐습니다 — 30 · 60 · 90초, 정전 뒤 15초 더 남으면 붙잡힘(2일차부터)</li>
+            <li>이 수치가 그대로 상수가 됐습니다. 30 · 60 · 90초, 정전 뒤 15초 더 남으면 붙잡힘(2일차부터)</li>
             <li>판단은 Core, 연출은 Flow. 문턱을 오가도 시간이 초기화되지 않음</li>
           </ul>
           <span class="tech">GuardRoomLoiter (Core) · GuardRoomCamp (Flow)</span>
@@ -266,13 +266,13 @@ private void LateUpdate() { Restore(); }</code></pre>
     Stay(g, GuardRoomLoiter.CaptureGraceSeconds);
     Assert.IsTrue(g.ConsumeCapture());      <span class="c">// 정전 뒤에도 남으면 붙잡힘</span>
 }</code></pre>
-      <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 AI 검토에서 찾은 「2초 + 문턱 + 1초」가 나간 것으로 쌓이던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs</a></span>
+      <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 AI 검토에서 찾은 「2초 + 문턱 + 1초」가 나간 것으로 쌓이던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs · AI 작성</a></span>
       <figure class="fig-mid"><img src="../assets/img/ins/test-runner.png" alt="Unity Test Runner EditMode 화면 — 666개 테스트 모두 통과" width="900" height="760" loading="lazy"><figcaption>Unity Test Runner — EditMode 테스트 666개 통과</figcaption></figure>
     </section>
 
     <section id="ai">
       <h2><span class="num">06 — Working with AI</span>AI와 일한 방식</h2>
-      <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, QA 플레이까지 에디터 작업 대부분을 AI가 했고, 저는 무엇을 만들지, 어떤 숫자가 맞는지, 결과를 받아들일지를 정했습니다.</p>
+      <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, QA 플레이까지 에디터 작업은 대부분 AI가 했습니다. 저는 무엇을 만들지와 어떤 숫자가 맞는지를 정하고, 결과를 받아들일지 판단했습니다.</p>
 
       <h3>에이전트를 나눠 쓴 방식</h3>
       <figure class="dg wide">
@@ -360,8 +360,8 @@ private void LateUpdate() { Restore(); }</code></pre>
           </tbody>
         </table>
       </div>
-      <p>한 세션에 모든 일을 맡기지 않고 조사 · 회의, QA 플레이, 구현 뒤 검토를 따로 맡겼습니다. 에이전트는 고친 것과 판단이 필요한 것을 나눠 보고했고, 채택 · 기각은 제가 정해 CLAUDE.md 개정 기록에 남겼습니다.</p>
-      <p class="note">백그라운드 검토에서는 AI가, 금지된 방의 지시가 풀리지 않아 03:30 시계가 영영 멈출 수 있는 결함을 찾아 고쳤습니다. 제가 찾은 결함이 아닙니다.</p>
+      <p>조사 · 회의, QA 플레이, 구현 뒤 검토는 한 세션에 몰지 않고 따로 맡겼습니다. 에이전트는 고친 것과 판단이 필요한 것을 나눠 보고했고, 받아들일지 말지는 제가 정해 CLAUDE.md 개정 기록에 남겼습니다.</p>
+      <p class="note">금지된 방의 지시가 풀리지 않아 03:30 시계가 영영 멈출 수 있는 결함은 AI가 백그라운드 검토에서 찾아 고쳤습니다. 제가 찾은 결함이 아닙니다.</p>
 
       <h3>한 줄 지시를 나눠 맡기기</h3>
       <p>AI가 올린 피드백 항목(1–7번)을 받고 개발 후반에 보낸 실제 지시입니다. 같은 줄 안에서 바로 고칠 것, 시뮬레이션을 먼저 돌릴 것, 분석만 할 것을 나눴습니다.</p>
@@ -460,7 +460,7 @@ private void LateUpdate() { Restore(); }</code></pre>
           <dt>측정</dt><dd>실제 편성 코드를 그대로 쓰는 시뮬레이터로 숙련도별 가상 플레이어 400판을 돌렸습니다. 미숙 플레이어가 13종을 모두 본 회차는 <b>21%</b>였습니다. Core가 Unity와 분리돼 있어 가능했습니다.</dd>
           <dt>조정</dt><dd>날짜 흐름을 바꿔 미숙 21% → 54%. 시체 낙하를 2일차로 고정하고 강도를 낮춰 보통 78% → 100%, 미숙 55% → 75%.</dd>
           <dt>다시 재기</dt><dd>플레이테스트에서 의도한 조우가 종종 나오지 않았습니다. 그래서 <span class="said">「5번 놓치는 경우 분석」</span>을 지시해, 편성됐는가가 아니라 실제로 마주쳤는가로 다시 세게 했습니다. 미숙은 <b>33%</b>(편성 기준 76%)였습니다. 시뮬레이션에서는 위험한 분위기 때문에 늦은 조우가 꺼졌고, 시뮬레이션 밖에서는 방아쇠(공간 들어감 · 머묾)를 그 시간창에 못 맞추거나 조기 퇴근하면 조우를 놓쳤습니다. 직접 플레이에서는 조우를 보기 전에 퇴근 트리거가 켜지거나 플레이어가 움직이지 않는 사이 시간이 흘러 밤이 끝났습니다.</dd>
-          <dt>다시 보고</dt><dd>이후 직접 플레이에서도 같은 일이 있었습니다. <span class="said">「… 수칙과 지시로 트리거는 된 것 같은데 연출이 안 나왔어」</span> AI의 분석으로 조기 퇴근이 남은 조우를 지워 버리는 것 등이 확인돼, 남은 조우가 있으면 조기 퇴근을 막는 것부터 고쳤습니다.</dd>
+          <dt>다시 보고</dt><dd>이후 직접 플레이에서도 같은 일이 있었습니다. <span class="said">「… 수칙과 지시로 트리거는 된 것 같은데 연출이 안 나왔어」</span> AI가 분석해 조기 퇴근이 남은 조우를 지워 버리는 것 등을 확인했고, 남은 조우가 있으면 조기 퇴근부터 막도록 고쳤습니다.</dd>
           <dt>판단</dt><dd>AI의 이월 보정안 대신, 축 조건을 없애고 날마다 정해진 조우를 보여 주는 <b>고정 날짜 편성</b>으로 바꿨습니다. 03:30에 남은 조우가 있으면 시계를 붙들어, 그날의 조우가 끝나기 전에는 다음 날로 넘어가지 않게 했습니다. 이후 AI 변주안 중 같은 날 순서 섞기 · 날마다 빈 칸만 남겼습니다(<a href="#ai">06절 판단 기록</a>).</dd>
           <dt>검증</dt><dd>PlayScene에서 4 · 5일차를 진행해 날짜표대로 나오는지 확인하고 편성 테스트로 묶었습니다. 03:30 시계가 영영 멈출 수 있는 경우는 AI 백그라운드 검토가 찾아 고쳤습니다.</dd>
           <dt class="limit">한계</dt><dd>모든 수치는 가상 플레이어 시뮬레이션이며 실제 플레이 데이터가 아닙니다. 고정 편성 뒤의 목격률은 시뮬레이션으로 다시 재지 않았습니다.</dd>
@@ -468,7 +468,7 @@ private void LateUpdate() { Restore(); }</code></pre>
       </div>
 
       <div class="bars" role="img" aria-label="확률 편성 조정 단계에서 조우 13종을 모두 본 회차 비율. 날짜 흐름 조정으로 미숙 21에서 54%, 시체 낙하 조정으로 보통 78에서 100%, 미숙 55에서 75%. 실행 기준으로 다시 재면 미숙 33%였고 고정 편성으로 전환함.">
-        <p class="bars-ctx"><b>아래 막대는 버린 확률 편성을 조정하던 단계의 값입니다.</b> 확률 편성에서 기준을 바꿔 다시 재 보니 13종을 모두 마주친 판이 미숙 33% → 고정 편성으로 전환했습니다.</p>
+        <p class="bars-ctx"><b>아래 막대는 버린 확률 편성을 조정하던 단계의 값입니다.</b> 확률 편성에서 기준을 바꿔 다시 재 보니 13종을 모두 마주친 판이 미숙 33%였고, 이후 고정 편성으로 전환했습니다.</p>
         <span class="label">조우 13종을 모두 본 회차 비율 · 확률 편성 조정 단계 (편성 기준)</span>
         <div class="bar-row"><span>① 날짜 흐름 · 미숙</span><div class="bar-pair"><div class="bar" style="--w:21%"><i style="width:21%"></i><b>21%</b></div><div class="bar after" style="--w:54%"><i style="width:54%"></i><b>54%</b></div></div></div>
         <div class="bar-row"><span>② 시체 낙하 · 보통</span><div class="bar-pair"><div class="bar" style="--w:78%"><i style="width:78%"></i><b>78%</b></div><div class="bar after" style="--w:100%"><i style="width:100%"></i><b>100%</b></div></div></div>
