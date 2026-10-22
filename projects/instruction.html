@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023b">
-<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023b">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023c">
+<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023c">
 </head>
 <body data-project="instruction">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -69,6 +69,16 @@
         <figure><img src="../assets/img/ins/tablet-rules.jpg" alt="태블릿 근무수칙 화면" width="443" height="480" loading="lazy"><figcaption>근무수칙 (태블릿 UI: 김진선 님)</figcaption></figure>
         <figure><img src="../assets/img/ins/tablet-orders.jpg" alt="회사 문자 지시 화면" width="379" height="435" loading="lazy"><figcaption>회사 문자 지시 — 편성 데이터는 제 담당</figcaption></figure>
         <figure><img src="../assets/img/ins/inspection.jpg" alt="점검 화면 — 정상 또는 이상 보고" width="525" height="327" loading="lazy"><figcaption>점검 — 정상 / 이상 보고를 판정해 정산</figcaption></figure>
+      </div>
+
+      <h3>제가 설계한 조우</h3>
+      <div class="enc-grid wide">
+        <figure class="enc"><img src="../assets/img/ins/enc-girl.jpg" alt="화장실 소녀" loading="lazy"><figcaption><b>화장실 소녀</b><span>목격 전까지 문이 잠긴다</span></figcaption></figure>
+        <figure class="enc"><img src="../assets/img/ins/enc-duck.jpg" alt="도서관 노란 얼굴" loading="lazy"><figcaption><b>도서관 노란 얼굴</b><span>3초 이상 비추면 달아난다</span></figcaption></figure>
+        <figure class="enc"><img src="../assets/img/ins/enc-boy.jpg" alt="교실 소년" loading="lazy"><figcaption><b>교실 소년</b><span>교실을 나가려 하면 놀란다</span></figcaption></figure>
+        <figure class="enc"><img src="../assets/img/ins/enc-dummy.jpg" alt="인체모형" loading="lazy"><figcaption><b>인체모형</b><span>빛을 받는 순간 급습한다</span></figcaption></figure>
+        <figure class="enc"><img src="../assets/img/ins/enc-tree.jpg" alt="사람나무" loading="lazy"><figcaption><b>사람나무</b><span>바라볼수록 끌려간다</span></figcaption></figure>
+        <figure class="enc"><img src="../assets/img/ins/enc-cctv.jpg" alt="CCTV 검은 남자" loading="lazy"><figcaption><b>CCTV 검은 남자</b><span>CCTV 화면 속에 나타난다</span></figcaption></figure>
       </div>
 
       <h3>팀과 역할</h3>
@@ -549,8 +559,8 @@
         <div class="log-head"><h3>발광이 꺼지는 문제</h3><span class="label">빌드 전 점검 · AI 발견</span></div>
         <dl>
           <dt>발견</dt><dd>빌드 전에 「다른 문제들은 없을지」 점검을 맡겼고, AI가 찾아냈습니다.</dd>
-          <dt>원인</dt><dd>빌드는 빌드에 포함된 재질이 쓰는 키워드 조합만 셰이더 변형으로 넣습니다. 실행 중 코드로 켜는 조합(URP Lit <code>_EMISSION</code>, Unlit 알파 테스트 · 반투명)이 빠졌습니다.</dd>
-          <dt>해결</dt><dd>에디터 도구 <code>ShaderKeepBuilder</code>가 빌드 재질을 훑어 빠진 조합마다 키워드를 켠 보존 재질을 생성합니다. <b>빠져 있던 조합 21개</b>(Lit 18 · Unlit 3)를 복구했고, 조합이 다시 빠지면 실패하는 테스트를 추가했습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Editor/ShaderKeepBuilder.cs" target="_blank" rel="noopener">ShaderKeepBuilder.cs</a></dd>
+          <dt>원인</dt><dd>빌드는 빌드에 포함된 재질이 쓰는 키워드 조합만 셰이더 변형으로 넣습니다. 실행 중 코드로 켜는 발광 조합(URP Lit <code>_EMISSION</code>)이 빠져, 붉은 등 · 점검 이상의 붉은 빛 같은 발광이 빌드에서 꺼졌습니다.</dd>
+          <dt>해결</dt><dd>에디터 도구 <code>ShaderKeepBuilder</code>가 빌드 재질을 훑어 빠진 조합마다 키워드를 켠 보존 재질을 생성합니다. <b>빠져 있던 발광 조합 18개</b>를 복구했고, 조합이 다시 빠지면 실패하는 테스트를 추가했습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Editor/ShaderKeepBuilder.cs" target="_blank" rel="noopener">ShaderKeepBuilder.cs</a></dd>
         </dl>
       </div>
 
@@ -588,6 +598,6 @@
   <a class="no-print" href="code-dungeon.html">다음 프로젝트 · Code Dungeon →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023b"></script>
+<script src="../assets/js/site.js?v=20261023c"></script>
 </body>
 </html>

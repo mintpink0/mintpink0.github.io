@@ -145,3 +145,12 @@ p.code-cap { margin-top: 12px; }
 @media (max-width: 640px) {
   .dir-pacer { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* 조우 갤러리 */
+.enc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 18px; margin: 8px 0 28px; }
+.enc { margin: 0; display: grid; gap: 10px; }
+.enc img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--r); border: 1px solid var(--line); background: #111; }
+.enc figcaption { display: grid; gap: 2px; text-align: center; }
+.enc figcaption b { font: 800 1rem/1.4 var(--f-kr); color: var(--ink); }
+.enc figcaption span { font-size: .88rem; color: var(--ink-2); }
+@media (max-width: 640px) { .enc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; } }
