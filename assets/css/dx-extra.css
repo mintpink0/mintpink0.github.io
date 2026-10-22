@@ -85,3 +85,4 @@
 .content > section > * { max-width: 52rem; }
 .content > section > p, .content > section > ul, .content > section > ol { max-width: 48rem; }
 .content > section > .wide, .content > section > figure.wide { max-width: 52rem; }
+@media print { .content > section > * { max-width: none; } }

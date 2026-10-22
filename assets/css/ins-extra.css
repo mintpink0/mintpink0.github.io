@@ -204,3 +204,16 @@ details.fold-sec > summary { font-weight: 700; color: var(--ink-2); }
 details.fold-sec[open] > summary { margin-bottom: 14px; }
 details.fold-sec > p { margin-top: 0; }
 figure.fig-runner { max-width: 52rem; }
+@media print {
+  .content > section > * { max-width: none; }
+  .enc-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 14px; }
+  .enc { break-inside: avoid; min-width: 0; }
+  .enc img { width: 100% !important; max-width: 100% !important; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+  .enc .tech { overflow-wrap: anywhere; }
+  .media-2 { break-inside: avoid; }
+  .anat, .rulebox, .sigmap, .dir-pacer, .ai-sum, .flow-chips, .agtbl, .tbl:not(.dtbl-wrap) { break-inside: avoid; }
+  details.fold-sec { border: 0; padding: 0; margin-top: 18px; }
+  details.fold-sec > summary { font-size: 1.15em; margin-bottom: 10px; }
+  figure.fig-runner img { max-height: none; width: 100%; }
+}
+@media print { .media-2 img, .media-2 video { max-height: 52mm; object-fit: contain; } }

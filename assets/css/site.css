@@ -308,3 +308,32 @@ figcaption { font-size: .84rem; color: var(--ink-3); }
   figure img, figure video { max-height: 70mm; width: auto; max-width: 100%; object-fit: contain; }
 }
 .print-url { display: none; font-family: var(--f-mono); font-size: .78em; color: var(--ink-3); margin: 0; }
+
+/* ---- print: cleaner A4 pagination ---- */
+@media print {
+  @page { size: A4; margin: 15mm 14mm 16mm; }
+  body { font-size: 10pt; line-height: 1.62; }
+  .content > section { break-before: page; border-top: 0; padding-top: 0; padding-bottom: 0; }
+  .content > section:first-child { break-before: page; }
+  .content > section > h2 { margin-bottom: 4px; }
+  h2, h3, h4, .case-h, .log-head, summary { break-after: avoid; page-break-after: avoid; }
+  p, li, dd { orphans: 3; widows: 3; }
+  .log, .tbl, .card { break-inside: auto; }
+  .log dd, tr, figure, .dg, pre, .note { break-inside: avoid; }
+  thead { display: table-header-group; }
+  figcaption { break-before: avoid; }
+  figure img, figure video { max-height: 80mm; margin-inline: auto; }
+  .code-cap { break-before: avoid; }
+  figure figcaption { text-align: center; }
+  code, .tech { overflow-wrap: anywhere; }
+  details > summary { list-style: none; font-weight: 700; color: var(--ink); font-size: 1.05em; }
+  details > summary::-webkit-details-marker { display: none; }
+}
+@media print {
+  .log-head { padding: 10px 14px 8px; }
+  .log dt, .log dd { padding: 7px 14px; }
+}
+@media print {
+  pre { break-after: avoid; }
+  span.code-cap { display: block; break-before: avoid; }
+}
