@@ -78,7 +78,7 @@
       <p class="lead">네비게이션 메시는 툴에서 찍어 파일로 저장하면 엔진이 읽어 들이고, 게임에서는 캐릭터마다 나눠 씁니다. 아래 그림은 각 단계가 앞 단계에 기대는 조건을 한 장에 정리한 것입니다.</p>
       <figure class="dg wide">
         <div class="dg-frame">
-          <svg class="dg-wide" viewBox="0 0 920 300" role="img" aria-label="데이터 흐름: 툴에서 픽킹으로 셀을 만들고 기존 꼭짓점 1.5 이내면 스냅, Navigation 폴더에 Region 이름의 파일로 셀 단위 저장(버전 필드 없음), 엔진이 읽으며 변과 법선을 다시 계산하고 좌표가 정확히 같은 꼭짓점끼리 이웃으로 연결, 게임에서는 캐릭터마다 Navigation을 복제해 셀 데이터는 공유하고 현재 셀만 각자 가짐. 툴의 스냅이 엔진의 이웃 연결 조건을 만족시키는 계약.">
+          <svg class="dg-wide" viewBox="0 0 920 270" role="img" aria-label="데이터 흐름: 툴에서 픽킹으로 셀을 만들고 기존 꼭짓점 1.5 이내면 스냅, Navigation 폴더에 Region 이름의 파일로 셀 단위 저장, 엔진이 읽으며 변과 법선을 다시 계산하고 좌표가 정확히 같은 꼭짓점끼리 이웃으로 연결, 게임에서는 캐릭터마다 Navigation을 복제해 셀 데이터는 공유하고 현재 셀만 각자 가짐. 툴 좌표 보정.">
             <defs>
               <marker id="fw-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
             </defs>
@@ -99,7 +99,6 @@
             <text x="254" y="104">셀 개수, 이어서 셀마다</text>
             <text x="254" y="124">색 · 꼭짓점 · 법선 · 변</text>
             <text x="254" y="144">이웃 · 번호 · 점프 여부</text>
-            <text class="t-p" x="254" y="164">버전 · 매직 필드 없음</text>
 
             <rect class="bx" x="478" y="8" width="202" height="196" rx="2"/>
             <text class="t-m t-p" x="492" y="32">ENGINE · LOAD</text>
@@ -128,10 +127,9 @@
             <path class="ln-p dash" d="M103 204 V230 H579 V204"/>
             <circle class="dot-p" cx="103" cy="204" r="3"/>
             <circle class="dot-p" cx="579" cy="204" r="3"/>
-            <text class="t-b t-p t-mid" x="341" y="256">툴과 엔진 사이의 계약</text>
-            <text class="t-mid" x="341" y="278">툴의 스냅이 엔진의 「좌표가 정확히 같아야 이웃」을 만족시킵니다</text>
+            <text class="t-b t-p t-mid" x="341" y="256">툴 좌표 보정</text>
           </svg>
-          <svg class="dg-narrow" viewBox="0 0 360 650" role="img" aria-label="데이터 흐름: 툴에서 픽킹으로 셀을 만들고 기존 꼭짓점 1.5 이내면 스냅, Region 이름의 파일로 셀 단위 저장(버전 필드 없음), 엔진이 읽으며 변과 법선을 다시 계산하고 좌표가 정확히 같은 꼭짓점끼리 이웃으로 연결, 게임에서는 캐릭터마다 Navigation을 복제해 셀 데이터는 공유하고 현재 셀만 각자 가짐. 툴의 스냅이 엔진의 이웃 연결 조건을 만족시키는 계약.">
+          <svg class="dg-narrow" viewBox="0 0 360 590" role="img" aria-label="데이터 흐름: 툴에서 픽킹으로 셀을 만들고 기존 꼭짓점 1.5 이내면 스냅, Region 이름의 파일로 셀 단위 저장, 엔진이 읽으며 변과 법선을 다시 계산하고 좌표가 정확히 같은 꼭짓점끼리 이웃으로 연결, 게임에서는 캐릭터마다 Navigation을 복제해 셀 데이터는 공유하고 현재 셀만 각자 가짐. 툴 좌표 보정.">
             <defs>
               <marker id="fn-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
             </defs>
@@ -150,7 +148,6 @@
             <text class="t-b" x="14" y="194">셀 단위 덤프</text>
             <text x="14" y="217">셀 개수, 이어서 셀마다 색 · 꼭짓점 ·</text>
             <text x="14" y="236">법선 · 변 · 이웃 · 번호 · 점프 여부</text>
-            <text class="t-p" x="14" y="255">버전 · 매직 필드 없음</text>
 
             <path class="ln" d="M150 269 V295" marker-end="url(#fn-h)"/>
             <text class="t-s" x="160" y="287">읽기</text>
@@ -175,16 +172,13 @@
             <path class="ln-p dash" d="M302 83 H330 V381 H302"/>
             <circle class="dot-p" cx="302" cy="83" r="3"/>
             <circle class="dot-p" cx="302" cy="381" r="3"/>
-            <text class="t-s t-p t-mid" transform="translate(347 232) rotate(-90)">툴 ↔ 엔진 계약</text>
+            <text class="t-s t-p t-mid" transform="translate(347 232) rotate(-90)">툴 좌표 보정</text>
 
-            <text class="t-b t-p" x="1" y="598">툴과 엔진 사이의 계약</text>
-            <text x="1" y="620">툴의 스냅이 엔진의 「좌표가 정확히 같아야</text>
-            <text x="1" y="638">이웃」 조건을 만족시킵니다.</text>
           </svg>
         </div>
         <figcaption>편집 로직은 엔진의 URegion · UStage 안 <code>_EDIT_NAVI</code> 빌드 플래그 블록에 있고, Tool 프로젝트의 NavigationView가 이를 호출합니다.</figcaption>
       </figure>
-      <p><b>툴과 엔진 사이의 계약</b> — 엔진은 두 셀이 한 변의 두 꼭짓점 좌표를 <b>정확히 같게</b> 가질 때만 그 변으로 이웃을 연결합니다(<code>XMVector3Equal</code> 비교). 마우스로 찍은 점은 조금씩 어긋나므로, 툴에서 기존 꼭짓점 반경 1.5 안을 찍으면 그 꼭짓점 좌표를 그대로 쓰게 했습니다. 이 스냅이 있어야 엔진의 연결 조건이 맞습니다.</p>
+      <p><b>툴 좌표 보정</b> — 엔진은 두 셀이 한 변의 두 꼭짓점 좌표를 <b>정확히 같게</b> 가질 때만 그 변으로 이웃을 연결합니다(<code>XMVector3Equal</code> 비교). 마우스로 찍은 점은 조금씩 어긋나므로, 툴에서 기존 꼭짓점 반경 1.5 안을 찍으면 그 꼭짓점 좌표를 그대로 쓰게 했습니다. 이 스냅이 있어야 엔진의 연결 조건이 맞습니다.</p>
       <p>저장 파일은 셀 정보를 순서대로 기록한 형식이라 버전 필드가 없습니다. 변 · 법선 · 이웃도 파일에 들어 있지만, 엔진은 불러올 때 꼭짓점에서 다시 계산합니다.</p>
     </section>
 
