@@ -95,3 +95,8 @@
   .mtabs-panel[hidden] { display: grid !important; }
   .figs-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* 직접 작성한 코드 링크 */
+.code-links { margin: 14px 0 0; font-size: .92rem; line-height: 1.9; color: var(--ink-2); }
+.code-links b { color: var(--ink); margin-right: 10px; }
+@media print { .code-links a::after { content: none; } }
