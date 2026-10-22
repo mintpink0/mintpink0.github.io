@@ -238,7 +238,7 @@
       <h3>구역을 하나로 합친 결정</h3>
       <p>처음에는 맵을 Region 단위로 나누고 플레이어가 있는 Region만 쓰는 최적화를 의도했습니다. 그런데 Region 경계를 넘을 때 이동 판정 버그가 계속 생겼고 체감 성능 이득이 없어, 맵 전체를 Region 하나로 합치기로 결정했습니다. 이웃 Region을 연결하던 그래프(<code>Add_NeighborRegion</code>)는 쓰이지 않는 코드로 남아 있습니다.</p>
       <p>셀이 한 Navigation에 모두 모였으므로, 셀 찾기(<code>FindCell</code>)는 현재 셀 번호 ±25 범위부터 보고 못 찾으면 25씩 넓힙니다. 최악에는 전체를 봅니다. 셀 번호는 툴에서 만든 순서대로 붙어, 이어서 찍은 셀끼리는 번호도 가깝습니다.</p>
-      <figure class="wide"><img src="../assets/img/cd/navmesh-tool.jpg" alt="구역을 나눠 쓰던 시기의 네비게이션 메시 편집 화면" width="1400" height="838" loading="lazy"><figcaption>통합 전, 구역을 나눠 쓰던 시기의 편집 화면 — Select_Region에 구역이 여러 개이고 구역마다 셀 색이 다릅니다. 셀 꼭짓점마다 디버그 큐브를 그려 좌상단 FPS가 낮게 표시됩니다.</figcaption></figure>
+      <figure class="wide"><img src="../assets/img/cd/navmesh-tool.jpg" alt="구역을 나눠 쓰던 시기의 네비게이션 메시 편집 화면" width="1400" height="838" loading="lazy"><figcaption>통합 전, 구역을 나눠 쓰던 시기의 편집 화면 — Select_Region에 구역이 여러 개이고 구역마다 셀 색이 다릅니다.</figcaption></figure>
 
       <div class="log" id="ts-stairs">
         <div class="log-head"><h3>계단에서 캐릭터가 순간이동하던 문제</h3><span class="label">나선 계단</span></div>
