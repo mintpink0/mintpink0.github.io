@@ -103,6 +103,7 @@
     <section id="arch">
       <h2><span class="num">03 — Architecture</span>구조 — 규칙(Core)과 화면(Flow)</h2>
       <p class="lead">판정 로직은 Unity를 모르는 일반 C#으로, 화면에 그리는 일은 MonoBehaviour로 나눴습니다. Core는 Flow를 모르게 asmdef로 막고, Core→Flow는 EventBus 이벤트로만 알립니다.</p>
+      <p>구조는 AI에게 여러 안을 받은 뒤, 밖에서 테스트할 수 있는 구조로 골라 달라고 했습니다. 씬이 확정되기 전에 축부터 설계하고, 테스트 씬에서 그 값이 어떻게 변하는지 미리 보고 싶었기 때문입니다. 실제로 씬이 나오기 전에 테스트 씬으로 변화를 확인했고, 자동 테스트도 돌릴 수 있었습니다.</p>
       <div class="arch wide">
         <div class="arch-box">
           <h4>Flow · MonoBehaviour</h4>
