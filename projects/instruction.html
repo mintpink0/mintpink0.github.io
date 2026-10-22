@@ -195,6 +195,7 @@
         </svg>
         <figcaption>Flow → Core는 <code>Send</code> · <code>Tick</code> 두 호출, Core → Flow는 <code>EventBus</code> 이벤트뿐입니다. 연출은 축 수치가 아니라 구간을 봅니다.</figcaption>
       </figure>
+      <figure class="wide"><img src="../assets/img/ins/zones-map.jpg" alt="씬 뷰 위에서 본 학교 평면 — 공간 구역 상자, 점검 지점, 판정 대상 이름이 색으로 표시됨" width="1275" height="665" loading="lazy"><figcaption>센서가 쓰는 공간 구역 · 점검 지점 · 판정 대상을 씬 뷰에 표시한 화면</figcaption></figure>
       <p>Flow는 <code>NightRun</code>의 공개 정적 멤버로 밤을 시작 · 진행 · 종료시키고 지금 상태를 읽습니다. 반대 방향인 Core→Flow에는 호출이 없고, 「구간이 바뀌었다」 같은 이벤트(<code>BandChanged</code> · <code>DirectionEmitted</code> · <code>Captured</code>)만 나갑니다. 연출은 축 수치가 아니라 구간을 봅니다.</p>
       <ul>
         <li><b>게임을 켜지 않고 검증.</b> Core는 <code>new</code>만 하면 돌아가므로 자동 테스트와 밸런스 시뮬레이션을 에디터에서 바로 돌렸습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/tree/main/horror%20house/Assets/_Game/Tests/EditMode" target="_blank" rel="noopener">테스트 폴더</a></li>
@@ -275,6 +276,7 @@
           </tbody>
         </table>
       </div>
+      <figure class="wide"><img src="../assets/img/ins/tablet-rules-orders.jpg" alt="같은 밤 03:29의 태블릿 — 왼쪽은 근무 수칙 목록, 오른쪽은 회사 문자 지시 목록" width="1820" height="1080" loading="lazy"><figcaption>같은 밤의 근무 수칙과 회사 문자 지시 (태블릿 UI: 김진선 님)</figcaption></figure>
       <p>수칙마다 판정기가 하나씩 붙어 센서 신호를 받고 준수 · 위반을 냅니다. 일반 수칙은 처음 어길 때 그 축이 +12(밤에 한 번), 위협 수칙은 조우마다 실패하면 +20이고, 단서가 왔는데 끝까지 지키면 밤 끝에 신뢰가 +2 오릅니다.</p>
       <p>신뢰 구간(10 · 18 · 26 · 42)이 오를수록 수칙과 반대로 시키는 역설 문자, 수칙서 글자가 바뀌는 변조, 두 수칙이 부딪히는 회피 불가가 차례로 열립니다. 문자가 무엇을 시키든 판정은 늘 수칙서 원본으로 합니다.</p>
       <p>수칙 수와 지시 비중은 제가 정했습니다. <span class="said">「K3를 모든 밤에, 기존 수칙 칸을 대체」</span>, <span class="said">「수칙 장수는 조우 말고 나머지를 빼는 방안」</span>, <span class="said">「물품 점검이 비중이 더 높은데, 지시 사항과 비중이 균일했으면」</span></p>
