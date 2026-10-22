@@ -95,22 +95,104 @@
       <h2><span class="num">02 — Architecture</span>구조 — 규칙(Core)과 화면(Flow)</h2>
       <p class="lead">판정 로직은 Unity를 모르는 일반 C#으로, 화면에 그리는 일은 MonoBehaviour로 나눴습니다. Core는 Flow를 모르게 asmdef로 막고, Core→Flow는 EventBus 이벤트로만 알립니다.</p>
       <p>구조는 AI에게 여러 안을 받은 뒤, 판정 시스템이 없어도 밖에서 축 값을 넣어 볼 수 있는 안으로 골라 달라고 했습니다. 근무 씬이 저장소에 처음 올라온 9월 17일보다 앞서, AI가 만든 축 읽기 인터페이스(<code>IFearAxisReader</code>)와 그것을 구현한 인스펙터 슬라이더로 테스트 씬에서 조도 · 청각 변화를 먼저 확인했습니다(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/583b914" target="_blank" rel="noopener">커밋</a>). 테스트 씬과 슬라이더는 10월 3일에 지웠고(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/ebf74d6" target="_blank" rel="noopener">커밋</a>), 인터페이스는 지금도 실제 축 시스템이 구현합니다.</p>
-      <div class="arch wide">
-        <div class="arch-box">
-          <h4>Flow · MonoBehaviour</h4>
-          <p>판정 센서 — 공간 출입, 손전등 원뿔(15° · 8m) + 레이캐스트 가림, 응시, 자세, 달리기를 0.1초 간격으로 측정</p>
-          <p>조명 · 정전, CCTV, 조우 연출, 붙잡힘, 오디오</p>
-        </div>
-        <div class="arch-mid">
-          <span>JudgeSignal →<br>NightRun.Send</span>
-          <span>← EventBus<br>BandChanged 등</span>
-        </div>
-        <div class="arch-box core">
-          <h4>Core · NightDuty.Core.asmdef (참조 없음)</h4>
-          <p>판정 책(수칙별 판정기) · 공포 축 0–99 · 구간(축 0–99를 나눈 단계, 그 밤엔 내려가지 않음)</p>
-          <p>공포 디렉터 · 편성(시드 난수, 같은 시드는 같은 결과) · 점검표 정산</p>
-        </div>
-      </div>
+      <figure class="dg wide archdg">
+        <svg class="dg-wide" viewBox="0 0 760 352" role="img" aria-label="구조도. 센서(Flow)가 JudgeSignal을 NightRun.Send와 Tick으로 Core에 보냅니다. Core 안에서 판정 책이 공포 축과 구간을 올리고, 공포 디렉터가 언제 무엇을 터뜨릴지 정하고, 점검표가 보고를 정산합니다. Core는 EventBus의 BandChanged, Captured, DirectionEmitted 이벤트로만 Flow의 조명·소리, 붙잡힘, 조우 연출에 알립니다.">
+          <defs>
+            <marker id="ah-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L8,4 L0,8 z"/></marker>
+            <marker id="ahp-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-p" d="M0,0 L8,4 L0,8 z"/></marker>
+          </defs>
+          <text class="lb" x="10" y="22">FLOW · MonoBehaviour</text>
+          <rect class="box" x="10" y="118" width="150" height="124" rx="2"/>
+          <text class="t" x="24" y="144">센서</text>
+          <text class="s" x="24" y="168">공간 출입 · 응시</text>
+          <text class="s" x="24" y="186">손전등 원뿔 15° · 8m</text>
+          <text class="s" x="24" y="204">자세 · 달리기</text>
+          <text class="s" x="24" y="226">0.1초 간격 측정</text>
+          <path class="ln" d="M160 180 H226" marker-end="url(#ah-a)"/>
+          <text class="lb" x="164" y="160">Judge</text>
+          <text class="lb" x="164" y="173">Signal</text>
+          <rect class="core-zone" x="200" y="34" width="356" height="308" rx="3"/>
+          <text class="lb lb-p" x="214" y="56">CORE · NightDuty.Core.asmdef (참조 없음)</text>
+          <text class="s" x="214" y="74">Unity를 모르는 일반 C# — new만 하면 돌아감</text>
+          <rect class="box" x="228" y="96" width="92" height="232" rx="2"/>
+          <text class="t" x="240" y="122">NightRun</text>
+          <text class="s" x="240" y="146">입구</text>
+          <text class="s" x="240" y="170">Send</text>
+          <text class="s" x="240" y="188">Tick(dt)</text>
+          <path class="ln" d="M320 132 H338 M320 212 H338 M320 292 H338" marker-end="url(#ah-a)"/>
+          <rect class="box" x="340" y="96" width="200" height="72" rx="2"/>
+          <text class="t" x="352" y="120">판정 책 → 공포 축 → 구간</text>
+          <text class="s" x="352" y="142">수칙별 판정기 · 축 0–99</text>
+          <text class="s" x="352" y="158">구간은 그 밤엔 내려가지 않음</text>
+          <rect class="box" x="340" y="176" width="200" height="72" rx="2"/>
+          <text class="t" x="352" y="200">공포 디렉터 · 편성</text>
+          <text class="s" x="352" y="222">언제 · 어디서 무엇을 부를지</text>
+          <text class="s" x="352" y="238">시드 난수 — 같은 시드, 같은 결과</text>
+          <rect class="box" x="340" y="256" width="200" height="72" rx="2"/>
+          <text class="t" x="352" y="280">점검표</text>
+          <text class="s" x="352" y="302">정상 / 이상 보고 정산</text>
+          <path class="ln-p" d="M540 116 H604" marker-end="url(#ahp-a)"/>
+          <path class="ln-p" d="M540 150 H560 V178 H604" marker-end="url(#ahp-a)"/>
+          <path class="ln-p" d="M540 212 H560 V246 H604" marker-end="url(#ahp-a)"/>
+          <text class="lb lb-p" x="566" y="94">EventBus</text>
+          <text class="lb" x="606" y="22">FLOW · 연출</text>
+          <rect class="box" x="606" y="92" width="144" height="50" rx="2"/>
+          <text class="t" x="618" y="114">조명 · 소리</text>
+          <text class="s" x="618" y="132">BandChanged</text>
+          <rect class="box" x="606" y="154" width="144" height="50" rx="2"/>
+          <text class="t" x="618" y="176">붙잡힘</text>
+          <text class="s" x="618" y="194">Captured</text>
+          <rect class="box" x="606" y="222" width="144" height="50" rx="2"/>
+          <text class="t" x="618" y="244">조우 연출</text>
+          <text class="s" x="618" y="262">DirectionEmitted</text>
+          <text class="s" x="606" y="300">그 밖에 정전 · CCTV · 오디오</text>
+        </svg>
+        <svg class="dg-narrow" viewBox="0 0 340 650" role="img" aria-label="구조도. 센서(Flow)가 JudgeSignal을 NightRun으로 보내고, Core 안의 판정 책·공포 디렉터·점검표가 처리한 결과는 EventBus 이벤트로만 Flow의 조명·소리, 붙잡힘, 조우 연출에 알립니다.">
+          <defs>
+            <marker id="ah-an" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L8,4 L0,8 z"/></marker>
+            <marker id="ahp-an" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-p" d="M0,0 L8,4 L0,8 z"/></marker>
+          </defs>
+          <text class="lb" x="10" y="16">FLOW · MonoBehaviour</text>
+          <rect class="box" x="10" y="26" width="320" height="70" rx="2"/>
+          <text class="t" x="24" y="50">센서 — 0.1초 간격 측정</text>
+          <text class="s" x="24" y="70">공간 출입 · 응시 · 손전등 원뿔 15° · 8m</text>
+          <text class="s" x="24" y="86">자세 · 달리기</text>
+          <path class="ln" d="M170 96 V128" marker-end="url(#ah-an)"/>
+          <text class="lb" x="178" y="116">JudgeSignal → Send · Tick</text>
+          <rect class="core-zone" x="4" y="132" width="332" height="352" rx="3"/>
+          <text class="lb lb-p" x="16" y="152">CORE · asmdef 참조 없음</text>
+          <text class="s" x="16" y="170">Unity를 모르는 일반 C#</text>
+          <rect class="box" x="16" y="182" width="308" height="44" rx="2"/>
+          <text class="t" x="28" y="209">NightRun — 입구</text>
+          <path class="ln" d="M170 226 V242" marker-end="url(#ah-an)"/>
+          <rect class="box" x="16" y="244" width="308" height="70" rx="2"/>
+          <text class="t" x="28" y="267">판정 책 → 공포 축 → 구간</text>
+          <text class="s" x="28" y="287">수칙별 판정기 · 축 0–99</text>
+          <text class="s" x="28" y="303">구간은 그 밤엔 내려가지 않음</text>
+          <rect class="box" x="16" y="322" width="308" height="70" rx="2"/>
+          <text class="t" x="28" y="345">공포 디렉터 · 편성</text>
+          <text class="s" x="28" y="365">언제 · 어디서 무엇을 부를지</text>
+          <text class="s" x="28" y="381">시드 난수 — 같은 시드, 같은 결과</text>
+          <rect class="box" x="16" y="400" width="308" height="70" rx="2"/>
+          <text class="t" x="28" y="424">점검표</text>
+          <text class="s" x="28" y="446">정상 / 이상 보고 정산</text>
+          <path class="ln-p" d="M170 484 V516" marker-end="url(#ahp-an)"/>
+          <text class="lb lb-p" x="178" y="504">EventBus 이벤트로만</text>
+          <text class="lb" x="10" y="534">FLOW · 연출</text>
+          <rect class="box" x="10" y="542" width="104" height="62" rx="2"/>
+          <text class="t" x="20" y="564">조명 · 소리</text>
+          <text class="s" x="20" y="584">BandChanged</text>
+          <rect class="box" x="118" y="542" width="104" height="62" rx="2"/>
+          <text class="t" x="128" y="564">붙잡힘</text>
+          <text class="s" x="128" y="584">Captured</text>
+          <rect class="box" x="226" y="542" width="104" height="62" rx="2"/>
+          <text class="t" x="236" y="564">조우 연출</text>
+          <text class="s" x="236" y="584">Direction</text>
+          <text class="s" x="236" y="598">Emitted</text>
+          <text class="s" x="10" y="632">그 밖에 정전 · CCTV · 오디오</text>
+        </svg>
+        <figcaption>Flow → Core는 <code>Send</code> · <code>Tick</code> 두 호출, Core → Flow는 <code>EventBus</code> 이벤트뿐입니다. 연출은 축 수치가 아니라 구간을 봅니다.</figcaption>
+      </figure>
       <p>Flow는 <code>NightRun</code>의 공개 정적 멤버로 밤을 시작 · 진행 · 종료시키고 지금 상태를 읽습니다. 반대 방향인 Core→Flow에는 호출이 없고, 「구간이 바뀌었다」 같은 이벤트(<code>BandChanged</code> · <code>DirectionEmitted</code> · <code>Captured</code>)만 나갑니다. 연출은 축 수치가 아니라 구간을 봅니다.</p>
       <ul>
         <li><b>게임을 켜지 않고 검증.</b> Core는 <code>new</code>만 하면 돌아가므로 자동 테스트와 밸런스 시뮬레이션을 에디터에서 바로 돌렸습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/tree/main/horror%20house/Assets/_Game/Tests/EditMode" target="_blank" rel="noopener">테스트 폴더</a></li>

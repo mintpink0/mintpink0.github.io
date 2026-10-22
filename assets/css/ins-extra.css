@@ -115,3 +115,8 @@ figure.wide { margin-block: 16px; }
   .simtbl td, .simtbl td + td { border: 0; padding: 3px 0; white-space: normal; min-width: 0; }
   .simtbl td[data-k]::before { content: attr(data-k); display: block; font: 600 .76rem/1.6 var(--f-body); color: var(--ink-3); }
 }
+
+/* 구조도 */
+.archdg .core-zone { fill: var(--p-soft); fill-opacity: .45; stroke: var(--p); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.archdg .lb-p { fill: var(--p); }
+.archdg { margin-block: 18px; }
