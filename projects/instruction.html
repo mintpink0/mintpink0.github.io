@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023c">
-<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023c">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023d">
+<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023d">
 </head>
 <body data-project="instruction">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -48,10 +48,11 @@
     <a data-n="01" href="#game">게임과 역할</a>
     <a data-n="02" href="#arch">구조</a>
     <a data-n="03" href="#director">공포 디렉터</a>
-    <a data-n="04" href="#impl">구현 하이라이트</a>
-    <a data-n="05" href="#ai">AI와 일한 방식</a>
-    <a data-n="06" href="#ts-schedule">문제 해결 사례</a>
-    <a data-n="07" href="#limits">한계와 다시 만든다면</a>
+    <a data-n="04" href="#rules">수칙 · 지시 · 편성</a>
+    <a data-n="05" href="#impl">구현 하이라이트</a>
+    <a data-n="06" href="#ai">AI와 일한 방식</a>
+    <a data-n="07" href="#ts-schedule">문제 해결 사례</a>
+    <a data-n="08" href="#limits">한계와 다시 만든다면</a>
   </nav>
 
   <main class="content">
@@ -264,16 +265,47 @@
       <p>점검 지시를 바꿀 때 이렇게 요구했습니다. <span class="said">「점검이 한번에 떠있는게 아니라, 조절해서 메시지로 계속 업데이트 … 플레이어의 동선이나 위치, 긴장도를 계속해서 계산해서」</span></p>
       <ul>
         <li>점검 지시를 밤 시작에 한꺼번에 주지 않고 공간 단위 문자로 하나씩 보냅니다. 다음 공간은 거리, 조우가 걸린 공간인지, 같은 동인지로 점수를 매겨 고르고, 조우 중 · 직후나 긴장이 높을 때는 미룹니다.</li>
-        <li>최종판은 고정 날짜 편성이라(<a href="#ts-schedule">06절</a>) 조우를 날짜표 순서대로 하나씩 엽니다. 앞 조우가 끝나고 15초 뒤 다음을 열고, 시작되지 않으면 「1-3 교실을 순찰하십시오」 같은 유도 문자로 그 공간에 부릅니다.</li>
+        <li>최종판은 고정 날짜 편성이라(<a href="#ts-schedule">07절</a>) 조우를 날짜표 순서대로 하나씩 엽니다. 앞 조우가 끝나고 15초 뒤 다음을 열고, 시작되지 않으면 「1-3 교실을 순찰하십시오」 같은 유도 문자로 그 공간에 부릅니다.</li>
         <li>조우가 남은 채 03:30이 되면 시계를 붙들어, 그날의 조우를 모두 보기 전에는 밤이 끝나지 않습니다. <span class="said">「이월은 없어. 의도한 날짜에 무조건 목격해야 해」</span></li>
       </ul>
       <p class="code-cap"><span class="tech">TensionDirector · TensionPacer · SurpriseBudget · InspectionDispatcher</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Scripts/Direction/Tension/TensionDirector.cs" target="_blank" rel="noopener">TensionDirector.cs</a></p>
     </section>
 
+    <section id="rules">
+      <h2><span class="num">04 — Rules & Schedule</span>수칙 · 지시 · 편성</h2>
+      <p class="lead">하룻밤은 태블릿 수칙, 회사 문자 지시, 조우 세 층으로 짜입니다. 셋 다 밤 시작에 정하고, 재시작해도 다시 뽑지 않습니다.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>층</th><th>정하는 기준</th><th>하루 분량</th></tr></thead>
+          <tbody>
+            <tr><td>수칙</td><td>조우에 묶인 수칙은 그 조우가 있는 날에만 넣고, 남는 칸은 감각 세 축(청각 · 조도 · 배치)이 한 장씩 들어가게 채웁니다. 넘치면 조우 수칙이 아닌 것부터 뺍니다.</td><td>1일차 4장 · 2–4일차 6장 · 5일차 7장</td></tr>
+            <tr><td>지시</td><td>점검 지시와 근무 지시를 번갈아 보냅니다. 신뢰 구간이 오르면 역설 · 변조 · 회피 불가가 붙습니다.</td><td>점검 4–6항목 · 근무 3–4통</td></tr>
+            <tr><td>조우</td><td>날짜표대로 나오고, 그날의 클라이맥스만 맨 뒤에 둡니다.</td><td>1일차 없음 · 2–5일차 2–4개</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>수칙마다 판정기가 하나씩 붙어 센서 신호를 받고 준수 · 위반을 냅니다. 일반 수칙은 처음 어길 때 그 축이 +12(밤에 한 번), 위협 수칙은 조우마다 실패하면 +20이고, 단서가 왔는데 끝까지 지키면 밤 끝에 신뢰가 +2 오릅니다.</p>
+      <p>신뢰 구간(10 · 18 · 26 · 42)이 오를수록 수칙과 반대로 시키는 역설 문자, 수칙서 글자가 바뀌는 변조, 두 수칙이 부딪히는 회피 불가가 차례로 열립니다. 문자가 무엇을 시키든 판정은 늘 수칙서 원본으로 합니다.</p>
+      <p>수칙 수와 지시 비중은 제가 정했습니다. <span class="said">「K3를 모든 밤에, 기존 수칙 칸을 대체」</span>, <span class="said">「수칙 장수는 조우 말고 나머지를 빼는 방안」</span>, <span class="said">「물품 점검이 비중이 더 높은데, 지시 사항과 비중이 균일했으면」</span></p>
+
+      <h3>난수 — 무엇을 언제 고정했나</h3>
+      <p>편성기는 난수를 밖에서 받게 만들어, 게임은 회차마다 새 난수를 쓰고 테스트만 고정 시드를 넣습니다. 시드 값은 바꾼 적이 없고, 개발하면서 바뀐 것은 무엇을 언제 굴려 고정하느냐였습니다.</p>
+      <ul>
+        <li><b>9월 21일</b> — 난수를 밖에서 넣을 수 있는 구조. 게임은 시드 없이, 테스트는 고정 시드</li>
+        <li><b>9월 22일</b> — 조우를 회차마다 다시 뽑고, 배분은 여러 시드(40회차)로 검사</li>
+        <li><b>10월 3–4일</b> — 편성과 역설 발송을 밤 시작에 굴려 저장해, 재시작해도 같은 밤</li>
+        <li><b>10월 7–11일</b> — 시체 낙하 날 · 노란 얼굴 날을 회차 시작에 한 번만 굴림</li>
+        <li><b>개발 후반</b> — 고정 날짜표로 바꾸고(<a href="#ts-schedule">07절</a> ①), 난수는 같은 날의 순서와 쉬는 시간 등에만 남김</li>
+      </ul>
+      <p>테스트는 시드 30개로 4일차 편성을 만들어, 클라이맥스가 늘 맨 뒤에 오는지 확인합니다.</p>
+      <p class="code-cap"><span class="tech">ProgramDirector · NightProgram · ParadoxPlanner · FinalRuleBook</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Scripts/Program/NightProgram.cs" target="_blank" rel="noopener">NightProgram.cs</a></p>
+    </section>
+
+
 
 
     <section id="impl">
-      <h2><span class="num">04 — Highlights</span>구현 하이라이트</h2>
+      <h2><span class="num">05 — Highlights</span>구현 하이라이트</h2>
       <p class="lead">판정 결과를 화면으로 옮기는 부분입니다. 무엇이 바뀌어야 하는지와 기준은 제가 정했습니다.</p>
 
       <h3>구간이 오르면 화면에서 바뀌는 것</h3>
@@ -305,7 +337,7 @@
         <li><b>교실 소년</b> — 플레이어가 교실 안이고 소년 자리가 화면 밖이거나 가려진 순간에 등장합니다.</li>
         <li><b>CCTV 속 사람</b> — 길 두 끝을 그 채널 카메라에 안 보이는 곳까지 늘려, 화면 밖에서 걸어 들어오고 걸어 나간 뒤 사라집니다.</li>
       </ul>
-      <figure class="fig-mid"><img src="../assets/img/ins/cctv.jpg" alt="경비실 CCTV 모니터 화면 — CAM01 복도, 채널 넘기기와 정상·이상 보고 안내" width="1600" height="900" loading="lazy"><figcaption>CCTV 화면 — 채널을 넘기며 정상 · 이상을 보고</figcaption></figure>
+      <figure class="fig-mid"><img src="../assets/img/ins/cctv.jpg" alt="경비실 CCTV 모니터 화면 — CAM01 복도, 채널 넘기기와 정상·이상 보고 안내" width="1600" height="900" loading="lazy"><figcaption>CCTV 화면 — 채널을 넘기며 확인</figcaption></figure>
 
       <div class="cards wide">
         <div class="card">
@@ -338,7 +370,7 @@
     </section>
 
     <section id="ai">
-      <h2><span class="num">05 — Working with AI</span>AI와 일한 방식</h2>
+      <h2><span class="num">06 — Working with AI</span>AI와 일한 방식</h2>
       <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, 밤새 자동으로 돌린 QA 플레이까지 에디터 작업은 대부분 AI가 했습니다. 저는 무엇을 만들지와 어떤 숫자가 맞는지를 정하고, 결과를 받아들일지 판단했습니다.</p>
 
       <h3>에이전트를 나눠 쓴 방식</h3>
@@ -449,7 +481,7 @@
           <div class="anat-col ana">
             <h4>분석만</h4>
             <p>5번(조우를 놓치는 경우) — 구현 없이 분석만 받았고, AI는 이월 보정을 권했습니다.</p>
-            <p class="then">이어서 <span class="said">「5번 놓치는 경우 분석」</span>으로 다시 재게 했고, 이것이 고정 편성으로 이어졌습니다(<a href="#ts-schedule">06절</a>).</p>
+            <p class="then">이어서 <span class="said">「5번 놓치는 경우 분석」</span>으로 다시 재게 했고, 이것이 고정 편성으로 이어졌습니다(<a href="#ts-schedule">07절</a>).</p>
           </div>
         </div>
       </div>
@@ -459,16 +491,16 @@
         <table class="dtbl">
           <thead><tr><th>유형</th><th>AI 안 · 대상</th><th>제 판단</th><th>결과</th></tr></thead>
           <tbody>
-            <tr><td><span class="tag tag-yes">채택</span></td><td data-k="AI 안">시체 낙하를 2일차로 고정하고 강도를 낮추는 추천안</td><td data-k="제 판단"><q>강도를 낮춰서 조금 더 일찍</q></td><td data-k="결과">13종을 모두 본 회차가 늘어남(시뮬레이션, 수치는 <a href="#ts-schedule">06절 표</a>)</td></tr>
+            <tr><td><span class="tag tag-yes">채택</span></td><td data-k="AI 안">시체 낙하를 2일차로 고정하고 강도를 낮추는 추천안</td><td data-k="제 판단"><q>강도를 낮춰서 조금 더 일찍</q></td><td data-k="결과">13종을 모두 본 회차가 늘어남(시뮬레이션, 수치는 <a href="#ts-schedule">07절 표</a>)</td></tr>
             <tr><td><span class="tag">위임</span></td><td data-k="AI 안">QA 뒤 제가 결정할 항목을 추천과 함께 정리해 보고</td><td data-k="제 판단"><q>1,2,3을 추천한 대로 하고, 4의 권장부분도 처리해줘</q></td><td data-k="결과">추천안대로 반영하고 QA를 한 번 더</td></tr>
-            <tr><td><span class="tag tag-no">기각</span></td><td data-k="AI 안">못 본 조우를 다음 뽑기에 가산(이월)하고 차단 조건 면제 — 예상 75 → 85~90%</td><td data-k="제 판단">날짜마다 정해 둔 조우를 그날 보여 주는 기획 의도를 우선했습니다. <q>모든 연출에서 축 조건 제거. 날짜 편성 … 이월은 없어. 의도한 날짜에 무조건 목격해야 해</q></td><td data-k="결과">고정 날짜 편성으로 전환 (<a href="#ts-schedule">06절</a>)</td></tr>
+            <tr><td><span class="tag tag-no">기각</span></td><td data-k="AI 안">못 본 조우를 다음 뽑기에 가산(이월)하고 차단 조건 면제 — 예상 75 → 85~90%</td><td data-k="제 판단">날짜마다 정해 둔 조우를 그날 보여 주는 기획 의도를 우선했습니다. <q>모든 연출에서 축 조건 제거. 날짜 편성 … 이월은 없어. 의도한 날짜에 무조건 목격해야 해</q></td><td data-k="결과">고정 날짜 편성으로 전환 (<a href="#ts-schedule">07절</a>)</td></tr>
             <tr><td><span class="tag tag-back">채택 후 되돌림</span></td><td data-k="AI 안">고정 편성 변주 — 같은 날 순서 섞기 · 날마다 빈 칸 · 수칙을 어기면 다음 날 후속 조우</td><td data-k="제 판단"><q>축 조건을 제거하고 너무 고정이니 매력이 떨어진 느낌</q>이라 셋을 채택했다가, <q>후속 개념은 없애줘. 버그가 너무 많을 것 같네</q></td><td data-k="결과">후속은 두 번에 걸쳐 모두 빼고 순서 섞기 · 빈 칸만 남김</td></tr>
             <tr><td><span class="tag tag-back">되돌림</span></td><td data-k="AI 안">시야를 돌리면 창가 벽이 밝아지는 문제에 플레이어 카메라 오클루전 컬링 끄기를 먼저 적용(렌더 장당 약 +1ms)</td><td data-k="제 판단"><q>성능에 큰 문제가 생길 가능성이 있나?</q> → 대안으로 <q>달빛을 꺼보고 한번 비교해봐</q></td><td data-k="결과">컬링 끄기는 같은 작업 안에서 되돌림. 에디터 측정 렌더 장당 원래 4.4 · 컬링 끔 5.4 · 달빛 끔 3.5ms, 달빛 끔 채택(실내 11곳 × 12방향 화면 차이 0)</td></tr>
             <tr><td><span class="tag">폐기</span></td><td data-k="대상">AI와 따로 만들어 쓰던 디버그 콘솔</td><td data-k="제 판단"><q>우리 것은 폐지하고(가독성이 떨어짐) 진선님 것에 합쳐 줘</q></td><td data-k="결과">김진선 님 개발자 모드 한 곳으로 합침(합치는 방식은 제가 <q>진선님 파일에 통째로</q>를 고름)</td></tr>
           </tbody>
         </table>
       </div>
-      <p>창가 조명 문제는 제가 발견하고, 두 안을 같은 조건에서 비교하게 한 뒤 골랐습니다(<a href="#ts-schedule">06절</a> ③).</p>
+      <p>창가 조명 문제는 제가 발견하고, 두 안을 같은 조건에서 비교하게 한 뒤 골랐습니다(<a href="#ts-schedule">07절</a> ③).</p>
       <div class="note"><span class="kr-label">맡긴 결정도 있습니다</span>모든 값을 제가 정하지는 않았습니다. QA 뒤 결정할 항목만 따로 정리해 받아 위 표의 위임처럼 답했고, <span class="said">「결정이 필요한 것들을 너가 적절하게 판단해서 고쳐줘」</span>처럼 작은 결정을 AI 판단에 맡긴 때도 개정 기록에 그대로 남아 있습니다.</div>
 
       <h3>AI가 놓친 것을 다시 짚은 경우</h3>
@@ -497,7 +529,7 @@
     </section>
 
     <section id="ts-schedule">
-      <h2><span class="num">06 — Problem Solving</span>문제 해결 사례</h2>
+      <h2><span class="num">07 — Problem Solving</span>문제 해결 사례</h2>
       <h3 class="case-h">① 조우 편성 — 다시 재고 고정 날짜로</h3>
       <p class="lead">플레이테스트에서 공포 이벤트(조우)가 의도대로 나오지 않았습니다. 시뮬레이터는 미숙한 플레이어 판의 76%에 13종이 모두 배정됐다고 보여 줬지만, 「실제로 마주쳤는가」로 다시 재게 하자 33%뿐이었습니다. AI는 확률 보정을 제안했고, 저는 모든 플레이어가 보게 하려면 보장이 필요하다고 판단해 날짜별 고정 배치와 남은 이벤트가 있으면 밤이 끝나지 않는 장치로 바꿨습니다.</p>
       <div class="log">
@@ -508,7 +540,7 @@
           <dt>조정</dt><dd>날짜 흐름을 바꾸고, 시체 낙하를 2일차로 고정해 강도를 낮췄습니다(수치는 아래 표).</dd>
           <dt>다시 재기</dt><dd>플레이테스트에서 의도한 조우가 종종 나오지 않았습니다. 그래서 <span class="said">「5번 놓치는 경우 분석」</span>을 지시해, 편성됐는가가 아니라 실제로 마주쳤는가로 다시 세게 했습니다. 미숙은 <b>33%</b>(편성 기준 76%)였습니다. 시뮬레이션에서는 위험한 분위기 때문에 늦은 조우가 꺼졌고, 시뮬레이션 밖에서는 방아쇠(공간 들어감 · 머묾)를 그 시간창에 못 맞추거나 조기 퇴근하면 조우를 놓쳤습니다. 직접 플레이에서는 조우를 보기 전에 퇴근 트리거가 켜지거나 플레이어가 움직이지 않는 사이 시간이 흘러 밤이 끝났습니다.</dd>
           <dt>다시 보고</dt><dd>이후 직접 플레이에서도 같은 일이 있었습니다. <span class="said">「… 수칙과 지시로 트리거는 된 것 같은데 연출이 안 나왔어」</span> AI 분석으로 조기 퇴근이 남은 조우를 지워 버리는 것 등을 찾았고, 남은 조우가 있으면 조기 퇴근부터 막도록 고쳤습니다.</dd>
-          <dt>판단</dt><dd>AI의 이월 보정안 대신, 축 조건을 없애고 날마다 정해진 조우를 보여 주는 <b>고정 날짜 편성</b>으로 바꿨습니다. 03:30에 남은 조우가 있으면 시계를 붙들어, 그날의 조우가 끝나기 전에는 다음 날로 넘어가지 않게 했습니다. 이후 AI 변주안 중 같은 날 순서 섞기 · 날마다 빈 칸만 남겼습니다(<a href="#ai">05절 판단 기록</a>).</dd>
+          <dt>판단</dt><dd>AI의 이월 보정안 대신, 축 조건을 없애고 날마다 정해진 조우를 보여 주는 <b>고정 날짜 편성</b>으로 바꿨습니다. 03:30에 남은 조우가 있으면 시계를 붙들어, 그날의 조우가 끝나기 전에는 다음 날로 넘어가지 않게 했습니다. 이후 AI 변주안 중 같은 날 순서 섞기 · 날마다 빈 칸만 남겼습니다(<a href="#ai">06절 판단 기록</a>).</dd>
           <dt>검증</dt><dd>PlayScene에서 4 · 5일차를 진행해 날짜표대로 나오는지 확인하고 편성 테스트로 묶었습니다.</dd>
           <dt class="limit">한계</dt><dd>모든 수치는 가상 플레이어 시뮬레이션이며 실제 플레이 데이터가 아닙니다. 고정 편성 뒤의 목격률은 시뮬레이션으로 다시 재지 않았습니다.</dd>
         </dl>
@@ -548,7 +580,7 @@
         <dl>
           <dt>발견</dt><dd>시야를 돌리면 창가 벽이 밝아지는 것을 찾았습니다. 6° 간격으로 한 바퀴 렌더해 잰 화면 평균 밝기가 특정 각도에서 48 → 71로 튀었습니다(측정은 AI).</dd>
           <dt>원인</dt><dd>오클루전 컬링이 달빛 그림자 캐스터도 시야 기준으로 걸러 냈습니다(진단은 AI).</dd>
-          <dt>판단</dt><dd>AI는 플레이어 카메라의 컬링 끄기를 먼저 적용했습니다. <span class="said">「성능에 큰 문제가 생길 가능성이 있나?」</span>, <span class="said">「달빛을 꺼보고 한번 비교해봐」</span>로 두 안을 같은 조건에서 재게 했고, 에디터 측정 렌더 장당 원래 4.4 · 컬링 끔 5.4 · 달빛 끔 3.5ms라 달빛 끔을 골랐습니다(실내 11곳 × 12방향 화면 차이 0). 판단 기록은 <a href="#ai">05절</a>에도 있습니다.</dd>
+          <dt>판단</dt><dd>AI는 플레이어 카메라의 컬링 끄기를 먼저 적용했습니다. <span class="said">「성능에 큰 문제가 생길 가능성이 있나?」</span>, <span class="said">「달빛을 꺼보고 한번 비교해봐」</span>로 두 안을 같은 조건에서 재게 했고, 에디터 측정 렌더 장당 원래 4.4 · 컬링 끔 5.4 · 달빛 끔 3.5ms라 달빛 끔을 골랐습니다(실내 11곳 × 12방향 화면 차이 0). 판단 기록은 <a href="#ai">06절</a>에도 있습니다.</dd>
         </dl>
       </div>
 
@@ -577,7 +609,7 @@
     </section>
 
     <section id="limits">
-      <h2><span class="num">07 — Limits</span>한계와 다시 만든다면</h2>
+      <h2><span class="num">08 — Limits</span>한계와 다시 만든다면</h2>
       <div class="tbl">
         <table>
           <thead><tr><th>한계</th><th>무엇이 부족했나</th><th>다시 한다면</th></tr></thead>
@@ -598,6 +630,6 @@
   <a class="no-print" href="code-dungeon.html">다음 프로젝트 · Code Dungeon →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023c"></script>
+<script src="../assets/js/site.js?v=20261023d"></script>
 </body>
 </html>
