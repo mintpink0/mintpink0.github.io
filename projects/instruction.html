@@ -45,34 +45,25 @@
 <div class="layout">
   <nav class="toc" aria-label="목차">
     <span class="label">목차</span>
-    <a data-n="01" href="#summary">요점</a>
-    <a data-n="02" href="#game">게임과 역할</a>
-    <a data-n="03" href="#arch">구조</a>
-    <a data-n="04" href="#ts-build">빌드에서만 난 문제</a>
-    <a data-n="05" href="#impl">구현 하이라이트</a>
-    <a data-n="06" href="#ai">AI와 일한 방식</a>
-    <a data-n="07" href="#ts-schedule">조우 편성 다시 재기</a>
-    <a data-n="08" href="#limits">한계와 다시 만든다면</a>
+    <a data-n="01" href="#game">게임과 역할</a>
+    <a data-n="02" href="#arch">구조</a>
+    <a data-n="03" href="#ts-build">빌드에서만 난 문제</a>
+    <a data-n="04" href="#impl">구현 하이라이트</a>
+    <a data-n="05" href="#ai">AI와 일한 방식</a>
+    <a data-n="06" href="#ts-schedule">조우 편성 다시 재기</a>
+    <a data-n="07" href="#limits">한계와 다시 만든다면</a>
   </nav>
 
   <main class="content">
 
-    <section id="summary">
-      <h2><span class="num">01 — Summary</span>이 페이지의 요점</h2>
-      <ul>
-        <li><b>규칙과 화면을 나눈 구조.</b> 판정 로직을 Unity를 모르는 일반 C#으로 두어, 게임을 켜지 않고 AI가 작성한 <b>EditMode 테스트 666개</b>(검증 기준은 제가 정함)와 수백 판 단위 밸런스 시뮬레이션을 돌렸습니다.</li>
-        <li><b>빌드에서만 난 문제.</b> 에디터에서는 보이지 않던 문제 2건을 고쳤습니다. 소년 건은 빌드에서 직접 발견해 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</li>
-        <li><b>AI 제안을 고르고 되돌린 기록.</b> 조우 편성 보정안은 기획 의도와 맞지 않아 기각했고, 먼저 적용된 조명 해결안은 같은 조건에서 비교해 되돌렸습니다. AI 추천대로 정한 작은 결정도 함께 적었습니다.</li>
-      </ul>
+
+    <section id="game">
+      <h2><span class="num">01 — Game & Role</span>게임과 제 역할</h2>
+      <p class="lead">야간 경비원이 되어 태블릿의 근무수칙을 지키며 5일 동안 학교를 순찰합니다. 하루는 출근 → 회사 문자 지시 → 점검 → 몬스터 조우 → 판정 → 퇴근 · 근무일지 순서로 흐릅니다.</p>
       <a class="video no-print" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">
         <img src="../assets/img/ins/video-poster.jpg" alt="" width="1280" height="720" loading="lazy">
         <span class="play"><span class="play-icon" aria-hidden="true"></span>INSTRUCTION 플레이 영상 · YouTube</span>
       </a>
-    </section>
-
-    <section id="game">
-      <h2><span class="num">02 — Game & Role</span>게임과 제 역할</h2>
-      <p class="lead">야간 경비원이 되어 태블릿의 근무수칙을 지키며 5일 동안 학교를 순찰합니다. 하루는 출근 → 회사 문자 지시 → 점검 → 몬스터 조우 → 판정 → 퇴근 · 근무일지 순서로 흐릅니다.</p>
       <p>수칙을 어기면 보이지 않는 <b>청각 · 조도 · 배치</b> 축이 오르고, 오를수록 학교의 소리 · 조명 · 배치가 변합니다. 한 축이라도 끝까지 오르면 붙잡혀 그 밤을 다시 시작합니다. 수칙을 잘 지키면 <b>신뢰</b>가 오르는데, 신뢰가 높을수록 수칙서 글자가 바뀌는 변조, 수칙과 반대인 회사 문자(역설), 두 수칙이 부딪히는 딜레마가 늘어 숙련된 플레이어일수록 수칙 자체를 의심하게 됩니다.</p>
       <div class="figs figs-3 wide">
         <figure><img src="../assets/img/ins/tablet-rules.jpg" alt="태블릿 근무수칙 화면" width="443" height="480" loading="lazy"><figcaption>근무수칙 (태블릿 UI: 김진선 님)</figcaption></figure>
@@ -101,7 +92,7 @@
     </section>
 
     <section id="arch">
-      <h2><span class="num">03 — Architecture</span>구조 — 규칙(Core)과 화면(Flow)</h2>
+      <h2><span class="num">02 — Architecture</span>구조 — 규칙(Core)과 화면(Flow)</h2>
       <p class="lead">판정 로직은 Unity를 모르는 일반 C#으로, 화면에 그리는 일은 MonoBehaviour로 나눴습니다. Core는 Flow를 모르게 asmdef로 막고, Core→Flow는 EventBus 이벤트로만 알립니다.</p>
       <p>구조는 AI에게 여러 안을 받은 뒤, 판정 시스템이 없어도 밖에서 축 값을 넣어 볼 수 있는 안으로 골라 달라고 했습니다. 근무 씬이 저장소에 처음 올라온 9월 17일보다 앞서, AI가 만든 축 읽기 인터페이스(<code>IFearAxisReader</code>)와 그것을 구현한 인스펙터 슬라이더로 테스트 씬에서 조도 · 청각 변화를 먼저 확인했습니다(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/583b914" target="_blank" rel="noopener">커밋</a>). 테스트 씬과 슬라이더는 10월 3일에 지웠고(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/ebf74d6" target="_blank" rel="noopener">커밋</a>), 인터페이스는 지금도 실제 축 시스템이 구현합니다.</p>
       <div class="arch wide">
@@ -130,7 +121,7 @@
     </section>
 
     <section id="ts-build">
-      <h2><span class="num">04 — Build</span>빌드에서만 난 문제</h2>
+      <h2><span class="num">03 — Build</span>빌드에서만 난 문제</h2>
       <p class="lead">두 건 모두 에디터에서는 보이지 않았습니다. 소년 건은 제가 빌드를 플레이하다 발견해 릴리스 · 개발 빌드 모두에서 안 나온다고 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</p>
 
       <div class="log">
@@ -155,7 +146,7 @@
     </section>
 
     <section id="impl">
-      <h2><span class="num">05 — Highlights</span>구현 하이라이트</h2>
+      <h2><span class="num">04 — Highlights</span>구현 하이라이트</h2>
       <p class="lead">판정 결과를 화면으로 옮기는 부분입니다. 무엇이 바뀌어야 하는지와 기준은 제가 정했고, 코드는 대부분 AI가 작성했습니다.</p>
 
       <h3>구간이 오르면 화면에서 바뀌는 것</h3>
@@ -248,7 +239,7 @@
     </section>
 
     <section id="ai">
-      <h2><span class="num">06 — Working with AI</span>AI와 일한 방식</h2>
+      <h2><span class="num">05 — Working with AI</span>AI와 일한 방식</h2>
       <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, 밤새 자동으로 돌린 QA 플레이까지 에디터 작업은 대부분 AI가 했습니다. 저는 무엇을 만들지와 어떤 숫자가 맞는지를 정하고, 결과를 받아들일지 판단했습니다.</p>
 
       <h3>에이전트를 나눠 쓴 방식</h3>
@@ -359,7 +350,7 @@
           <div class="anat-col ana">
             <h4>분석만</h4>
             <p>5번(조우를 놓치는 경우) — 구현 없이 분석만 받았고, AI는 이월 보정을 권했습니다.</p>
-            <p class="then">이어서 <span class="said">「5번 놓치는 경우 분석」</span>으로 다시 재게 했고, 이것이 고정 편성으로 이어졌습니다(<a href="#ts-schedule">07절</a>).</p>
+            <p class="then">이어서 <span class="said">「5번 놓치는 경우 분석」</span>으로 다시 재게 했고, 이것이 고정 편성으로 이어졌습니다(<a href="#ts-schedule">06절</a>).</p>
           </div>
         </div>
       </div>
@@ -369,9 +360,9 @@
         <table class="dtbl">
           <thead><tr><th>유형</th><th>AI 안 · 대상</th><th>제 판단</th><th>결과</th></tr></thead>
           <tbody>
-            <tr><td><span class="tag tag-yes">채택</span></td><td data-k="AI 안">시체 낙하를 2일차로 고정하고 강도를 낮추는 추천안</td><td data-k="제 판단"><q>강도를 낮춰서 조금 더 일찍</q></td><td data-k="결과">13종을 모두 본 회차가 늘어남(시뮬레이션, 수치는 <a href="#ts-schedule">07절 표</a>)</td></tr>
+            <tr><td><span class="tag tag-yes">채택</span></td><td data-k="AI 안">시체 낙하를 2일차로 고정하고 강도를 낮추는 추천안</td><td data-k="제 판단"><q>강도를 낮춰서 조금 더 일찍</q></td><td data-k="결과">13종을 모두 본 회차가 늘어남(시뮬레이션, 수치는 <a href="#ts-schedule">06절 표</a>)</td></tr>
             <tr><td><span class="tag">위임</span></td><td data-k="AI 안">QA 뒤 제가 결정할 항목을 추천과 함께 정리해 보고</td><td data-k="제 판단"><q>1,2,3을 추천한 대로 하고, 4의 권장부분도 처리해줘</q></td><td data-k="결과">추천안대로 반영하고 QA를 한 번 더</td></tr>
-            <tr><td><span class="tag tag-no">기각</span></td><td data-k="AI 안">못 본 조우를 다음 뽑기에 가산(이월)하고 차단 조건 면제 — 예상 75 → 85~90%</td><td data-k="제 판단">날짜마다 정해 둔 조우를 그날 보여 주는 기획 의도를 우선했습니다. <q>모든 연출에서 축 조건 제거. 날짜 편성 … 이월은 없어. 의도한 날짜에 무조건 목격해야 해</q></td><td data-k="결과">고정 날짜 편성으로 전환 (<a href="#ts-schedule">07절</a>)</td></tr>
+            <tr><td><span class="tag tag-no">기각</span></td><td data-k="AI 안">못 본 조우를 다음 뽑기에 가산(이월)하고 차단 조건 면제 — 예상 75 → 85~90%</td><td data-k="제 판단">날짜마다 정해 둔 조우를 그날 보여 주는 기획 의도를 우선했습니다. <q>모든 연출에서 축 조건 제거. 날짜 편성 … 이월은 없어. 의도한 날짜에 무조건 목격해야 해</q></td><td data-k="결과">고정 날짜 편성으로 전환 (<a href="#ts-schedule">06절</a>)</td></tr>
             <tr><td><span class="tag tag-back">채택 후 되돌림</span></td><td data-k="AI 안">고정 편성 변주 — 같은 날 순서 섞기 · 날마다 빈 칸 · 수칙을 어기면 다음 날 후속 조우</td><td data-k="제 판단"><q>축 조건을 제거하고 너무 고정이니 매력이 떨어진 느낌</q>이라 셋을 채택했다가, <q>후속 개념은 없애줘. 버그가 너무 많을 것 같네</q></td><td data-k="결과">후속은 두 번에 걸쳐 모두 빼고 순서 섞기 · 빈 칸만 남김</td></tr>
             <tr><td><span class="tag tag-back">되돌림</span></td><td data-k="AI 안">시야를 돌리면 창가 벽이 밝아지는 문제에 플레이어 카메라 오클루전 컬링 끄기를 먼저 적용(렌더 장당 약 +1ms)</td><td data-k="제 판단"><q>성능에 큰 문제가 생길 가능성이 있나?</q> → 대안으로 <q>달빛을 꺼보고 한번 비교해봐</q></td><td data-k="결과">컬링 끄기는 같은 작업 안에서 되돌림. 에디터 측정 렌더 장당 원래 4.4 · 컬링 끔 5.4 · 달빛 끔 3.5ms, 달빛 끔 채택(실내 11곳 × 12방향 화면 차이 0)</td></tr>
             <tr><td><span class="tag">폐기</span></td><td data-k="대상">AI와 따로 만들어 쓰던 디버그 콘솔</td><td data-k="제 판단"><q>우리 것은 폐지하고(가독성이 떨어짐) 진선님 것에 합쳐 줘</q></td><td data-k="결과">김진선 님 개발자 모드 한 곳으로 합침(합치는 방식은 제가 <q>진선님 파일에 통째로</q>를 고름)</td></tr>
@@ -416,7 +407,7 @@
     </section>
 
     <section id="ts-schedule">
-      <h2><span class="num">07 — Troubleshooting</span>조우 편성 — 다시 재고 고정 날짜로</h2>
+      <h2><span class="num">06 — Troubleshooting</span>조우 편성 — 다시 재고 고정 날짜로</h2>
       <p class="lead">플레이테스트에서 공포 이벤트(조우)가 의도대로 나오지 않았습니다. 시뮬레이터는 미숙한 플레이어 판의 76%에 13종이 모두 배정됐다고 보여 줬지만, 「실제로 마주쳤는가」로 다시 재게 하자 33%뿐이었습니다. AI는 확률 보정을 제안했고, 저는 모든 플레이어가 보게 하려면 보장이 필요하다고 판단해 날짜별 고정 배치와 남은 이벤트가 있으면 밤이 끝나지 않는 장치로 바꿨습니다.</p>
       <div class="log">
         <div class="log-head"><h3>미숙한 플레이어가 조우를 다 못 보는 문제</h3><span class="label">개발 후반 · 시뮬레이션</span></div>
@@ -426,7 +417,7 @@
           <dt>조정</dt><dd>날짜 흐름을 바꾸고, 시체 낙하를 2일차로 고정해 강도를 낮췄습니다(수치는 아래 표).</dd>
           <dt>다시 재기</dt><dd>플레이테스트에서 의도한 조우가 종종 나오지 않았습니다. 그래서 <span class="said">「5번 놓치는 경우 분석」</span>을 지시해, 편성됐는가가 아니라 실제로 마주쳤는가로 다시 세게 했습니다. 미숙은 <b>33%</b>(편성 기준 76%)였습니다. 시뮬레이션에서는 위험한 분위기 때문에 늦은 조우가 꺼졌고, 시뮬레이션 밖에서는 방아쇠(공간 들어감 · 머묾)를 그 시간창에 못 맞추거나 조기 퇴근하면 조우를 놓쳤습니다. 직접 플레이에서는 조우를 보기 전에 퇴근 트리거가 켜지거나 플레이어가 움직이지 않는 사이 시간이 흘러 밤이 끝났습니다.</dd>
           <dt>다시 보고</dt><dd>이후 직접 플레이에서도 같은 일이 있었습니다. <span class="said">「… 수칙과 지시로 트리거는 된 것 같은데 연출이 안 나왔어」</span> AI가 분석해 조기 퇴근이 남은 조우를 지워 버리는 것 등을 확인했고, 남은 조우가 있으면 조기 퇴근부터 막도록 고쳤습니다.</dd>
-          <dt>판단</dt><dd>AI의 이월 보정안 대신, 축 조건을 없애고 날마다 정해진 조우를 보여 주는 <b>고정 날짜 편성</b>으로 바꿨습니다. 03:30에 남은 조우가 있으면 시계를 붙들어, 그날의 조우가 끝나기 전에는 다음 날로 넘어가지 않게 했습니다. 이후 AI 변주안 중 같은 날 순서 섞기 · 날마다 빈 칸만 남겼습니다(<a href="#ai">06절 판단 기록</a>).</dd>
+          <dt>판단</dt><dd>AI의 이월 보정안 대신, 축 조건을 없애고 날마다 정해진 조우를 보여 주는 <b>고정 날짜 편성</b>으로 바꿨습니다. 03:30에 남은 조우가 있으면 시계를 붙들어, 그날의 조우가 끝나기 전에는 다음 날로 넘어가지 않게 했습니다. 이후 AI 변주안 중 같은 날 순서 섞기 · 날마다 빈 칸만 남겼습니다(<a href="#ai">05절 판단 기록</a>).</dd>
           <dt>검증</dt><dd>PlayScene에서 4 · 5일차를 진행해 날짜표대로 나오는지 확인하고 편성 테스트로 묶었습니다.</dd>
           <dt class="limit">한계</dt><dd>모든 수치는 가상 플레이어 시뮬레이션이며 실제 플레이 데이터가 아닙니다. 고정 편성 뒤의 목격률은 시뮬레이션으로 다시 재지 않았습니다.</dd>
         </dl>
@@ -451,7 +442,7 @@
     </section>
 
     <section id="limits">
-      <h2><span class="num">08 — Limits</span>한계와 다시 만든다면</h2>
+      <h2><span class="num">07 — Limits</span>한계와 다시 만든다면</h2>
       <div class="tbl">
         <table>
           <thead><tr><th>한계</th><th>무엇이 부족했나</th><th>다시 한다면</th></tr></thead>

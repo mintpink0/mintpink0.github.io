@@ -37,27 +37,18 @@
 <div class="layout">
   <nav class="toc" aria-label="목차">
     <span class="label">목차</span>
-    <a data-n="01" href="#summary">요점</a>
-    <a data-n="02" href="#game">게임</a>
-    <a data-n="03" href="#tess">테셀레이션 지형</a>
-    <a data-n="04" href="#mirror">반사 구와 거울 차원</a>
-    <a data-n="05" href="#combat">적과 전투</a>
-    <a data-n="06" href="#limits">한계와 다시 만든다면</a>
+    <a data-n="01" href="#game">게임</a>
+    <a data-n="02" href="#tess">테셀레이션 지형</a>
+    <a data-n="03" href="#mirror">반사 구와 거울 차원</a>
+    <a data-n="04" href="#combat">적과 전투</a>
+    <a data-n="05" href="#limits">한계와 다시 만든다면</a>
   </nav>
 
   <main class="content">
 
-    <section id="summary">
-      <h2><span class="num">01 — Summary</span>이 페이지의 요점</h2>
-      <ul>
-        <li><b>만든 것.</b> 높이맵 지형을 카메라 거리에 따라 GPU에서 쪼개고, 주변을 실시간으로 비추는 반사 구를 둔 탱크 게임입니다. 적 10대 중 2대를 부숴 200점을 내면 이깁니다.</li>
-        <li><b>거울 차원.</b> 반사 구에 닿으면 벽 6장이 모두 거울인 방으로 이동합니다. 벽마다 렌더 타깃을 따로 두어 벽끼리 서로를 비추게 했습니다. 대신 이 모드에서는 프레임마다 GPU를 6번 기다립니다.</li>
-        <li><b>경계.</b> 렌더링 프레임워크, 베지어 패치 틀, 동적 큐브 매핑, 스프라이트 애니메이션은 수업 예제를 바탕으로 했습니다. 거울 차원, 적 AI와 파괴 연출, 충돌 반응, 점수, 테셀레이션 수치와 노멀 보간은 제가 더했습니다.</li>
-      </ul>
-    </section>
 
     <section id="game">
-      <h2><span class="num">02 — Game</span>게임</h2>
+      <h2><span class="num">01 — Game</span>게임</h2>
       <p class="lead">탱크를 몰고 지형과 물 위를 다니며 적을 쏩니다. 적 하나를 부수면 100점이고, 200점이 되면 점수 자리에 「YOU WIN!」이 뜹니다.</p>
       <div class="figs wide">
         <figure><img src="../assets/img/dx/terrain.jpg" alt="지형 와이어프레임을 켠 화면. 오른쪽에 큰 반사 구가 있고 가운데에 노란 플레이어 탱크와 적 트럭이 보인다." width="1168" height="720" loading="lazy"><figcaption>F4로 지형 와이어프레임을 켠 화면입니다. 오른쪽 큰 구가 반사 구입니다.</figcaption></figure>
@@ -115,7 +106,7 @@
     </section>
 
     <section id="tess">
-      <h2><span class="num">03 — Tessellation</span>테셀레이션 지형</h2>
+      <h2><span class="num">02 — Tessellation</span>테셀레이션 지형</h2>
       <p class="lead">257×257 높이맵을 패치 441개로 나눠 GPU에서 쪼갭니다. 수업 예제의 베지어 패치 틀을 바탕으로 했고, 거리별 분할 수치와 노멀 보간을 제가 더했습니다.</p>
 
       <h3>패치 구조</h3>
@@ -250,7 +241,7 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
     </section>
 
     <section id="mirror">
-      <h2><span class="num">04 — Reflection</span>반사 구와 거울 차원</h2>
+      <h2><span class="num">03 — Reflection</span>반사 구와 거울 차원</h2>
       <p class="lead">일반 차원에는 주변을 비추는 반사 구가 있고, 구에 닿으면 사방이 거울인 방으로 이동합니다. 반사 구는 수업 예제의 동적 큐브 매핑을 바탕으로 했고, 거울 방은 제가 더했습니다.</p>
 
       <h3>반사 구</h3>
@@ -258,7 +249,7 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
 
       <h3>거울 방</h3>
       <p>방은 한 변이 약 200인 상자이고 벽 6장이 모두 거울입니다. 큐브맵 한 장 대신 벽마다 1024×1024 2D 렌더 타깃을 하나씩 둡니다. 벽 위치에 FOV 85° 카메라를 두고 방 안쪽을 그린 뒤, 벽 셰이더(<code>Environment_RectPS</code>)가 반사 벡터를 그 벽 면의 UV로 바꿔 샘플링합니다.</p>
-      <p>벽을 그릴 때 다른 벽에는 이미 그려 둔 결과가 붙어 있습니다. 그래서 프레임이 지날 때마다 반사 속 반사가 한 겹씩 깊어지고, 탱크가 여러 겹으로 보입니다(02절 사진). 거울 방에서는 하늘, 플레이어, 포구 화염, 벽만 그리고 지형 · 적 · 나무와 충돌 검사는 건너뜁니다.</p>
+      <p>벽을 그릴 때 다른 벽에는 이미 그려 둔 결과가 붙어 있습니다. 그래서 프레임이 지날 때마다 반사 속 반사가 한 겹씩 깊어지고, 탱크가 여러 겹으로 보입니다(01절 사진). 거울 방에서는 하늘, 플레이어, 포구 화염, 벽만 그리고 지형 · 적 · 나무와 충돌 검사는 건너뜁니다.</p>
 
       <figure class="dg wide">
         <svg class="dg-wide" viewBox="0 0 760 336" role="img" aria-label="반사 구와 거울 차원 그림. 왼쪽 일반 차원에는 큐브맵 256, FOV 90도 카메라 6대로 주변을 비추는 반사 구가 있습니다. 구의 충돌 구 반지름 95에 닿으면 오른쪽 거울 방 중앙 높이 162로 이동합니다. 거울 방은 위에서 본 정사각형으로, 벽마다 1024 렌더 타깃과 FOV 85도 카메라가 안쪽을 봅니다. 옆벽 4장에 닿으면 일반 차원의 지형 위 높이 300으로 돌아갑니다.">
@@ -372,7 +363,7 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
     </section>
 
     <section id="combat">
-      <h2><span class="num">05 — Combat</span>적과 전투</h2>
+      <h2><span class="num">04 — Combat</span>적과 전투</h2>
       <p class="lead">적 AI, 파괴 연출, 충돌 반응, 점수는 제가 더한 부분입니다. 지형 높이를 따라가는 방식은 수업 예제의 콜백을 바탕으로 했습니다.</p>
       <div class="cards wide">
         <div class="card">
@@ -424,17 +415,17 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
     </section>
 
     <section id="limits">
-      <h2><span class="num">06 — Limits</span>한계와 다시 만든다면</h2>
+      <h2><span class="num">05 — Limits</span>한계와 다시 만든다면</h2>
       <div class="tbl wide stack-tbl">
         <table>
           <thead><tr><th>문제</th><th>영향</th><th>다시 만든다면</th></tr></thead>
           <tbody>
-            <tr><td>테셀레이션 계수 순서</td><td data-k="영향">[0] · [1]에 들어가는 모서리가 바뀌어 거리 기반 모드에서 왼쪽 · 위 모서리 계수가 이웃과 다를 수 있습니다. 틈은 화면에서 확인하지 않았습니다(<a href="#tess">03절</a>).</td><td data-k="다시 만든다면">[0]에 0–20, [1]에 0–4 중점을 넣고 F4 와이어프레임으로 경계를 확인</td></tr>
+            <tr><td>테셀레이션 계수 순서</td><td data-k="영향">[0] · [1]에 들어가는 모서리가 바뀌어 거리 기반 모드에서 왼쪽 · 위 모서리 계수가 이웃과 다를 수 있습니다. 틈은 화면에서 확인하지 않았습니다(<a href="#tess">02절</a>).</td><td data-k="다시 만든다면">[0]에 0–20, [1]에 0–4 중점을 넣고 F4 와이어프레임으로 경계를 확인</td></tr>
             <tr><td>노멀 입력 2성분</td><td data-k="영향">테셀레이션 입력 레이아웃의 NORMAL이 <code>R32G32_FLOAT</code>라 z가 0으로 들어옵니다. z 방향 기울기가 지형 조명에 반영되지 않습니다.</td><td data-k="다시 만든다면"><code>R32G32B32_FLOAT</code>로 바꾸기</td></tr>
             <tr><td>배회 타이머 공유</td><td data-k="영향">타이머가 함수 안 <code>static</code>이라 모든 적이 하나를 함께 씁니다. 적마다 시간을 더해 타이머가 적 수만큼 빨리 차고, 찰 때 그 순간 처리 중인 적 하나만 방향을 바꿉니다. 회전도 늘 한쪽으로만 돕니다.</td><td data-k="다시 만든다면">타이머를 적마다 멤버로 두고, 목표 각과의 차이 부호대로 회전</td></tr>
             <tr><td>거울 모드 GPU 대기 6번</td><td data-k="영향">1024² 벽 6장을 따로 제출하고 매번 기다려 CPU와 GPU가 번갈아 쉽니다.</td><td data-k="다시 만든다면">벽 6장을 커맨드 리스트 하나로 묶어 한 번 제출, 해상도를 낮추거나 프레임마다 벽 몇 장씩 나눠 갱신</td></tr>
             <tr><td>총알 1발</td><td data-k="영향">총알이 사라질 때까지 다시 쏠 수 없습니다.</td><td data-k="다시 만든다면">풀을 늘리고 발사 간격을 따로 관리</td></tr>
-            <tr><td>프레임 비용 미측정</td><td data-k="영향">일반 · 거울 모드의 프레임 시간을 재지 않았습니다. 04절의 횟수와 픽셀 수는 코드로 센 값입니다.</td><td data-k="다시 만든다면">GPU 타임스탬프 쿼리로 모드별 패스 시간을 재고 비교</td></tr>
+            <tr><td>프레임 비용 미측정</td><td data-k="영향">일반 · 거울 모드의 프레임 시간을 재지 않았습니다. 03절의 횟수와 픽셀 수는 코드로 센 값입니다.</td><td data-k="다시 만든다면">GPU 타임스탬프 쿼리로 모드별 패스 시간을 재고 비교</td></tr>
           </tbody>
         </table>
       </div>
