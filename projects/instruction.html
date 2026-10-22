@@ -60,8 +60,8 @@
     <section id="summary">
       <h2><span class="num">01 — Summary</span>이 페이지의 요점</h2>
       <ul>
-        <li><b>규칙과 화면을 나눈 구조.</b> 판정 로직을 Unity를 모르는 일반 C#으로 두어, 게임을 켜지 않고 <b>EditMode 테스트 666개</b>와 수백 판 단위 밸런스 시뮬레이션을 돌렸습니다.</li>
-        <li><b>빌드에서만 난 문제.</b> 에디터에서는 보이지 않던 문제 3건을 고쳤습니다. 두 건은 빌드에서 직접 발견해 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다. 그중 한 건은 근본 원인을 고치지 않고 남겼고, 그 한계도 적었습니다.</li>
+        <li><b>규칙과 화면을 나눈 구조.</b> 판정 로직을 Unity를 모르는 일반 C#으로 두어, 게임을 켜지 않고 AI가 작성한 <b>EditMode 테스트 666개</b>(검증 기준은 제가 정함)와 수백 판 단위 밸런스 시뮬레이션을 돌렸습니다.</li>
+        <li><b>빌드에서만 난 문제.</b> 에디터에서는 보이지 않던 문제 2건을 고쳤습니다. 소년 건은 빌드에서 직접 발견해 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</li>
         <li><b>AI 제안을 고르고 되돌린 기록.</b> 조우 편성 보정안은 기획 의도와 맞지 않아 기각했고, 먼저 적용된 조명 해결안은 같은 조건에서 비교해 되돌렸습니다. AI 추천대로 정한 작은 결정도 함께 적었습니다.</li>
       </ul>
       <a class="video no-print" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">
@@ -94,7 +94,7 @@
       </div>
       <p>프로그래머 둘은 <b>판정 · 런타임 연동</b>(저)과 <b>조작 · UI · 컷신</b>(김진선 님)으로 나눴습니다. 김진선 님이 무엇을 어떻게 보여 줄지(연출 프리셋, 컷신, 화면 효과, UI)를 만들었고, 저는 판정과 언제 · 어디서 무엇을 부를지(디렉터 · 편성), 그리고 판정 결과에 따라 조명 · CCTV · 조우 몬스터를 움직이는 코드를 맡았습니다. 서로의 파일은 고치지 않기로 정하고, 두 파트는 이벤트(<code>EventBus</code>)와 공개 API로 연결했습니다. 예외는 두 번입니다. 디버그 화면을 하나로 합칠 때 제 결정으로 김진선 님 개발자 모드 파일에 직접 합쳤고, 공개 API가 없던 근무 종료 시각은 <code>GameTime</code>의 비공개 필드를 리플렉션으로 바꿨습니다(<code>NightRunDriver.MatchShiftEnd</code>). 다시 한다면 API를 요청하겠습니다.</p>
       <ul>
-        <li><b>고치지 않고 확장하기.</b> 김진선 님의 1인칭 조작 코드는 그대로 두고 실행 순서 앞뒤에서 감도를 보정했고, 사망 컷신 Timeline도 그대로 둔 채 재생되는 인스턴스만 보정했습니다.</li>
+        <li><b>고치지 않고 확장하기.</b> 김진선 님의 사망 컷신 Timeline은 그대로 둔 채 재생되는 인스턴스만 보정했습니다.</li>
         <li><b>씬 충돌 줄이기.</b> 근무 씬 전용 컴포넌트는 씬 파일 대신 실행 시 코드로 붙여(<code>RuntimeInitializeOnLoadMethod</code>) 씬 병합 충돌과 Git LFS 잠금 대기를 줄였습니다.</li>
         <li><b>아트와 병렬로.</b> 모델이 확정되기 전에는 대역(임시 모델, Stand-in)으로 연출을 먼저 만들고, 모델이 오면 파일만 교체했습니다.</li>
       </ul>
@@ -131,31 +131,7 @@
 
     <section id="ts-build">
       <h2><span class="num">04 — Build</span>빌드에서만 난 문제</h2>
-      <p class="lead">세 건 모두 에디터에서는 보이지 않았습니다. 두 건은 제가 빌드를 플레이하다 발견해 보고했고(소년 건은 릴리스 · 개발 빌드 모두에서 안 나온다고 좁혀서), 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</p>
-
-      <div class="log">
-        <div class="log-head"><h3>시점이 가끔 크게 휙 꺾임</h3><span class="label">개발 후반 · 직접 발견</span></div>
-        <dl>
-          <dt>발견</dt><dd>빌드를 직접 플레이하다 발견했습니다. <span class="said">「마우스에 뭔가 뚝 뚝 끊기면서 확 꺾이는 현상이 조금씩 있어」</span></dd>
-          <dt>원인</dt><dd>1인칭 조작 코드(김진선 님 담당)는 <code>회전 = 마우스 이동 × Time.deltaTime × 감도</code>였습니다. 마우스 이동(<code>Input.GetAxis</code>)은 이미 그 프레임 동안 쌓인 양이라 프레임 시간이 두 번 곱해져, 끊긴 프레임의 회전은 프레임 시간의 제곱으로 커졌습니다. 빌드는 프레임 제한이 없어(수직 동기 0) 보통 프레임이 수 ms였고, 20–50ms 끊김도 평소의 몇 배가 됐습니다.</dd>
-          <dt>1차 시도</dt><dd>프레임 시간 상한(1/20초)을 걸었지만 에디터 기준 값이라 빌드의 작은 끊김을 잡지 못했습니다.</dd>
-          <dt>해결</dt><dd><span><code>LookSpikeGuard</code>가 조작 코드보다 먼저(실행 순서 −200) 돌며, 최근 「보통 프레임 시간」을 느린 평균으로 따라가고 이번 프레임 감도에 <code>보통 ÷ 이번</code>을 곱했다가 <code>LateUpdate</code>에서 되돌립니다. 끊김 차이를 줄이려고 빌드 프레임을 144로 묶기로 제가 정했습니다(<code>FrameRateCap</code>). 모의 실험(평소 5ms에 30ms 끊김 한 번)에서 회전량 90 → 15.</span>
-<pre><code><span class="c">// LookSpikeGuard.Update — 실행 순서 -200, FPController보다 먼저</span>
-float dt = Time.deltaTime;
-float k = ScaleFor(dt, _steady);    <span class="c">// 보통 ÷ 이번 (0.03~3배)</span>
-_steady = NextSteady(_steady, dt);  <span class="c">// 보통엔 8%, 끊김엔 2%만 따라감</span>
-<span class="c">// …</span>
-_saved = _player.mouseSensitivity;
-_applied = _saved * k;
-_player.mouseSensitivity = _applied; <span class="c">// 이번 프레임만 감도 × k</span>
-_scaled = true;
-
-<span class="c">// LateUpdate — FPController가 돈 뒤 원래 감도로</span>
-private void LateUpdate() { Restore(); }</code></pre>
-            <span class="code-cap"><span>감도 × (보통 dt ÷ 이번 dt) → 끊긴 프레임은 쌓인 마우스 이동만큼만 회전</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Player/LookSpikeGuard.cs" target="_blank" rel="noopener">LookSpikeGuard.cs · AI 작성</a></span></dd>
-          <dt class="limit">한계</dt><dd>이 보정은 끊긴 프레임만 상쇄합니다. 프레임이 고르면 배수가 1이라 원래 식이 그대로 남아, 같은 손 움직임에도 초당 회전량이 프레임 시간에 비례해서 60fps로 꾸준히 도는 PC는 144fps보다 계산상(16.7 ÷ 6.9ms) 약 2.4배 더 돕니다(실측 아님). 144fps 고정이 이 차이를 가렸습니다. 근본 원인은 마우스 값에 <code>deltaTime</code>을 곱하는 한 줄인데, 팀원 코드라 마감 직전에는 고치지 않았습니다. 다시 한다면 담당자와 합의해 그 곱을 빼고 보정 컴포넌트는 지우겠습니다.</dd>
-        </dl>
-      </div>
+      <p class="lead">두 건 모두 에디터에서는 보이지 않았습니다. 소년 건은 제가 빌드를 플레이하다 발견해 릴리스 · 개발 빌드 모두에서 안 나온다고 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</p>
 
       <div class="log">
         <div class="log-head"><h3>발광이 꺼지고 머리카락 카드가 네모로 보임</h3><span class="label">빌드 전 점검 · AI 발견</span></div>
@@ -267,13 +243,13 @@ private void LateUpdate() { Restore(); }</code></pre>
     Stay(g, GuardRoomLoiter.CaptureGraceSeconds);
     Assert.IsTrue(g.ConsumeCapture());      <span class="c">// 정전 뒤에도 남으면 붙잡힘</span>
 }</code></pre>
-      <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 AI 검토에서 찾은 「2초 + 문턱 + 1초」가 나간 것으로 쌓이던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs · AI 작성</a></span>
+      <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 AI 검토에서 찾은 문제, 곧 밖에서 2초 머물다 문턱으로 돌아온 뒤 다시 1초 나가면 두 시간이 합쳐져 경비실을 나간 것으로 처리되던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs · AI 작성</a></span>
       <figure class="fig-mid"><img src="../assets/img/ins/test-runner.png" alt="Unity Test Runner EditMode 화면 — 666개 테스트 모두 통과" width="900" height="760" loading="lazy"><figcaption>Unity Test Runner — EditMode 테스트 666개 통과</figcaption></figure>
     </section>
 
     <section id="ai">
       <h2><span class="num">06 — Working with AI</span>AI와 일한 방식</h2>
-      <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, QA 플레이까지 에디터 작업은 대부분 AI가 했습니다. 저는 무엇을 만들지와 어떤 숫자가 맞는지를 정하고, 결과를 받아들일지 판단했습니다.</p>
+      <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, 밤새 자동으로 돌린 QA 플레이까지 에디터 작업은 대부분 AI가 했습니다. 저는 무엇을 만들지와 어떤 숫자가 맞는지를 정하고, 결과를 받아들일지 판단했습니다.</p>
 
       <h3>에이전트를 나눠 쓴 방식</h3>
       <figure class="dg wide">
@@ -415,15 +391,6 @@ private void LateUpdate() { Restore(); }</code></pre>
           <dt>재수정</dt><dd>그 소리의 구독 · 키를 지우고 회귀 테스트 <code>조우에_현악기_긴장음은_없다</code>를 더했습니다.</dd>
         </dl>
       </div>
-      <div class="log">
-        <div class="log-head"><h3>시점 튐 상한</h3><span class="label">AI 수정 → 빌드에서 재발 → 재수정</span></div>
-        <dl>
-          <dt>처음</dt><dd>도서관에서 시점이 튄다는 보고에, AI는 프레임 시간이 1/20초를 넘을 때만 감도를 줄이는 상한을 넣었습니다.</dd>
-          <dt>재발</dt><dd>빌드에서 다시 플레이하다 같은 증상을 찾았습니다(<a href="#ts-build">04절</a>).</dd>
-          <dt>원인</dt><dd>빌드는 프레임 제한이 없어 보통 프레임이 수 ms라, 20–50ms 끊김은 1/20초 상한에 걸리지 않았습니다.</dd>
-          <dt>재수정</dt><dd>상한 대신 최근 보통 프레임 시간을 기준으로 매 프레임 감도 배수를 정하도록 바꿨습니다(개발 후반).</dd>
-        </dl>
-      </div>
       <p>그 밖에 도서관 노란 얼굴이 벽 · 책장을 뚫고 다니는 것을 찾았고, 벽을 무시한 옛 NavMesh를 타고 있던 원인을 AI가 찾아 전용 에이전트 타입으로 런타임에 다시 굽게 고쳤습니다.</p>
 
       <h3>AI에게 건 규칙</h3>
@@ -469,16 +436,17 @@ private void LateUpdate() { Restore(); }</code></pre>
       <h3>이 페이지의 시뮬레이션 수치</h3>
       <p>①②는 버린 확률 편성을 조정하던 단계의 값입니다. 확률 편성에서 기준을 바꿔 다시 재 보니 13종을 모두 마주친 판이 미숙 33%였고, 이후 고정 편성으로 전환했습니다.</p>
       <div class="tbl agtbl">
-        <table>
+        <table class="simtbl">
           <thead><tr><th>무엇을 쟀나</th><th>방식</th><th>판 수</th><th>결과</th></tr></thead>
           <tbody>
-            <tr><td>13종 목격률 (편성 기준)</td><td>실제 편성 코드 · 숙련도별 가상 플레이어</td><td class="num">400 / 숙련도</td><td>① 날짜 흐름: 미숙 21 → 54%<br>② 이어서 시체 낙하: 보통 78 → 100%, 미숙 55 → 75%</td></tr>
-            <tr><td>13종 목격률 (실행 기준)</td><td>같은 시뮬레이터, 실행 여부로 다시 셈</td><td class="num">—</td><td>미숙 33% (편성 기준 76%)</td></tr>
-            <tr><td>붙잡힘 원인 분포 (미숙)</td><td>추정 시뮬레이션 · 배치 / 조도 / 청각</td><td class="num">—</td><td>67 / 16 / 17% → 34 / 31 / 34% (최종)</td></tr>
-            <tr><td>신뢰 3구간 도달 (보통, 4일차 시작)</td><td>구간 경계값 조정 뒤</td><td class="num">500</td><td>0 → 92%</td></tr>
+            <tr><td data-k="무엇을 쟀나">13종 목격률 (편성 기준)</td><td data-k="방식">실제 편성 코드 · 숙련도별 가상 플레이어</td><td class="num" data-k="판 수">400 / 숙련도</td><td data-k="결과">① 날짜 흐름: 미숙 21 → 54%<br>② 이어서 시체 낙하: 보통 78 → 100%, 미숙 55 → 75%</td></tr>
+            <tr><td data-k="무엇을 쟀나">13종 목격률 (실행 기준)</td><td data-k="방식">같은 시뮬레이터, 실행 여부로 다시 셈</td><td class="num" data-k="판 수">—</td><td data-k="결과">미숙 33% (편성 기준 76%)</td></tr>
+            <tr><td data-k="무엇을 쟀나">붙잡힘 원인 분포 (미숙)</td><td data-k="방식">추정 시뮬레이션 · 배치 / 조도 / 청각</td><td class="num" data-k="판 수">—</td><td data-k="결과">67 / 16 / 17% → 34 / 31 / 34% (최종)</td></tr>
+            <tr><td data-k="무엇을 쟀나">신뢰 3구간 도달 (보통, 4일차 시작)</td><td data-k="방식">구간 경계값 조정 뒤</td><td class="num" data-k="판 수">500</td><td data-k="결과">0 → 92%</td></tr>
           </tbody>
         </table>
       </div>
+      <p class="note">①과 ②, 실행 기준 값은 개발 중 서로 다른 시점에 잰 것이라 이어지는 숫자가 1%p씩 다릅니다(① 끝 54% · ② 시작 55%, ② 끝 75% · 편성 기준 76%).</p>
     </section>
 
     <section id="limits">
@@ -490,7 +458,6 @@ private void LateUpdate() { Restore(); }</code></pre>
             <tr><td>위반 피드백</td><td>플레이테스트에서 「위반 패널티가 명확했으면」이라는 의견이 많았습니다. 어겨도 축 수치만 조용히 올랐기 때문입니다.</td><td>위반 즉시 화면 · 소리 · 태블릿으로 알림</td></tr>
             <tr><td>빌드 프로파일링</td><td>에디터에서 FPS · 렌더 시간은 일부 쟀지만 빌드 기준 FPS · 메모리 · 드로우콜 · GC는 재지 않았고, 빌드 용량(약 2.1GB, 대부분 4K 텍스처)도 줄이지 못했습니다.</td><td>프로파일러로 기준선부터</td></tr>
             <tr><td>통합 테스트</td><td>자동 테스트가 EditMode 위주라 씬 단위 동작은 직접 플레이로 확인했습니다.</td><td>PlayMode 테스트 추가</td></tr>
-            <tr><td>시점 보정</td><td>끊김만 상쇄하고 프레임에 따른 감도 차이는 남겼습니다(<a href="#ts-build">04절</a>).</td><td>조작 코드에서 deltaTime 곱 제거</td></tr>
           </tbody>
         </table>
       </div>

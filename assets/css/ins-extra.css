@@ -106,3 +106,12 @@
 /* 사용자 제공 사진 */
 .fig-mid { max-width: 40rem; margin-block: 16px; }
 figure.wide { margin-block: 16px; }
+
+/* 시뮬레이션 수치 표 — 좁은 화면에서 세로로 */
+@media (max-width: 640px) {
+  .simtbl thead { display: none; }
+  .simtbl, .simtbl tbody, .simtbl tr, .simtbl td { display: block; width: 100%; }
+  .simtbl tr { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .simtbl td, .simtbl td + td { border: 0; padding: 3px 0; white-space: normal; min-width: 0; }
+  .simtbl td[data-k]::before { content: attr(data-k); display: block; font: 600 .76rem/1.6 var(--f-body); color: var(--ink-3); }
+}
