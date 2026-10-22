@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>이성현 포트폴리오</title>
+<meta name="description" content="게임 클라이언트 프로그래머 이성현의 포트폴리오 — INSTRUCTION(Unity 6), Code Dungeon(C++ · DirectX 12)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-main">
+      <span class="label">Game Client Programmer</span>
+      <h1 class="hero-name">이성현</h1>
+      <p class="hero-line">C++로 네비게이션 메시와 A* 길찾기를 직접 만들었고, Unity 팀 프로젝트에서는 Claude(Opus 5.5)에게 Unity 에디터 작업을 맡겨 게임 규칙을 구현하며 <b>설계 · 검증 · 채택 판단</b>을 맡았습니다.</p>
+      <div class="contacts">
+        <span>sum0heily@gmail.com</span>
+        <a href="https://github.com/mintpink0" target="_blank" rel="noopener">github.com/mintpink0</a>
+      </div>
+    </div>
+    <ul class="hero-stats" data-project="instruction">
+      <li><span class="n">666</span><span class="t">EditMode 자동 테스트 — 공개 저장소에서 직접 확인할 수 있습니다</span></li>
+      <li><span class="n">3</span><span class="t">에디터에선 멀쩡하고 빌드에서만 난 문제, 빌드에서 재서 해결</span></li>
+      <li><span class="n">1위</span><span class="t">INSTRUCTION, 성과공유회 우수상</span></li>
+    </ul>
+  </header>
+
+  <section class="section">
+    <div class="sec-head"><h2>이 포트폴리오에서 확인할 수 있는 것</h2></div>
+    <ul class="proof">
+      <li><span class="k">공개 코드</span><span class="v">INSTRUCTION 팀 저장소가 공개돼 있습니다. 제 코드 폴더, <b>EditMode 자동 테스트 666개</b>, 제 커밋 기록을 직접 열어 볼 수 있습니다.</span></li>
+      <li><span class="k">AI 사용의 경계</span><span class="v">INSTRUCTION 코드와 에디터 작업은 대부분 AI가 수행했습니다. 저는 기준을 정하고 결과를 판정했으며, <b>측정 결과로 AI 제안을 기각한 기록</b>을 남겼습니다.</span></li>
+      <li><span class="k">빌드에서 재기</span><span class="v">에디터에서는 멀쩡하고 빌드에서만 생긴 문제 3건을 릴리스 빌드에서 재서 고쳤습니다. 고친 방법이 남긴 <b>한계</b>도 함께 적었습니다.</span></li>
+      <li><span class="k">직접 짠 C++</span><span class="v">Code Dungeon의 네비게이션 메시 · A* · 몬스터 상태 전환 · ImGui 편집 툴은 제가 구현했습니다. A*는 기본 구현 뒤 잦은 수정에 AI 도움을 받았습니다.</span></li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><h2>프로젝트</h2><span class="label">Projects</span></div>
+    <div class="projects">
+
+      <article class="proj" data-project="instruction">
+        <div class="proj-media">
+          <a href="projects/instruction.html"><img src="assets/img/ins/title.jpg" alt="INSTRUCTION 타이틀 화면" width="1920" height="1080"></a>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-title"><a href="projects/instruction.html">INSTRUCTION</a><span class="chip">우수상 · 전체 1위</span></h3>
+          <p class="oneliner">폐교에서 근무수칙을 지키며 다섯 밤을 버티는 1인칭 공포 게임</p>
+          <dl class="facts">
+            <dt>기간</dt><dd>2026.08 – 2026.10 (8주) · 4인 팀</dd>
+            <dt>환경</dt><dd>Unity 6 · URP · C# · Claude + Unity CLI</dd>
+            <dt>역할</dt><dd>시스템 프로그래밍 — 수칙 판정, 조우 편성, 공포 디렉터, 판정 결과로 조명 · CCTV · 조우를 움직이는 코드</dd>
+          </dl>
+          <ul class="did">
+            <li>규칙(Core)과 화면(Flow)을 어셈블리로 나눠, 게임을 켜지 않고 테스트 666개와 밸런스 시뮬레이션으로 검증</li>
+            <li>AI의 편성 보정안을 기각하고 고정 날짜 편성으로 전환 — 기획 의도와 시뮬레이션 수치 근거</li>
+            <li>빌드 전용 버그 3건 실측 해결 (셰이더 조합 21개 복구, 애니메이션 이동량 0m → 0.29m)</li>
+          </ul>
+          <div class="btns">
+            <a class="btn btn-main" href="projects/instruction.html">상세 보기</a>
+            <a class="btn" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">플레이 영상</a>
+            <a class="btn" href="https://github.com/KimJinsun610/NCAI_BrokenCompass/tree/main/horror%20house/Assets/_Game" target="_blank" rel="noopener">코드</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj" data-project="code-dungeon">
+        <div class="proj-media">
+          <a href="projects/code-dungeon.html"><img src="assets/img/cd/cover.jpg" alt="Code Dungeon 플레이 화면 — 점프 가능한 셀에서 낙하" width="610" height="343"></a>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-title"><a href="projects/code-dungeon.html">Code Dungeon</a><span class="chip">졸업작품</span></h3>
+          <p class="oneliner">탐색과 전투가 결합된 3D 던전 액션 게임 · 자체 엔진</p>
+          <dl class="facts">
+            <dt>기간</dt><dd>2024.01 – 2024.07 · 3인 팀</dd>
+            <dt>환경</dt><dd>C++ · DirectX 12 자체 엔진 · ImGui</dd>
+            <dt>역할</dt><dd>네비게이션 메시 · A* · 몬스터 AI · 플레이어 로직 · 편집 툴</dd>
+          </dl>
+          <ul class="did">
+            <li>네비게이션 메시를 Cell → Navigation → Region → Stage 순으로 직접 구현</li>
+            <li>A* 길찾기를 프레임 단위로 나눠 진행하고, 가시선 검사로 경로 직선화</li>
+            <li>ImGui 편집 툴 2종 — 네비게이션 메시 편집, 모델 배치(레벨 구성)</li>
+          </ul>
+          <div class="btns">
+            <a class="btn btn-main" href="projects/code-dungeon.html">상세 보기</a>
+            <a class="btn" href="https://www.youtube.com/watch?v=hQBBsoL_ETs&amp;t=243s" target="_blank" rel="noopener">발표 영상</a>
+            <a class="btn" href="https://github.com/PTH9043/GraduateProject" target="_blank" rel="noopener">코드</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><h2>기술 스택</h2><span class="label">Tech Stack</span></div>
+    <div class="stack">
+      <div class="stack-row">
+        <h3>C++ · DirectX 12</h3>
+        <p>네비게이션 메시, A* 길찾기, 몬스터 상태 전환, ImGui · ImGuizmo 편집 툴 (Code Dungeon). 별도 과제 프로젝트로 DirectX 12 파이프라인과 HLSL로 거리 기반 지형 테셀레이션 · 동적 큐브 매핑 · 물결 물 · 빌보드 · 스프라이트 폭발을 구현했습니다.
+          <span class="scope">Code Dungeon의 렌더링(디퍼드 렌더링 · 셰도우맵 · 파티클 · 외곽선)과 서버는 팀원 작업입니다. 과제 프로젝트는 이 포트폴리오에 싣지 않았습니다.</span></p>
+      </div>
+      <div class="stack-row">
+        <h3>C# · Unity</h3>
+        <p>Unity 6 · URP. asmdef로 규칙 코드와 MonoBehaviour 분리, NUnit EditMode 테스트, 에디터 도구 작성, 라이트맵 · 라이트 프로브 실행 중 교체, 런타임 NavMesh 굽기, Animator · Timeline 결과 보정 (INSTRUCTION).</p>
+      </div>
+      <div class="stack-row">
+        <h3>AI 협업</h3>
+        <p>Claude 데스크톱 앱(Opus 5.5)을 Unity CLI로 Unity 에디터에 연결해 씬 · 프리팹 수정, 테스트 실행 · 디버깅, 장면 스크린샷 확인, QA 플레이어 운용을 지시. 프로젝트 문서(CLAUDE.md)에 AI가 지킬 규칙과 차수별 개정 기록을 관리했습니다.</p>
+      </div>
+      <div class="stack-row">
+        <h3>협업 도구</h3>
+        <p>Git · GitHub, Git LFS 잠금 사용 (저장소 설정은 팀원 담당)</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-head"><h2>학력 · 수상 · 어학</h2><span class="label">Background</span></div>
+    <div class="stack">
+      <div class="stack-row"><h3>2026.10</h3><p><b>우수상</b> (참여 팀 중 1위) — 2026 미래내일 일경험사업(프로젝트형) 「Design Your World : VARCO로 완성하는 게임 직무」 성과공유회 · 대한상공회의소 · NC AI</p></div>
+      <div class="stack-row"><h3>2026.08 – 10</h3><p>2026 미래내일 일경험사업(프로젝트형) · NC AI — 4인 팀으로 INSTRUCTION 개발</p></div>
+      <div class="stack-row"><h3>2019.03 – 2025.02</h3><p>한국공학대학교 게임공학과 졸업 · 학점 3.58 / 4.5</p></div>
+      <div class="stack-row"><h3>어학</h3><p>TOEIC 930 · TOEIC Speaking AL (2026.07) · 태국 국제학교(영국식) 9 – 13세 재학</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>이성현 · 게임 클라이언트 프로그래머</span>
+    <span>2026-10-22 갱신</span>
+  </footer>
+</div>
+</body>
+</html>

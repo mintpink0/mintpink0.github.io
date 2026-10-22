@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>INSTRUCTION | 이성현 포트폴리오</title>
+<meta name="description" content="Unity 6 1인칭 공포 게임 INSTRUCTION — 시스템 프로그래밍, AI 협업 방식, 트러블슈팅">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body data-project="instruction">
+<div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
+<div class="band band-ins">
+  <img src="../assets/img/ins/band.jpg" alt="INSTRUCTION 경비실 책상 — 인게임 화면" width="1920" height="1080">
+  <div class="band-text wrap">
+    <span class="label">Key Project 01 · Unity 6 · C#</span>
+    <h1 class="page-title">INSTRUCTION</h1>
+    <p class="page-sub">폐교에서 근무수칙을 지키며 다섯 밤을 버티는 1인칭 공포 게임</p>
+  </div>
+</div>
+<div class="wrap">
+
+<header class="page-head">
+  <p class="print-url">이성현 · 게임 클라이언트 프로그래머 · sum0heily@gmail.com · https://mintpink0.github.io</p>
+  <dl class="facts-strip">
+    <div><dt class="kr-label">기간</dt><dd>2026.08 – 2026.10<br>8주</dd></div>
+    <div><dt class="kr-label">인원</dt><dd>4명 — 프로그래머 2<br>(시스템 1 · 클라이언트 1), 기획 1, 아트 1</dd></div>
+    <div><dt class="kr-label">환경</dt><dd>Unity 6 (6000.3.17f1) · URP 17.3 · C# · Git LFS</dd></div>
+    <div><dt class="kr-label">내 역할</dt><dd><b>시스템 프로그래밍 · 시스템 기획</b></dd></div>
+  </dl>
+  <p class="award"><span class="chip">우수상 · 참여 팀 중 1팀 · 전체 1위</span><span>고용노동부 주최 · 대한상공회의소 주관 「2026 미래내일 일경험사업(프로젝트형)」 Design Your World : VARCO로 완성하는 게임 직무 (참여기업 NC AI), 2조 BrokenCompass</span></p>
+  <p class="ai-line"><b>AI 사용</b> — 코드는 대부분 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI로 에디터에 연결해 AI가 작성했습니다. 문제 발견, 수치 기준, 검증 기준, 채택 · 기각은 제가 맡았습니다. 제 담당은 수칙 판정 · 공포 축 · 조우 편성 · 공포 디렉터, 그리고 판정 결과로 조명 · CCTV · 조우 · 붙잡힘을 움직이는 코드입니다.</p>
+  <div class="btns">
+    <a class="btn btn-main" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">플레이 영상</a>
+    <a class="btn" href="https://github.com/KimJinsun610/NCAI_BrokenCompass" target="_blank" rel="noopener">팀 저장소</a>
+    <a class="btn" href="https://github.com/KimJinsun610/NCAI_BrokenCompass/tree/main/horror%20house/Assets/_Game" target="_blank" rel="noopener">제 코드 (Assets/_Game)</a>
+    <a class="btn" href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commits/main/?author=mintpink0" target="_blank" rel="noopener">제 커밋 기록</a>
+  </div>
+  <p class="print-url">영상 https://youtu.be/4G3LkPagvS8 · 저장소 https://github.com/KimJinsun610/NCAI_BrokenCompass · 제 코드 horror house/Assets/_Game (Scripts · Flow · Tests)</p>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="목차">
+    <span class="label">목차</span>
+    <a data-n="01" href="#summary">요점</a>
+    <a data-n="02" href="#game">게임과 역할</a>
+    <a data-n="03" href="#arch">구조</a>
+    <a data-n="04" href="#ai">AI와 일한 방식</a>
+    <a data-n="05" href="#ts-schedule">조우 편성 바꾸기</a>
+    <a data-n="06" href="#ts-build">빌드에서만 난 문제</a>
+    <a data-n="07" href="#impl">구현 하이라이트</a>
+    <a data-n="08" href="#limits">한계와 다시 만든다면</a>
+  </nav>
+
+  <main class="content">
+
+    <section id="summary">
+      <h2><span class="num">01 — Summary</span>이 페이지의 요점</h2>
+      <ul>
+        <li><b>규칙과 화면을 나눈 구조.</b> 판정 로직을 Unity를 모르는 일반 C#으로 두어, 게임을 켜지 않고 <b>EditMode 테스트 666개</b>와 수백 판 단위 밸런스 시뮬레이션을 돌렸습니다.</li>
+        <li><b>AI 제안을 수치와 기획 의도로 고른 판단.</b> 조우 편성 보정안과 조명 깜빡임 해결안을 기각하고 다른 방법을 택했습니다.</li>
+        <li><b>빌드에서 잰 문제 해결.</b> 에디터에서는 보이지 않던 문제 3건을 릴리스 빌드에서 재서 고쳤고, 그중 하나는 근본 원인을 남겨 둔 한계까지 적었습니다.</li>
+      </ul>
+      <a class="video no-print" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">
+        <img src="../assets/img/ins/video-poster.jpg" alt="" width="1280" height="720" loading="lazy">
+        <span class="play"><span class="play-icon" aria-hidden="true"></span>INSTRUCTION 플레이 영상 · YouTube</span>
+      </a>
+    </section>
+
+    <section id="game">
+      <h2><span class="num">02 — Game & Role</span>게임과 제 역할</h2>
+      <p class="lead">야간 경비원이 되어 태블릿의 근무수칙을 지키며 5일 동안 학교를 순찰합니다. 하루는 출근 → 회사 문자 지시 → 점검 → 몬스터 조우 → 판정 → 퇴근 · 근무일지 순서로 흐릅니다.</p>
+      <p>수칙을 어기면 보이지 않는 <b>청각 · 조도 · 배치</b> 축이 오르고, 오를수록 학교의 소리 · 조명 · 배치가 변합니다. 한 축이라도 끝까지 오르면 붙잡혀 그 밤을 다시 시작합니다. 수칙을 잘 지키면 <b>신뢰</b>가 오르는데, 신뢰가 높을수록 수칙서 글자가 바뀌는 변조, 수칙과 반대인 회사 문자(역설), 두 수칙이 부딪히는 딜레마가 늘어 숙련된 플레이어일수록 수칙 자체를 의심하게 됩니다.</p>
+      <div class="figs figs-3 wide">
+        <figure><img src="../assets/img/ins/tablet-rules.jpg" alt="태블릿 근무수칙 화면" width="443" height="480" loading="lazy"><figcaption>근무수칙 (태블릿 UI: 김진선 님)</figcaption></figure>
+        <figure><img src="../assets/img/ins/tablet-orders.jpg" alt="회사 문자 지시 화면" width="379" height="435" loading="lazy"><figcaption>회사 문자 지시 — 편성 데이터는 제 담당</figcaption></figure>
+        <figure><img src="../assets/img/ins/inspection.jpg" alt="점검 화면 — 정상 또는 이상 보고" width="525" height="327" loading="lazy"><figcaption>점검 — 정상 / 이상 보고를 판정해 정산</figcaption></figure>
+      </div>
+
+      <h3>팀과 역할</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>이름</th><th>역할</th><th>맡은 일</th></tr></thead>
+          <tbody>
+            <tr class="me"><td>이성현</td><td>시스템 프로그래밍<br>시스템 기획</td><td>수칙 판정 · 공포 축 · 편성(수칙 덱 · 조우 · 문자) 규칙과 데이터, 판정 센서(문 · 손전등 · 응시 · 근접 · 공간 출입), 공포 디렉터, 판정 결과로 조명 · 정전 · CCTV · 조우 · 붙잡힘 흐름 · 경비실 · 사운드를 구동하는 코드, 게임 규칙 · 수칙 공동 기획</td></tr>
+            <tr><td>김진선</td><td>클라이언트 프로그래밍</td><td>게임 플로우 · 씬 전환, 1인칭 조작, 태블릿 · 결과창 UI, 공포 연출 프리셋, 축별 사망 컷신, 화면 효과, 개발자 모드, 형상관리</td></tr>
+            <tr><td>김현웅</td><td>기획 · 사운드</td><td>사운드 리소스 제작(VARCO Sound), 게임 수칙 공동 기획, 시나리오</td></tr>
+            <tr><td>박재은</td><td>아트</td><td>맵 구성, 소품, 몬스터 모델 · 디자인(VARCO 3D), 애니메이션, UI</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>프로그래머 둘은 판정(시스템)과 연출(클라이언트)을 나눴습니다. 김진선 님이 <b>무엇을 어떻게 보여 줄지</b>(연출 프리셋, 컷신, 화면 효과, UI)를 만들었고, 저는 판정과 <b>언제 · 어디서 무엇을 부를지</b>(디렉터 · 편성), 그리고 판정 결과에 따라 조명 · CCTV · 조우 몬스터를 움직이는 코드를 맡았습니다. 두 파트는 서로의 파일을 고치지 않고 이벤트(<code>EventBus</code>)와 공개 API로만 연결했습니다.</p>
+      <ul>
+        <li><b>고치지 않고 확장하기.</b> 김진선 님의 1인칭 조작 코드는 그대로 두고 실행 순서 앞뒤에서 감도를 보정했고, 사망 컷신 Timeline도 그대로 둔 채 재생되는 인스턴스만 보정했습니다.</li>
+        <li><b>씬 충돌 줄이기.</b> 근무 씬 전용 컴포넌트는 씬 파일 대신 실행 시 코드로 붙여(<code>RuntimeInitializeOnLoadMethod</code>) 씬 병합 충돌과 Git LFS 잠금 대기를 줄였습니다.</li>
+        <li><b>아트와 병렬로.</b> 모델이 확정되기 전에는 대역(Stand-in) 모델로 연출을 먼저 만들고, 모델이 오면 파일만 교체했습니다.</li>
+      </ul>
+    </section>
+
+    <section id="arch">
+      <h2><span class="num">03 — Architecture</span>구조 — 규칙(Core)과 화면(Flow)</h2>
+      <p class="lead">판정 로직은 Unity를 모르는 일반 C#으로, 화면에 그리는 일은 MonoBehaviour로 나누고 두 층 사이 통로를 두 개로 제한했습니다.</p>
+      <div class="arch wide">
+        <div class="arch-box">
+          <h4>Flow · MonoBehaviour</h4>
+          <p>판정 센서 — 공간 출입, 손전등 원뿔(15° · 8m) + 레이캐스트 가림, 응시, 자세, 달리기를 0.1초 간격으로 측정</p>
+          <p>조명 · 정전, CCTV, 조우 연출, 붙잡힘, 오디오</p>
+        </div>
+        <div class="arch-mid">
+          <span>JudgeSignal →<br>NightRun.Send</span>
+          <span>← EventBus<br>BandChanged 등</span>
+        </div>
+        <div class="arch-box core">
+          <h4>Core · NightDuty.Core.asmdef (참조 없음)</h4>
+          <p>판정 책(수칙별 판정기) · 공포 축 0–99 · 구간(그 밤엔 내려가지 않음)</p>
+          <p>공포 디렉터 · 편성(시드 난수, 같은 시드는 같은 결과) · 점검표 정산</p>
+        </div>
+      </div>
+      <p>연출은 수치를 직접 읽지 않고 「구간이 바뀌었다」 같은 이벤트(<code>BandChanged</code> · <code>DirectionEmitted</code> · <code>Captured</code>)만 받습니다.</p>
+      <ul>
+        <li><b>게임을 켜지 않고 검증.</b> Core는 <code>new</code>만 하면 돌아가므로 자동 테스트와 밸런스 시뮬레이션을 에디터에서 바로 돌렸습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/tree/main/horror%20house/Assets/_Game/Tests/EditMode" target="_blank" rel="noopener">테스트 폴더</a></li>
+        <li><b>의존 방향을 컴파일 단계에서 강제.</b> asmdef로 Core가 Flow를 참조하지 못하게 막아, 「축이 올랐으니 Core에서 바로 불을 끄자」 같은 우회를 차단했습니다.</li>
+        <li><b>새 코드의 자리가 정해짐.</b> 고르는 것(편성 · 디렉터), 판단하는 것(판정 · 점검), 숫자를 올리는 것(축), 그리는 것(Flow)으로 위치를 정했습니다.</li>
+      </ul>
+      <div class="note"><span class="kr-label">다시 만든다면</span>Core 입구(<code>NightRun</code>)가 정적 클래스라 테스트마다 초기화가 필요했고 플레이 세션 사이 리셋도 따로 처리했습니다. 인스턴스로 만들고 주입하는 구조를 쓰겠습니다.</div>
+    </section>
+
+    <section id="ai">
+      <h2><span class="num">04 — Working with AI</span>AI와 일한 방식</h2>
+      <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, 밤샘 QA 플레이까지 에디터 작업 대부분을 AI가 했고, 저는 무엇을 만들지, 어떤 숫자가 맞는지, 결과를 받아들일지를 정했습니다.</p>
+
+      <h3>AI 제안을 받아들이지 않은 경우</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>상황</th><th>AI 제안</th><th>제 판단과 근거</th><th>결과</th></tr></thead>
+          <tbody>
+            <tr><td>조우 목격률</td><td>못 본 조우는 다음 뽑기에 가산점(이월), 차단 조건 면제 — 예상 75 → 85~90%</td><td>날짜마다 정해 둔 조우를 그날 보여 주는 것을 기획 의도로 우선했습니다. 「모든 연출에서 축 조건 제거 … 이월은 없어. 의도한 날짜에 무조건 목격해야 해」</td><td>고정 날짜 편성으로 전환 (<a href="#ts-schedule">아래</a>)</td></tr>
+            <tr><td>시야를 돌리면 조명이 깜빡임</td><td>오클루전 컬링 끄기</td><td>「성능에 큰 문제가 생길 가능성이 있나?」 → 「달빛을 꺼보고 한번 비교해봐」</td><td>컬링 끄기는 렌더 4.4 → 5.4ms라 기각. 달빛만 끄는 안 3.5ms 채택, 실내 11곳 × 12방향 화면 차이 0</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>조명 문제의 측정(6° 간격으로 한 바퀴 렌더해 화면 평균 밝기 기록 — 특정 각도에서 48 → 71로 튐)과 원인 진단(오클루전 컬링이 달빛 그림자 캐스터도 시야 기준으로 걸러 냄)은 AI가 했습니다. 저는 문제를 발견하고, 두 안을 같은 조건에서 비교하게 한 뒤 골랐습니다.</p>
+
+      <h3>AI에게 건 규칙</h3>
+      <p>AI가 매 세션 읽는 프로젝트 문서(CLAUDE.md)에 규칙을 두었습니다.</p>
+      <ul>
+        <li><b>「재지 않은 것을 적지 마십시오」</b> (2026-09-21) — 문서가 반복해서 틀린 원인이 확인하지 않고 쓴 문장이었기 때문에 넣었습니다.</li>
+        <li><b>구현이 끝나면 개정 기록을 남기고, 바뀐 옛 값은 「되살리지 마십시오」 목록에 올림</b> — 새 세션이 옛 값을 다시 가져오지 않게 하려는 장치로, 115개 항목이 쌓였습니다.</li>
+        <li><b>설계 문서와 코드 값이 어긋나면 실패하는 테스트</b>(<code>DesignDriftTests</code>)를 두었습니다.</li>
+        <li><b>git 명령은 AI가 실행하지 않음</b> — 커밋 · 병합 · LFS 잠금은 제가 직접 했습니다.</li>
+      </ul>
+
+      <h3>에이전트를 나눠 쓰는 방식</h3>
+      <p>한 세션에 모든 일을 맡기지 않고, 조사 · 회의 · QA · 검토를 맡을 에이전트를 따로 두었습니다. 에이전트는 결과를 정리해 보고하고, 채택과 기각은 제가 정했습니다.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>방식</th><th>이렇게 시켰습니다</th><th>결과</th></tr></thead>
+          <tbody>
+            <tr><td>조사 → 회의 → 보고</td><td>여러 에이전트에게 분야별 자료를 조사하게 한 뒤 회의 · 검토를 거쳐 보고하게 함. 「긴장감 컨트롤러도 다시 한번 전문가 에이전트들과 회의」</td><td>공포 분위기를 만드는 방법을 여러 자료에서 종합한 선택지로 받아 고름. 회의 결과는 제안서 문서로 남김 (예: 「야간근무 3차 회의 — 경비원다운 [근무 지시]」)</td></tr>
+            <tr><td>설계와 QA를 동시에</td><td>55차 「설계만 해볼래? 하면서 에이전트 하나는 계속 버그수정/의도한 대로 작동하는지를 돌려봐」</td><td>QA 에이전트가 새 근무 지시 기능을 플레이로 점검해 버그 2건 수정. 56차에는 독립 QA가 5건을 고치고, 판단이 필요한 것은 「남은 제안」으로 따로 보고</td></tr>
+            <tr><td>구현 뒤 독립 · 백그라운드 검토</td><td>104차 「프로젝트에 새로 구현한 부분들 버그 있는지 확인해주고 고쳐줘」</td><td>독립 검토로 버그를 고치고 테스트를 더해 EditMode 666/666. 별도 백그라운드 검토에서는 금지된 방의 지시가 풀리지 않아 03:30 시계가 영영 멈출 수 있는 결함을 찾아 수정</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>AI 결과에서 제가 잡은 오류</h3>
+      <ul>
+        <li>도서관 노란 얼굴이 벽 · 책장을 뚫고 다님 → 벽을 무시한 옛 NavMesh를 타고 있었음. 전용 에이전트 타입으로 런타임에 다시 굽게 수정</li>
+        <li>조우에서 빼기로 한 현악기 긴장음이 남아 있음 → 제거하고 회귀 테스트 <code>조우에_현악기_긴장음은_없다</code> 추가</li>
+        <li>빌드에서만 생긴 시점 튐과 애니메이션 누락 → <a href="#ts-build">빌드에서만 난 문제</a></li>
+      </ul>
+
+      <div class="note"><span class="kr-label">맡긴 결정도 있습니다</span>모든 값을 제가 정하지는 않았습니다. 103차에는 「Qa 한번 더 진행해주고 내가 결정할 것들을 정리해서 보고해줘」라고 결정 항목만 따로 받은 뒤 「1,2,3을 추천한 대로 하고, 4의 권장부분도 처리해줘」라고 했고, 「너가 적절하게 판단해서」(44차), 「정할 것은 추천대로」(104차)처럼 작은 결정을 AI 추천에 맡긴 차수도 개정 기록에 그대로 남아 있습니다.</div>
+    </section>
+
+    <section id="ts-schedule">
+      <h2><span class="num">05 — Troubleshooting 1</span>조우 편성 — 확률에서 고정 날짜로</h2>
+      <div class="log">
+        <div class="log-head"><h3>미숙한 플레이어가 조우를 다 못 보는 문제</h3><span class="label">103–104차 · 시뮬레이션</span></div>
+        <dl>
+          <dt>상황</dt><dd>감각 수치와 확률로 조우를 뽑던 편성에서, 미숙한 플레이어는 늦은 슬롯이 꺼져 조우 13종을 다 보지 못했고 붙잡힘 원인도 배치 축에 쏠렸습니다.</dd>
+          <dt>측정</dt><dd>실제 편성 코드를 그대로 쓰는 시뮬레이터로 숙련도별 가상 플레이어 400판을 돌렸습니다. 미숙 플레이어가 13종을 모두 본 회차는 <b>21%</b>였습니다. Core가 Unity와 분리돼 있어 가능했습니다.</dd>
+          <dt>조정</dt><dd>날짜 흐름을 바꿔 미숙 21% → 54%. 시체 낙하를 2일차로 고정하고 강도를 낮춰 보통 78% → 100%, 미숙 55% → 75%.</dd>
+          <dt>다시 재기</dt><dd>「편성됐는가」가 아니라 「실제로 실행됐는가」로 다시 세자 미숙은 <b>33%</b>(편성 기준 76%)였습니다. 시뮬레이션에서는 위험한 분위기 때문에 늦은 조우가 꺼졌고, 직접 플레이에서는 조우를 보기 전에 퇴근 트리거가 켜지거나 플레이어가 움직이지 않는 사이 시간이 흘러 밤이 끝났습니다.</dd>
+          <dt>판단</dt><dd>AI의 이월 보정안 대신, 축 조건을 없애고 날마다 정해진 조우를 보여 주는 <b>고정 날짜 편성</b>으로 바꿨습니다. 03:30에 남은 조우가 있으면 시계를 붙들어, 그날의 조우가 끝나기 전에는 다음 날로 넘어가지 않게 했습니다. 이후 「너무 고정이니 매력이 떨어진 느낌」이 들어 AI 변주안 중 같은 날 순서 섞기 · 날마다 빈 칸 · 위반 후속을 채택했고, 후속은 버그 위험 때문에 두 번에 걸쳐 다시 뺐습니다(「후속 개념은 없애줘. 버그가 너무 많을 것 같네」).</dd>
+          <dt>검증</dt><dd>PlayScene에서 4 · 5일차를 직접 진행해 날짜표대로 나오는지 확인하고 편성 테스트로 묶었습니다. 백그라운드 검토에서 03:30 시계가 영영 멈출 수 있는 경우가 나와 고쳤습니다.</dd>
+          <dt class="limit">한계</dt><dd>모든 수치는 가상 플레이어 시뮬레이션이며 실제 플레이 데이터가 아닙니다. 고정 편성 뒤의 목격률은 시뮬레이션으로 다시 재지 않았습니다.</dd>
+        </dl>
+      </div>
+
+      <div class="bars" role="img" aria-label="조우 13종을 모두 본 회차 비율, 조정 전과 후">
+        <span class="label">조우 13종을 모두 본 회차 비율 · 확률 편성 조정 단계 (편성 기준)</span>
+        <div class="bar-row"><span>① 날짜 흐름 · 미숙</span><div class="bar-pair"><div class="bar" style="--w:21%"><i style="width:21%"></i><b>21%</b></div><div class="bar after" style="--w:54%"><i style="width:54%"></i><b>54%</b></div></div></div>
+        <div class="bar-row"><span>② 시체 낙하 · 보통</span><div class="bar-pair"><div class="bar" style="--w:78%"><i style="width:78%"></i><b>78%</b></div><div class="bar after" style="--w:100%"><i style="width:100%"></i><b>100%</b></div></div></div>
+        <div class="bar-row"><span>② 시체 낙하 · 미숙</span><div class="bar-pair"><div class="bar" style="--w:55%"><i style="width:55%"></i><b>55%</b></div><div class="bar after" style="--w:75%"><i style="width:75%"></i><b>75%</b></div></div></div>
+        <div class="bars-legend"><span><i style="background:var(--ink-3);opacity:.55"></i>조정 전</span><span><i style="background:var(--p)"></i>조정 후</span><span>실행 기준으로 다시 재면 미숙 33% → 고정 편성 결정</span></div>
+      </div>
+
+      <h3>이 페이지의 시뮬레이션 수치</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>무엇을 쟀나</th><th>방식</th><th>판 수</th><th>결과</th></tr></thead>
+          <tbody>
+            <tr><td>13종 목격률 (편성 기준)</td><td>실제 편성 코드 · 숙련도별 가상 플레이어</td><td class="num">400 / 숙련도</td><td>미숙 21 → 54%, 보통 78 → 100%, 미숙 55 → 75%</td></tr>
+            <tr><td>13종 목격률 (실행 기준)</td><td>같은 시뮬레이터, 실행 여부로 다시 셈</td><td class="num">—</td><td>미숙 33% (편성 기준 76%)</td></tr>
+            <tr><td>붙잡힘 원인 분포 (미숙)</td><td>추정 시뮬레이션 · 배치 / 조도 / 청각</td><td class="num">700</td><td>67 / 16 / 17% → 36 / 36 / 28%</td></tr>
+            <tr><td>신뢰 3구간 도달 (보통, 3–4일차)</td><td>구간 경계값 조정 뒤</td><td class="num">500</td><td>0 → 92%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>붙잡힘 원인은 점검 항목의 벌칙 축을 실제 원인 축과 맞추고, 밤마다 세 축의 수칙이 최소 한 장씩 나오게 해서 고르게 만들었습니다.</p>
+    </section>
+
+    <section id="ts-build">
+      <h2><span class="num">06 — Troubleshooting 2</span>빌드에서만 난 문제</h2>
+      <p class="lead">세 건 모두 에디터에서는 보이지 않았습니다. 추측으로 고치지 않고 릴리스 빌드를 떠서 값을 쟀습니다.</p>
+
+      <div class="log">
+        <div class="log-head"><h3>시점이 가끔 크게 휙 꺾임</h3><span class="label">102 → 104차 · 직접 발견</span></div>
+        <dl>
+          <dt>발견</dt><dd>빌드를 직접 플레이하다 발견했습니다. 「마우스에 뭔가 뚝 뚝 끊기면서 확 꺾이는 현상이 조금씩 있어」</dd>
+          <dt>원인</dt><dd>1인칭 조작 코드(김진선 님 담당)는 <code>회전 = 마우스 이동 × Time.deltaTime × 감도</code>였습니다. 마우스 이동(<code>Input.GetAxis</code>)은 이미 그 프레임 동안 쌓인 양이라 프레임 시간이 두 번 곱해져, 끊긴 프레임의 회전은 프레임 시간의 제곱으로 커졌습니다. 빌드는 프레임 제한이 없어(수직 동기 0) 보통 프레임이 수 ms였고, 20–50ms 끊김도 평소의 몇 배가 됐습니다.</dd>
+          <dt>1차 시도</dt><dd>프레임 시간 상한(1/20초)을 걸었지만 에디터 기준 값이라 빌드의 작은 끊김을 잡지 못했습니다.</dd>
+          <dt>해결</dt><dd><span><code>LookSpikeGuard</code>가 조작 코드보다 먼저(실행 순서 −200) 돌며, 최근 「보통 프레임 시간」을 느린 평균으로 따라가고 이번 프레임 감도에 <code>보통 ÷ 이번</code>을 곱했다가 <code>LateUpdate</code>에서 되돌립니다. 빌드는 <code>vSyncCount = 0</code>, <code>targetFrameRate = 144</code>로 고정했습니다. 모의 실험(평소 5ms에 30ms 끊김 한 번)에서 회전량 90 → 15.</span>
+<pre><code><span class="c">// 보통 프레임엔 8%, 1.5배 넘는 끊김엔 2%만 따라간다 — 한 번의 끊김에 기준이 흔들리지 않게</span>
+public static float ScaleFor(float deltaTime, float steady)
+{
+    if (deltaTime &lt;= 0f || steady &lt;= 0f) return 1f;
+    return Mathf.Clamp(steady / deltaTime, MinScale, MaxScale);
+}</code></pre>
+            <span class="code-cap"><span>감도 × (보통 dt ÷ 이번 dt) → 끊긴 프레임은 쌓인 마우스 이동만큼만 회전</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Player/LookSpikeGuard.cs" target="_blank" rel="noopener">LookSpikeGuard.cs</a></span></dd>
+          <dt class="limit">한계</dt><dd>이 보정은 끊긴 프레임만 상쇄합니다. 프레임이 고르면 배수가 1이라 원래 식이 그대로 남아, 같은 손 움직임에도 초당 회전량이 프레임 시간에 비례합니다. 60fps로 꾸준히 도는 PC는 144fps보다 약 2.4배 더 돕니다. 144fps 고정이 이 차이를 가렸습니다. 근본 원인은 마우스 값에 <code>deltaTime</code>을 곱하는 한 줄인데, 마감 직전이라 팀원 코드를 고치지 않는다는 경계를 지켰습니다. 다시 한다면 담당자와 합의해 그 곱을 빼고 보정 컴포넌트는 지우겠습니다.</dd>
+        </dl>
+      </div>
+
+      <div class="log">
+        <div class="log-head"><h3>발광이 꺼지고 머리카락 카드가 네모로 보임</h3><span class="label">빌드 전 점검 · AI 발견</span></div>
+        <dl>
+          <dt>발견</dt><dd>빌드 전에 「다른 문제는 없을지」 점검을 맡겼고, AI가 찾아냈습니다. 제가 먼저 본 문제는 아닙니다.</dd>
+          <dt>원인</dt><dd>빌드는 빌드에 포함된 재질이 쓰는 키워드 조합만 셰이더 변형으로 넣습니다. 실행 중 코드로 켜는 조합(URP Lit <code>_EMISSION</code>, Unlit 알파 테스트 · 반투명)이 빠졌습니다.</dd>
+          <dt>해결</dt><dd>에디터 도구 <code>ShaderKeepBuilder</code>가 빌드 재질을 훑어 빠진 조합마다 키워드를 켠 보존 재질을 생성합니다. <b>빠져 있던 조합 21개</b>(Lit 18 · Unlit 3)를 복구했고, 조합이 다시 빠지면 실패하는 테스트를 추가했습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Editor/ShaderKeepBuilder.cs" target="_blank" rel="noopener">ShaderKeepBuilder.cs</a></dd>
+        </dl>
+      </div>
+
+      <div class="log">
+        <div class="log-head"><h3>릴리스 빌드에서만 소년이 머리를 박지 않음</h3><span class="label">104차 · 직접 발견</span></div>
+        <dl>
+          <dt>발견</dt><dd>릴리스 빌드를 직접 플레이하다 발견했습니다. 소리는 나는데 동작이 없었습니다.</dd>
+          <dt>원인</dt><dd>애니메이터가 없는 대역 모델에 <code>AnimationClip.SampleAnimation</code>으로 클립을 재생했는데, 레거시가 아닌 클립은 빌드에서 Animator 없이 샘플링되지 않았습니다.</dd>
+          <dt>해결</dt><dd>임시 씬으로 릴리스 빌드를 떠 머리 이동량을 실측했습니다(<b>0m → 0.29m</b>, 에디터와 같게 복구). 클립을 레거시로 전환(GUID · 곡선 유지)하고 대역 생성 도구도 고쳤으며 회귀 테스트를 추가했습니다.</dd>
+        </dl>
+      </div>
+      <p>「에디터에서 된다」는 「빌드에서 된다」가 아니었습니다. 플랫폼 차이가 의심되면 작은 빌드로 재현하고 숫자로 확인합니다.</p>
+    </section>
+
+    <section id="impl">
+      <h2><span class="num">07 — Highlights</span>구현 하이라이트</h2>
+      <div class="cards wide">
+        <div class="card">
+          <h3>공포 디렉터</h3>
+          <ul>
+            <li>조우를 상태 기계로 진행 — 대기 → 예고 → 등장 준비 → 대면 → 정리 → 끝</li>
+            <li>Left 4 Dead식 긴장도 게이지 — 축적 → 절정(70) → 해소(35) → 휴식</li>
+            <li>긴장도 50 미만일 때만 가짜 놀람 (하룻밤 3–8회)</li>
+          </ul>
+          <span class="tech">TensionDirector · TensionPacer · SurpriseBudget</span>
+        </div>
+        <div class="card">
+          <h3>구운 조명에서 실시간 정전</h3>
+          <ul>
+            <li>라이트맵은 실행 중에 끌 수 없어, 씬 시작 때 어둡게 만든 라이트맵 사본을 만들고 정전 때 <code>lightmapIndex</code>만 교체</li>
+            <li>라이트 프로브 SH 계수도 낮추고, 형광등 발광은 <code>MaterialPropertyBlock</code>으로 끔(공유 재질 오염 방지)</li>
+          </ul>
+          <span class="tech">Graphics.Blit · LightmapSettings · MaterialPropertyBlock</span>
+        </div>
+        <div class="card">
+          <h3>처형 컷신 시선 보정</h3>
+          <ul>
+            <li><code>Update</code>에서 돌리면 Animator가 덮어써서 <code>LateUpdate</code>에서 보정 회전</li>
+            <li>머리 뼈가 아니라 얼굴 중심에서 재서 시선 오차 0.04–0.77° (대역 3종, 사람 나무의 먼 옆 얼굴은 최대 4.2°)</li>
+            <li>팀원의 컷신 Timeline은 그대로 두고 재생 인스턴스만 보정</li>
+          </ul>
+          <span class="tech">LateUpdate · Quaternion.FromToRotation · Timeline</span>
+        </div>
+        <div class="card">
+          <h3>경비실 버티기 방지</h3>
+          <ul>
+            <li>안전지대에 숨어 버티면 벌점 대신 연출로 압박 — 30초 깜빡임 · 잡음 → 60초 CCTV에 검은 남자 → 90초 정전 → 이후 붙잡힘(2일차부터)</li>
+            <li>판단은 Core, 연출은 Flow. 문턱을 오가도 시간이 초기화되지 않음</li>
+          </ul>
+          <span class="tech">GuardRoomLoiter (Core) · GuardRoomCamp (Flow)</span>
+        </div>
+      </div>
+      <div class="figs">
+        <figure><img src="../assets/img/ins/guard-room.jpg" alt="경비실 내부" width="599" height="454" loading="lazy"><figcaption>경비실 — 오래 머물면 단계별 연출이 시작됨</figcaption></figure>
+      </div>
+<pre><code>[Test] public void 머문_시간에_따라_깜빡임_CCTV_얼굴_정전으로_간다()
+{
+    var g = new GuardRoomLoiter();          <span class="c">// 씬 없이 new로 생성</span>
+    Stay(g, 29f); Assert.AreEqual(LoiterStage.None,     g.Stage);
+    Stay(g, 2f);  Assert.AreEqual(LoiterStage.Flicker,  g.Stage);
+    Stay(g, 30f); Assert.AreEqual(LoiterStage.CctvFace, g.Stage);
+    Stay(g, 30f); Assert.AreEqual(LoiterStage.Blackout, g.Stage);
+    Stay(g, GuardRoomLoiter.CaptureGraceSeconds);
+    Assert.IsTrue(g.ConsumeCapture());      <span class="c">// 정전 뒤에도 남으면 붙잡힘</span>
+}</code></pre>
+      <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 QA에서 찾은 「2초 + 문턱 + 1초」가 나간 것으로 쌓이던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs</a></span>
+    </section>
+
+    <section id="limits">
+      <h2><span class="num">08 — Limits</span>한계와 다시 만든다면</h2>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>한계</th><th>무엇이 부족했나</th><th>다시 한다면</th></tr></thead>
+          <tbody>
+            <tr><td>위반 피드백</td><td>플레이테스트에서 「위반 패널티가 명확했으면」이라는 의견이 많았습니다. 어겨도 축 수치만 조용히 올랐기 때문입니다.</td><td>위반 즉시 화면 · 소리 · 태블릿으로 알림</td></tr>
+            <tr><td>빌드 프로파일링</td><td>에디터에서 FPS · 렌더 시간은 일부 쟀지만 빌드 기준 FPS · 메모리 · 드로우콜 · GC는 재지 않았고, 빌드 용량(약 2.1GB, 대부분 4K 텍스처)도 줄이지 못했습니다.</td><td>프로파일러로 기준선부터</td></tr>
+            <tr><td>통합 테스트</td><td>자동 테스트가 EditMode 위주라 씬 단위 동작은 직접 플레이로 확인했습니다.</td><td>PlayMode 테스트 추가</td></tr>
+            <tr><td>시점 보정</td><td>끊김만 상쇄하고 프레임에 따른 감도 차이는 남겼습니다(위 트러블슈팅).</td><td>조작 코드에서 deltaTime 곱 제거</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="foot">
+  <span>이성현 · 게임 클라이언트 프로그래머</span>
+  <a class="no-print" href="code-dungeon.html">다음 프로젝트 · Code Dungeon →</a>
+</footer>
+</div>
+<script src="../assets/js/site.js"></script>
+</body>
+</html>
