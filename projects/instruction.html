@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023f">
-<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023f">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023g">
+<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023g">
 </head>
 <body data-project="instruction">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -374,18 +374,13 @@
       </ul>
       <figure class="fig-mid"><img src="../assets/img/ins/cctv.jpg" alt="경비실 CCTV 모니터 화면 — CAM01 복도, 채널 넘기기와 정상·이상 보고 안내" width="1600" height="900" loading="lazy"><figcaption>CCTV 화면 — 채널을 넘기며 확인</figcaption></figure>
 
-      <div class="cards wide">
-        <div class="card">
-          <h3>경비실 버티기 방지</h3>
-          <ul>
-            <li>플레이테스트에서 「경비실에 오래 있으면 파훼되지 않느냐, 밤을 그냥 넘기거나 연출을 안 보고 넘어갈 수 있다」는 피드백을 받아 넣었습니다.</li>
-            <li>수치를 정해 지시했습니다. <span class="said">「약 30초 형광등 깜빡임·무전 잡음(문구 없음) · 약 60초 CCTV가 검은 남자 얼굴 · 약 90초 정전, 그래도 남으면 붙잡힘 …」</span></li>
-          </ul>
-          <span class="tech">GuardRoomLoiter (Core) · GuardRoomCamp (Flow)</span>
-        </div>
-      </div>
-      <figure class="wide"><img src="../assets/img/ins/guardroom-stages.jpg" alt="경비실에 머문 시간별 장면 — 0초 평소, 30초 형광등 깜빡임과 무전 잡음, 60초 CCTV에 검은 남자 얼굴, 90초 정전" width="1600" height="903" loading="lazy"><figcaption>경비실에 머문 시간 — 0초 · 30초 · 60초 · 90초</figcaption></figure>
-      <div class="fig-guard-one">
+      <h3>경비실 버티기 방지</h3>
+      <ul>
+        <li>플레이테스트에서 「경비실에 오래 있으면 파훼되지 않느냐, 밤을 그냥 넘기거나 연출을 안 보고 넘어갈 수 있다」는 피드백을 받아 넣었습니다.</li>
+        <li>수치를 정해 지시했습니다. <span class="said">「약 30초 형광등 깜빡임·무전 잡음(문구 없음) · 약 60초 CCTV가 검은 남자 얼굴 · 약 90초 정전, 그래도 남으면 붙잡힘 …」</span></li>
+      </ul>
+      <div class="media-2">
+        <figure><img src="../assets/img/ins/guardroom-stages.jpg" alt="경비실에 머문 시간별 장면 — 0초 평소, 30초 형광등 깜빡임과 무전 잡음, 60초 CCTV에 검은 남자 얼굴, 90초 정전" width="1600" height="903" loading="lazy"><figcaption>경비실에 머문 시간 — 0초 · 30초 · 60초 · 90초</figcaption></figure>
         <figure><video src="../assets/img/ins/guardroom.mp4" poster="../assets/img/ins/guardroom.jpg" autoplay muted loop playsinline width="800" height="450"></video><figcaption>경비실 단계 연출 (영상)</figcaption></figure>
       </div>
 <pre><code>[Test] public void 머문_시간에_따라_깜빡임_CCTV_얼굴_정전으로_간다()
@@ -399,6 +394,7 @@
     Assert.IsTrue(g.ConsumeCapture());      <span class="c">// 정전 뒤에도 남으면 붙잡힘</span>
 }</code></pre>
       <span class="code-cap"><span>같은 파일의 테스트 11개에는 AI 검토에서 찾은 문제의 회귀 테스트도 있습니다. 경비실 밖에 잠깐 나갔다 문턱으로 돌아온 뒤 다시 잠깐 나가면, 두 번의 시간이 합쳐져 경비실을 떠난 것으로 처리되던 문제입니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs</a></span>
+      <p class="code-cap"><span class="tech">GuardRoomLoiter (Core) · GuardRoomCamp (Flow)</span></p>
     </section>
 
     <section id="ai">
@@ -679,6 +675,6 @@
   <a class="no-print" href="code-dungeon.html">다음 프로젝트 · Code Dungeon →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023f"></script>
+<script src="../assets/js/site.js?v=20261023g"></script>
 </body>
 </html>
