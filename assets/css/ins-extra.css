@@ -1,0 +1,99 @@
+/* INSTRUCTION 상세 페이지 전용 — site.css의 변수와 결(가는 선 · 2px 모서리 · --p 강조)을 그대로 씁니다. */
+
+/* ── 인라인 SVG 그림 ── */
+.dg { margin: 0; display: grid; gap: 10px; border-top: 2px solid var(--ink); padding-top: 16px; }
+.dg svg { display: block; width: 100%; max-width: 100%; height: auto; overflow: visible; }
+.dg .dg-narrow { display: none; }
+.dg .box { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.dg .box-me { fill: var(--p-soft); stroke: var(--p); stroke-width: 2; }
+.dg .t { font: 700 14px/1 var(--f-body); fill: var(--ink); }
+.dg .s { font: 400 12px/1 var(--f-body); fill: var(--ink-2); }
+.dg .lb { font: 600 11px/1 var(--f-body); fill: var(--ink-3); }
+.dg .ln { fill: none; stroke: var(--ink-3); stroke-width: 1.5; }
+.dg .ln-p { fill: none; stroke: var(--p); stroke-width: 1.5; }
+.dg .ah { fill: var(--ink-3); }
+.dg .ah-p { fill: var(--p); }
+.dg figcaption { font-size: .84rem; color: var(--ink-3); }
+
+/* ── 지시문 해부 카드 ── */
+.anat { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); display: grid; }
+.anat-q { padding: 16px 18px; border-bottom: 1px solid var(--line); font-size: .98rem; line-height: 2; color: var(--ink) !important; }
+.anat-q .seg { padding: 2px 4px; border-radius: var(--r); white-space: nowrap; }
+.anat-q .fix { background: var(--p-soft); box-shadow: inset 0 -2px 0 var(--p); }
+.anat-q .sim { box-shadow: inset 0 -2px 0 var(--ink-2); }
+.anat-q .ana { box-shadow: inset 0 -2px 0 var(--ink-3); background: var(--line-soft); }
+.anat-src { display: block; margin-top: 4px; font: 400 .8rem/1.5 var(--f-body); color: var(--ink-3); }
+.anat-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.anat-col { padding: 14px 18px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; font-size: .9rem; color: var(--ink-2); }
+.anat-col + .anat-col { border-left: 1px solid var(--line); }
+.anat-col h4 { margin: 0; font: 700 .9rem/1.4 var(--f-body); color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.anat-col h4::before { content: ""; width: 12px; height: 4px; flex: none; }
+.anat-col.fix h4::before { background: var(--p); }
+.anat-col.sim h4::before { background: var(--ink-2); }
+.anat-col.ana h4::before { background: var(--ink-3); }
+.anat-col ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.anat-col .then { font-size: .86rem; color: var(--ink-3); }
+
+/* ── 결정 기록 표 ── */
+.tag { display: inline-block; font: 600 .74rem/1 var(--f-body); padding: 4px 6px; border: 1px solid var(--line); border-radius: var(--r); color: var(--ink-2); white-space: nowrap; }
+.tag-yes { color: var(--p); border-color: var(--p); }
+.tag-no { color: var(--ink); border-color: var(--ink); }
+.tag-back { border-style: dashed; border-color: var(--ink-3); }
+.dtbl td:first-child { width: 1%; }
+.dtbl q { quotes: "「" "」"; color: var(--ink); }
+
+/* ── 판정 → 화면 연결 ── */
+.sigmap { border-top: 2px solid var(--ink); display: grid; }
+.sig-row { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 4px 18px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.sig-key { display: grid; gap: 2px; align-content: start; }
+.sig-key b { font: 700 .95rem/1.4 var(--f-body); }
+.sig-key code { justify-self: start; font-size: .74rem; }
+.sig-val { color: var(--ink-2); font-size: .92rem; min-width: 0; }
+.sig-val .src { display: block; margin-top: 4px; font-size: .8rem; color: var(--ink-3); }
+
+/* ── 도구 · 권한 규칙 상자 ── */
+.rulebox { border: 1px solid var(--line); border-top: 3px solid var(--p); border-radius: var(--r); background: var(--surface); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rulebox > div { padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.rulebox > div + div { border-left: 1px solid var(--line); }
+.rulebox h4 { margin: 0; font: 700 .95rem/1.4 var(--f-body); color: var(--ink); }
+.rulebox h4 .kr-label { display: block; margin-bottom: 2px; }
+.rulebox ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size: .9rem; color: var(--ink-2); }
+.rulebox li::marker { color: var(--p); font-weight: 600; }
+.rulebox .onboard { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); padding: 12px 18px 14px; font-size: .9rem; color: var(--ink-2); }
+
+/* ── 막대 맥락 ── */
+.bars-ctx { margin: 0; font-size: .92rem; color: var(--ink-2) !important; padding: 10px 14px; background: var(--p-soft); border-left: 3px solid var(--p); }
+.bars-ctx b { color: var(--ink); }
+.content > section > .bars { max-width: 38rem; }
+
+/* 한글 라벨은 본문체로 (site.css 규칙: 라틴만 mono 대문자) */
+.log-head .label { font: 600 .8rem/1.4 var(--f-body); letter-spacing: 0; text-transform: none; }
+
+/* ── 인용 줄 ── */
+.said { color: var(--ink); }
+
+@media (max-width: 640px) {
+  .dg .dg-wide { display: none; }
+  .dg .dg-narrow { display: block; }
+  .anat-cols { grid-template-columns: minmax(0, 1fr); }
+  .anat-col + .anat-col { border-left: 0; border-top: 1px solid var(--line); }
+  .anat-q .seg { white-space: normal; }
+  .sig-row { grid-template-columns: minmax(0, 1fr); }
+  .rulebox { grid-template-columns: minmax(0, 1fr); }
+  .rulebox > div + div { border-left: 0; border-top: 1px solid var(--line); }
+  /* 결정 기록 표는 좁은 화면에서 행마다 카드처럼 */
+  .dtbl-wrap { overflow-x: visible; }
+  .dtbl thead { display: none; }
+  .dtbl, .dtbl tbody, .dtbl tr, .dtbl td { display: block; width: 100%; }
+  .dtbl tr { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .dtbl td, .dtbl td + td { border: 0; padding: 3px 0; white-space: normal; }
+  .dtbl td:first-child { width: auto; padding-bottom: 6px; }
+  .dtbl td[data-k]::before { content: attr(data-k); display: block; font: 600 .76rem/1.6 var(--f-body); color: var(--ink-3); }
+}
+
+@media print {
+  .dg .dg-narrow { display: none !important; }
+  .dg .dg-wide { display: block !important; }
+  .dg, .anat, .sigmap, .rulebox, .sig-row { break-inside: avoid; }
+  .anat, .rulebox { background: #fff; }
+}

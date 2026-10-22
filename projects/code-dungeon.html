@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
 <link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/cd-extra.css">
 </head>
 <body data-project="code-dungeon">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -42,15 +43,14 @@
   <nav class="toc" aria-label="목차">
     <span class="label">목차</span>
     <a data-n="01" href="#role">요점과 역할</a>
-    <a data-n="02" href="#nav">네비게이션 메시</a>
-    <a data-n="03" href="#tool">편집 툴</a>
-    <a data-n="04" href="#ts-stairs">계단 순간이동</a>
-    <a data-n="05" href="#move">점프 · 낙하 · 미끄러짐</a>
-    <a data-n="06" href="#astar">A* 길찾기</a>
-    <a data-n="07" href="#mobs">몬스터 4종</a>
-    <a data-n="08" href="#player">플레이어</a>
-    <a data-n="09" href="#loader">모델 배치 툴</a>
-    <a data-n="10" href="#cd-limits">한계와 다시 만든다면</a>
+    <a data-n="02" href="#flow">툴에서 게임까지</a>
+    <a data-n="03" href="#nav">네비게이션 메시 · 계단</a>
+    <a data-n="04" href="#move">이동 · 카메라</a>
+    <a data-n="05" href="#mobs">몬스터 4종</a>
+    <a data-n="06" href="#player">플레이어</a>
+    <a data-n="07" href="#astar">A* 길찾기</a>
+    <a data-n="08" href="#tool">편집 툴 2종</a>
+    <a data-n="09" href="#cd-limits">한계와 다시 만든다면</a>
   </nav>
 
   <main class="content">
@@ -59,188 +59,446 @@
       <h2><span class="num">01 — Summary</span>요점과 역할</h2>
       <ul>
         <li><b>네비게이션 메시</b> — Cell · Navigation · Region · Stage를 직접 구현. 이동 검사, 점프 · 낙하, 경계 위치 보정</li>
-        <li><b>A* 길찾기</b> — 셀 그래프 위 경로 탐색을 프레임 단위로 진행하고, 가시선 검사로 경로 직선화</li>
-        <li><b>몬스터 AI 4종</b> — 미라 · 미노타우르스 · 할리퀸 · 아누비스. 애니메이션 컨트롤러 기반 상태 전환</li>
+        <li><b>툴과 엔진의 연결</b> — 툴의 꼭짓점 스냅과 엔진의 이웃 연결 규칙을 맞춘 저장 · 불러오기</li>
+        <li><b>A* 길찾기</b> — 셀 그래프 위 경로 탐색을 프레임마다 한 단계씩 진행하고, 가시선 검사로 경로 직선화</li>
+        <li><b>몬스터 AI 4종</b> — 미라 · 미노타우르스 · 할리퀸 · 아누비스의 상태 전환 조건</li>
+        <li><b>플레이어 로직</b> — 콤보 · 스킬 3종 · 구르기 · 넉백과 기상</li>
         <li><b>ImGui 편집 툴 2종</b> — 네비게이션 메시 편집, 모델 배치(레벨 구성)</li>
       </ul>
       <a class="video no-print" href="https://www.youtube.com/watch?v=hQBBsoL_ETs&amp;t=243s" target="_blank" rel="noopener">
         <img src="../assets/img/cd/video-poster.jpg" alt="" width="1280" height="720" loading="lazy">
         <span class="play"><span class="play-icon" aria-hidden="true"></span>Code Dungeon 발표 영상 (4:03부터) · YouTube</span>
       </a>
-      <div class="note"><span class="kr-label">팀원 작업</span>렌더링은 모두 팀원 작업입니다(디퍼드 렌더링 · 셰도우맵 · 셰이더 · 컴퓨트 셰이더 파티클 · 외곽선). 네트워크(IOCP · Protobuf)도 팀원 담당이며, 엔진 애니메이션 시스템은 팀장이 만들었습니다. 몬스터 · 플레이어의 애니메이션 상태 전환(AnimController)은 제가 맡았습니다.</div>
+      <div class="note"><span class="kr-label">팀원 작업</span>팀장 — 프레임워크, 애니메이션 시스템(애니메이션 컨트롤러 프레임워크 · 루트 모션 재생), 서버(IOCP · Protobuf). 팀원 — 셰이더, 컴퓨트 셰이더 파티클, UI. 디퍼드 렌더링 · 멀티 카메라 · 셰도우맵 · 외곽선 렌더링 · 메모리 풀도 제 작업이 아닙니다. 저는 팀장이 만든 애니메이션 컨트롤러 프레임워크 위에서, 몬스터 4종과 플레이어의 상태 전환 조건(거리 · 피격 횟수 · 타이머 · 입력)을 작성했습니다.</div>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">02 — Data Flow</span>툴에서 게임까지</h2>
+      <p class="lead">네비게이션 메시는 툴에서 찍고, 파일로 저장하고, 엔진이 읽어, 게임의 캐릭터마다 나눠 씁니다. 각 단계가 앞 단계에 기대는 조건을 한 장으로 정리했습니다.</p>
+      <figure class="dg wide">
+        <div class="dg-frame">
+          <svg class="dg-wide" viewBox="0 0 920 300" role="img" aria-label="데이터 흐름: 툴에서 픽킹으로 셀을 만들고 기존 꼭짓점 1.5 이내면 스냅, Navigation 폴더에 Region 이름의 파일로 셀 단위 저장(버전 필드 없음), 엔진이 읽으며 변과 법선을 다시 계산하고 좌표가 정확히 같은 꼭짓점끼리 이웃으로 연결, 게임에서는 캐릭터마다 Navigation을 복제해 셀 데이터는 공유하고 현재 셀만 각자 가짐. 툴의 스냅이 엔진의 이웃 연결 조건을 만족시키는 계약.">
+            <defs>
+              <marker id="fw-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="2" y="8" width="202" height="196" rx="2"/>
+            <text class="t-m t-p" x="16" y="32">TOOL · NAVIGATIONVIEW</text>
+            <text class="t-b" x="16" y="56">픽킹으로 셀 찍기</text>
+            <text x="16" y="84">맵 모델 위를 3번 픽킹</text>
+            <text class="t-p" x="16" y="104">기존 꼭짓점 1.5 이내면</text>
+            <text class="t-p" x="16" y="124">그 좌표로 스냅</text>
+            <text x="16" y="144">UCell 생성 시 꼭짓점을</text>
+            <text x="16" y="164">같은 회전 순서로 정렬</text>
+            <text class="t-c" x="16" y="184">(ResortPoints)</text>
+
+            <rect class="bx" x="240" y="8" width="202" height="196" rx="2"/>
+            <text class="t-m t-p" x="254" y="32">FILE</text>
+            <text class="t-b" x="254" y="56">셀 단위 덤프</text>
+            <text class="t-c" x="254" y="84">Navigation/&lt;Region 이름&gt;</text>
+            <text x="254" y="104">셀 개수, 이어서 셀마다</text>
+            <text x="254" y="124">색 · 꼭짓점 · 법선 · 변</text>
+            <text x="254" y="144">이웃 · 번호 · 점프 여부</text>
+            <text class="t-p" x="254" y="164">버전 · 매직 필드 없음</text>
+
+            <rect class="bx" x="478" y="8" width="202" height="196" rx="2"/>
+            <text class="t-m t-p" x="492" y="32">ENGINE · LOAD</text>
+            <text class="t-b" x="492" y="56">UNavigation::Load</text>
+            <text x="492" y="84">셀마다 UCell을 새로 만들며</text>
+            <text x="492" y="104">변 · 법선 다시 계산</text>
+            <text class="t-p" x="492" y="124">좌표가 정확히 같은</text>
+            <text class="t-p" x="492" y="144">꼭짓점끼리 이웃 연결</text>
+            <text class="t-c" x="492" y="164">(ReadyNeighbor)</text>
+
+            <rect class="bx-p" x="716" y="8" width="202" height="196" rx="2"/>
+            <text class="t-m t-p" x="730" y="32">CLIENT</text>
+            <text class="t-b" x="730" y="56">캐릭터별 복제</text>
+            <text x="730" y="84">플레이어 · 몬스터 · 수리검이</text>
+            <text x="730" y="104">각자 Navigation을 복제</text>
+            <text x="730" y="124">셀 데이터는 공유,</text>
+            <text x="730" y="144">현재 셀만 각자 가짐</text>
+
+            <text class="t-s t-mid" x="222" y="98">저장</text>
+            <path class="ln" d="M206 108 H236" marker-end="url(#fw-h)"/>
+            <text class="t-s t-mid" x="460" y="98">읽기</text>
+            <path class="ln" d="M444 108 H474" marker-end="url(#fw-h)"/>
+            <text class="t-s t-mid" x="698" y="98">복제</text>
+            <path class="ln" d="M682 108 H712" marker-end="url(#fw-h)"/>
+
+            <path class="ln-p dash" d="M103 204 V230 H579 V204"/>
+            <circle class="dot-p" cx="103" cy="204" r="3"/>
+            <circle class="dot-p" cx="579" cy="204" r="3"/>
+            <text class="t-b t-p t-mid" x="341" y="256">툴과 엔진 사이의 계약</text>
+            <text class="t-mid" x="341" y="278">툴의 스냅이 엔진의 「좌표가 정확히 같아야 이웃」을 만족시킵니다</text>
+          </svg>
+          <svg class="dg-narrow" viewBox="0 0 360 650" role="img" aria-label="데이터 흐름: 툴에서 픽킹으로 셀을 만들고 기존 꼭짓점 1.5 이내면 스냅, Region 이름의 파일로 셀 단위 저장(버전 필드 없음), 엔진이 읽으며 변과 법선을 다시 계산하고 좌표가 정확히 같은 꼭짓점끼리 이웃으로 연결, 게임에서는 캐릭터마다 Navigation을 복제해 셀 데이터는 공유하고 현재 셀만 각자 가짐. 툴의 스냅이 엔진의 이웃 연결 조건을 만족시키는 계약.">
+            <defs>
+              <marker id="fn-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="1" y="1" width="300" height="118" rx="2"/>
+            <text class="t-m t-p" x="14" y="23">TOOL · NAVIGATIONVIEW</text>
+            <text class="t-b" x="14" y="45">픽킹으로 셀 찍기</text>
+            <text x="14" y="68">맵 모델 위를 3번 픽킹해 셀 하나</text>
+            <text class="t-p" x="14" y="87">기존 꼭짓점 1.5 이내면 그 좌표로 스냅</text>
+            <text x="14" y="106">꼭짓점 순서 정렬 <tspan class="t-c">(ResortPoints)</tspan></text>
+
+            <path class="ln" d="M150 120 V146" marker-end="url(#fn-h)"/>
+            <text class="t-s" x="160" y="138">저장</text>
+
+            <rect class="bx" x="1" y="150" width="300" height="118" rx="2"/>
+            <text class="t-m t-p" x="14" y="172">FILE · Navigation/&lt;Region 이름&gt;</text>
+            <text class="t-b" x="14" y="194">셀 단위 덤프</text>
+            <text x="14" y="217">셀 개수, 이어서 셀마다 색 · 꼭짓점 ·</text>
+            <text x="14" y="236">법선 · 변 · 이웃 · 번호 · 점프 여부</text>
+            <text class="t-p" x="14" y="255">버전 · 매직 필드 없음</text>
+
+            <path class="ln" d="M150 269 V295" marker-end="url(#fn-h)"/>
+            <text class="t-s" x="160" y="287">읽기</text>
+
+            <rect class="bx" x="1" y="299" width="300" height="118" rx="2"/>
+            <text class="t-m t-p" x="14" y="321">ENGINE · UNavigation::Load</text>
+            <text class="t-b" x="14" y="343">읽으면서 다시 계산</text>
+            <text x="14" y="366">셀마다 UCell 생성, 변 · 법선 재계산</text>
+            <text class="t-p" x="14" y="385">좌표가 정확히 같은 꼭짓점끼리</text>
+            <text class="t-p" x="14" y="404">이웃 연결 <tspan class="t-c">(ReadyNeighbor)</tspan></text>
+
+            <path class="ln" d="M150 418 V444" marker-end="url(#fn-h)"/>
+            <text class="t-s" x="160" y="436">복제</text>
+
+            <rect class="bx-p" x="1" y="448" width="300" height="118" rx="2"/>
+            <text class="t-m t-p" x="14" y="470">CLIENT</text>
+            <text class="t-b" x="14" y="492">캐릭터별 복제</text>
+            <text x="14" y="515">플레이어 · 몬스터 · 수리검이 각자 복제</text>
+            <text x="14" y="534">셀 데이터는 공유,</text>
+            <text x="14" y="553">현재 셀만 각자 가짐</text>
+
+            <path class="ln-p dash" d="M302 83 H330 V381 H302"/>
+            <circle class="dot-p" cx="302" cy="83" r="3"/>
+            <circle class="dot-p" cx="302" cy="381" r="3"/>
+            <text class="t-s t-p t-mid" transform="translate(347 232) rotate(-90)">툴 ↔ 엔진 계약</text>
+
+            <text class="t-b t-p" x="1" y="598">툴과 엔진 사이의 계약</text>
+            <text x="1" y="620">툴의 스냅이 엔진의 「좌표가 정확히 같아야</text>
+            <text x="1" y="638">이웃」 조건을 만족시킵니다.</text>
+          </svg>
+        </div>
+        <figcaption>편집 로직은 엔진의 URegion · UStage 안 <code>_EDIT_NAVI</code> 빌드 플래그 블록에 있고, Tool 프로젝트의 NavigationView가 이를 호출합니다.</figcaption>
+      </figure>
+      <p><b>툴과 엔진 사이의 계약</b> — 엔진은 두 셀이 한 변의 두 꼭짓점 좌표를 <b>정확히 같게</b> 가질 때만 그 변으로 이웃을 연결합니다(<code>XMVector3Equal</code> 비교). 마우스로 찍은 점은 조금씩 어긋나므로, 툴에서 기존 꼭짓점 반경 1.5 안을 찍으면 그 꼭짓점 좌표를 그대로 쓰게 했습니다. 이 스냅이 엔진의 연결 조건을 만족시키는 전제입니다.</p>
+      <p>저장 파일은 셀 정보를 순서대로 기록한 형식이라 버전 필드가 없습니다. 변 · 법선 · 이웃도 파일에 들어 있지만, 엔진은 불러올 때 꼭짓점에서 다시 계산합니다.</p>
     </section>
 
     <section id="nav">
-      <h2><span class="num">02 — Navigation Mesh</span>네비게이션 메시</h2>
-      <p class="lead">삼각형 셀을 Cell → Navigation(셀 묶음) → Region → Stage 순으로 쌓고, 각 단계를 편집하는 툴을 Tools 프로젝트에 따로 만들었습니다.</p>
+      <h2><span class="num">03 — Navigation Mesh</span>네비게이션 메시와 계단</h2>
+      <p class="lead">삼각형 셀을 Cell → Navigation(셀 묶음) → Region → Stage 순으로 쌓았습니다. 위 단계가 아래 단계를 SHPTR로 소유하고, 셀끼리의 이웃은 포인터가 아닌 int 인덱스로 가리킵니다.</p>
       <div class="tbl">
         <table>
           <thead><tr><th>클래스</th><th>가진 것</th><th>하는 일</th></tr></thead>
           <tbody>
             <tr><td>UCell</td><td>꼭짓점 3 · 변 · 법선 · 이웃 인덱스 · 점프 가능 여부</td><td>점이 셀 안인지 판정(<code>IsIn</code>)</td></tr>
-            <tr><td>UNavigation</td><td>셀 컨테이너 · 현재 셀</td><td>이동 검사(<code>IsMove</code>), 셀 찾기, 높이 계산, 경로 탐색</td></tr>
+            <tr><td>UNavigation</td><td>셀 컨테이너 · 현재 셀</td><td>이동 검사(<code>IsMove</code>), 셀 찾기, 높이 계산, 경계 위치 보정, 경로 탐색</td></tr>
             <tr><td>URegion</td><td>Navigation 하나</td><td>구역 단위 저장 · 불러오기</td></tr>
-            <tr><td>UStage</td><td>Region 목록</td><td>스테이지 전체 관리</td></tr>
+            <tr><td>UStage</td><td>Region 목록</td><td>폴더 단위 저장 · 불러오기</td></tr>
           </tbody>
         </table>
       </div>
-      <p><code>IsIn</code>은 세 변마다 XZ 평면의 바깥 법선과 내적하는 반평면 판정입니다. 한 변이라도 바깥이면 그 변 너머의 이웃 셀 인덱스를 넘겨, <code>IsMove</code>가 넘어간 변의 이웃을 따라가며(최대 10회) 위치를 포함하는 셀을 찾습니다. 이웃이 없으면 이동을 막습니다.</p>
-<pre><code>_bool UCell::IsIn(const _float3&amp; _vPos, _int&amp; _iNeighborIndex, _float3&amp; _vLine)
-{
-    for (_uint i = 0; i &lt; LINE_END; ++i) {
-        _float3 vDir = _vPos - <span class="c">/* 변 i의 시작점 */</span>vPointA;
-        if (vDir.Dot(m_arrNormals[i]) &gt; 0) {     <span class="c">// 변 바깥쪽</span>
-            _iNeighborIndex = m_arrNeighbors[i];  <span class="c">// 그 변 너머의 이웃 셀</span>
-            _vLine = m_arrLines[i];
-            return false;
-        }
-    }
-    return true;                                  <span class="c">// 세 변 모두 안쪽</span>
-}</code></pre>
-      <span class="code-cap"><span>UCell.cpp (변별 꼭짓점 선택 부분은 줄임)</span></span>
-      <figure class="wide"><img src="../assets/img/cd/navmesh-tool.jpg" alt="네비게이션 메시 편집 화면" width="1400" height="838" loading="lazy"><figcaption>편집 모드 — 셀 꼭짓점마다 디버그 큐브를 그려 좌상단 FPS가 낮게 표시됩니다.</figcaption></figure>
-    </section>
+      <p><code>IsIn</code>은 세 변마다 XZ 평면의 바깥 법선과 내적해 점이 셀 안인지 봅니다. 바깥이면 그 변 너머 이웃의 번호를 돌려주고, <code>IsMove</code>는 그 번호를 따라 최대 10번 이웃을 옮겨 가며 위치를 품은 셀을 찾습니다. 찾지 못하면 false를 돌려주고, 호출한 쪽이 경계 위치 보정을 합니다.</p>
 
-    <section id="tool">
-      <h2><span class="num">03 — ImGui Tool</span>네비게이션 편집 툴</h2>
-      <p class="lead">맵 모델을 띄우고 픽킹으로 셀을 찍어 메시를 만듭니다. 별도 창에서 「Modify Navigation」을 켜면 편집이 시작됩니다.</p>
-      <ul>
-        <li><b>셀 생성</b> — 픽킹할 때마다 그 위치에 큐브를 두고, 세 번째 클릭에서 셀을 만듭니다. 기존 꼭짓점 근처를 찍으면 그 꼭짓점에 붙여 이웃과 연결되게 했습니다.</li>
-        <li><b>되돌리기</b> — BackSpace로 꼭짓점 설정 중이면 마지막 픽킹을, 아니면 마지막 셀을 지웁니다.</li>
-        <li><b>안전한 삭제</b> — GPU가 쓰는 리소스와 충돌하지 않게, 지울 셀을 벡터에 모아 두고 렌더 전 Tick에서 지우도록 순서를 맞췄습니다.</li>
-        <li><b>렌더 범위 지정</b> — 셀이 많아지면 디버그 큐브도 늘어 프레임이 떨어져, 그릴 셀의 인덱스 범위를 정할 수 있게 했습니다.</li>
-        <li><b>셀 검사</b> — Pick_On_Cell로 셀을 골라 인덱스 · 이웃 인덱스를 보고, 점프 가능 여부를 바꾸거나 지웁니다. 인덱스 오류를 이웃 정보로 찾아 고쳤습니다.</li>
-        <li><b>저장 · 불러오기</b> — Region 이름의 바이너리 파일로 저장합니다. 클라이언트는 불러온 메시를 프로토타입으로 등록하고 객체마다 Clone해서 씁니다.</li>
-      </ul>
-      <div class="figs wide">
-        <figure><img src="../assets/img/cd/cell-create-1.jpg" alt="픽킹으로 꼭짓점을 찍는 화면" width="1189" height="864" loading="lazy"><figcaption>꼭짓점 픽킹</figcaption></figure>
-        <figure><img src="../assets/img/cd/cell-create-2.jpg" alt="세 꼭짓점으로 셀이 만들어진 화면" width="1197" height="868" loading="lazy"><figcaption>세 번째 클릭에서 셀 생성</figcaption></figure>
-      </div>
-    </section>
+      <h3>셀 데이터는 공유, 현재 셀만 캐릭터별</h3>
+      <p>플레이어 · 몬스터 · 할리퀸의 수리검은 각자 Navigation을 복제해 씁니다. <code>UNavigation</code>의 복사 생성자는 셀 컨테이너 포인터만 복사하고 현재 셀은 새로 정하므로, 셀 데이터는 한 벌이고 「지금 어느 셀에 있는가」만 각자 가집니다. 카메라도 자기 Navigation과 현재 셀을 따로 둡니다.</p>
+      <figure class="dg dg-sm">
+        <div class="dg-frame">
+          <svg viewBox="0 0 400 262" role="img" aria-label="원본 Navigation의 셀 컨테이너 하나를 플레이어, 몬스터, 수리검의 복제본이 함께 가리키고, 각자 서로 다른 현재 셀을 가리키는 구조">
+            <defs>
+              <marker id="cl-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+              <marker id="cl-hp" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd-p" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="120" y="2" width="160" height="40" rx="2"/>
+            <text class="t-b t-mid" x="200" y="27">원본 Navigation</text>
+            <path class="ln" d="M200 42 V72" marker-end="url(#cl-h)"/>
+            <text class="t-c" x="208" y="62">m_spCellContainer</text>
 
-    <section id="ts-stairs">
-      <h2><span class="num">04 — Troubleshooting</span>계단에서 캐릭터가 순간이동하던 문제</h2>
-      <div class="log">
-        <div class="log-head"><h3>위아래로 겹친 셀을 구분하지 못함</h3><span class="label">나선 계단</span></div>
+            <rect class="bx" x="10" y="76" width="380" height="82" rx="2"/>
+            <text class="t-b" x="22" y="98">셀 컨테이너 (한 벌)</text>
+            <text class="t-s t-end" x="378" y="98">이웃 = int 인덱스</text>
+            <path class="tri" d="M30 146 L50 108 L70 146 Z"/><path class="tri" d="M50 108 L90 108 L70 146 Z"/><path class="tri-on" d="M70 146 L90 108 L110 146 Z"/><path class="tri" d="M90 108 L130 108 L110 146 Z"/><path class="tri" d="M110 146 L130 108 L150 146 Z"/><path class="tri" d="M130 108 L170 108 L150 146 Z"/><path class="tri" d="M150 146 L170 108 L190 146 Z"/><path class="tri" d="M170 108 L210 108 L190 146 Z"/><path class="tri" d="M190 146 L210 108 L230 146 Z"/><path class="tri-on" d="M210 108 L250 108 L230 146 Z"/><path class="tri" d="M230 146 L250 108 L270 146 Z"/><path class="tri" d="M250 108 L290 108 L270 146 Z"/><path class="tri-on" d="M270 146 L290 108 L310 146 Z"/><path class="tri" d="M290 108 L330 108 L310 146 Z"/><path class="tri" d="M310 146 L330 108 L350 146 Z"/><path class="tri" d="M330 108 L370 108 L350 146 Z"/>
+
+            <rect class="bx-p" x="10" y="200" width="114" height="58" rx="2"/>
+            <text class="t-b t-mid" x="67" y="224">플레이어</text>
+            <text class="t-s t-mid" x="67" y="245">현재 셀 · 각자</text>
+            <rect class="bx-p" x="143" y="200" width="114" height="58" rx="2"/>
+            <text class="t-b t-mid" x="200" y="224">몬스터</text>
+            <text class="t-s t-mid" x="200" y="245">현재 셀 · 각자</text>
+            <rect class="bx-p" x="276" y="200" width="114" height="58" rx="2"/>
+            <text class="t-b t-mid" x="333" y="224">수리검</text>
+            <text class="t-s t-mid" x="333" y="245">현재 셀 · 각자</text>
+
+            <path class="ln-p" d="M67 200 L88 140" marker-end="url(#cl-hp)"/>
+            <path class="ln-p" d="M200 200 L240 126" marker-end="url(#cl-hp)"/>
+            <path class="ln-p" d="M333 200 L292 140" marker-end="url(#cl-hp)"/>
+            <text class="t-s" x="98" y="186">컨테이너는 공유</text>
+          </svg>
+        </div>
+        <figcaption>복제본은 같은 컨테이너의 원소를 가리키므로, 몬스터의 현재 셀과 플레이어의 현재 셀을 포인터로 바로 비교할 수 있습니다(07 A* 도착 판정).</figcaption>
+      </figure>
+
+      <h3>구역을 하나로 합친 결정</h3>
+      <p>처음에는 맵을 Region 단위로 나누고 플레이어가 있는 Region만 쓰는 최적화를 의도했습니다. 그런데 Region 경계를 넘을 때 이동 판정 버그가 계속 생겼고 체감 성능 이득이 없어, 맵 전체를 Region 하나로 합치기로 결정했습니다. 이웃 Region을 연결하던 그래프(<code>Add_NeighborRegion</code>)는 쓰이지 않는 코드로 남아 있습니다.</p>
+      <p>셀이 한 Navigation에 모두 모였으므로, 셀 찾기(<code>FindCell</code>)는 현재 셀 번호 ±25 범위부터 보고 못 찾으면 25씩 넓힙니다. 최악에는 전체를 봅니다. 셀 번호는 툴에서 만든 순서대로 붙어, 이어서 찍은 셀끼리는 번호도 가깝습니다.</p>
+      <figure class="wide"><img src="../assets/img/cd/navmesh-tool.jpg" alt="구역을 나눠 쓰던 시기의 네비게이션 메시 편집 화면" width="1400" height="838" loading="lazy"><figcaption>통합 전, 구역을 나눠 쓰던 시기의 편집 화면 — Select_Region에 구역이 여러 개이고 구역마다 셀 색이 다릅니다. 셀 꼭짓점마다 디버그 큐브를 그려 좌상단 FPS가 낮게 표시됩니다.</figcaption></figure>
+
+      <div class="log" id="ts-stairs">
+        <div class="log-head"><h3>계단에서 캐릭터가 순간이동하던 문제</h3><span class="label">나선 계단</span></div>
         <dl>
           <dt>상황</dt><dd>나선 계단을 오르내릴 때 캐릭터가 위층이나 아래층으로 순간이동했습니다.</dd>
           <dt>원인</dt><dd><code>IsIn</code>은 XZ 평면만 보는 반평면 판정이라 높이를 모릅니다. 위아래로 겹친 셀은 평면상 같은 자리라 둘 다 「안쪽」이 되어, 먼저 찾은 다른 층 셀이 선택됐습니다.</dd>
-          <dt>해결</dt><dd><span>후보 셀이 여럿일 때 현재 y와 셀 높이 차가 가장 작은 셀을 고르는 처리를 <code>ComputeHeight</code> · <code>FindCell</code> · <code>IsMove</code>에 넣었습니다.</span>
-<pre><code><span class="c">// UNavigation::ComputeHeight — 현재 셀을 모를 때</span>
-for (auto&amp; iter : *m_spCellContainer.get()) {
-    if (iter-&gt;IsIn(_vPosition, m_iCurIndex, vLine)) {
-        float yDiff = std::abs(_vPosition.y - iter-&gt;GetCenterPos().y);
-        if (minYDiff == -1.0f || yDiff &lt; minYDiff) {
-            minYDiff = yDiff;  closestCell = iter;   <span class="c">// 가장 가까운 층</span>
-        }
-    }
-}</code></pre></dd>
-          <dt class="limit">다시 보니</dt><dd>코드를 다시 읽어 보니 <code>IsMove</code>에서는 셀을 찾는 순간 그 셀에 머물러 후보가 사실상 하나라 높이 비교가 작동하지 않고, 실제 구분은 <code>ComputeHeight</code>(절댓값 비교)와 <code>FindCell</code>에서 일어납니다. <code>FindCell</code>은 부호 있는 차이를 써서 위층 셀을 고를 수 있습니다. 다시 만든다면 발밑 셀(높이 차 ≥ 0)만 후보로 두겠습니다.</dd>
+          <dt>해결</dt><dd>위상과 기하로 나눠 정리했습니다. 평소에는 현재 셀에서 이웃을 따라 걸어서 층이 바뀌지 않습니다(겹친 층끼리는 변을 공유하지 않음). 현재 셀을 새로 찾아야 할 때(<code>FindCell</code>)는 후보 중 높이 차가 가장 작은 셀을 고르게 했습니다.</dd>
+          <dt class="limit">다시 만든다면</dt><dd>이 높이 차는 부호가 있는 값(캐릭터 y − 셀 높이)이라, 머리 위에 겹친 셀이 음수로 더 작게 나와 뽑힐 수 있습니다. 발밑 셀(높이 차 ≥ −ε)만 후보로 두겠습니다.</dd>
         </dl>
       </div>
+      <figure class="dg dg-sm">
+        <div class="dg-frame">
+          <svg viewBox="0 0 400 236" role="img" aria-label="계단 측면도: 아래층 셀 위에 선 캐릭터의 XZ 위치를 위층 계단 셀도 덮고 있어, IsIn은 두 셀 모두 안쪽으로 판정한다. 아래층 셀은 높이 차가 0에 가깝고 위층 셀은 음수다.">
+            <path class="floor" d="M24 186 H258"/>
+            <path class="floor" d="M128 98 L376 74"/>
+            <text class="t-b" x="24" y="212">아래층 셀</text>
+            <text class="t-b t-end" x="376" y="62">위층 셀 (나선 계단)</text>
+            <path class="ln dash" d="M190 40 V200"/>
+            <rect class="who" x="183" y="150" width="14" height="32" rx="7"/>
+            <circle class="dot-p" cx="190" cy="92" r="4"/>
+            <circle class="dot-p" cx="190" cy="186" r="4"/>
+            <text class="t-s t-mid" x="190" y="30">같은 XZ — IsIn은 둘 다 「안쪽」</text>
+            <text class="t-s t-end" x="182" y="118">y − 셀 높이 &lt; 0</text>
+            <text class="t-s t-end" x="176" y="174">y − 셀 높이 ≈ 0</text>
+            <text class="t-b" x="270" y="146">평소 이동</text>
+            <text class="t-s" x="270" y="166">이웃을 따라 걸어서</text>
+            <text class="t-s" x="270" y="184">층이 바뀌지 않음</text>
+          </svg>
+        </div>
+        <figcaption>측면도. <code>FindCell</code>은 두 셀 중 이 값이 더 작은 셀을 고르므로 머리 위 셀이 뽑힐 수 있습니다.</figcaption>
+      </figure>
     </section>
 
     <section id="move">
-      <h2><span class="num">05 — Movement</span>점프 · 낙하 · 벽 미끄러짐</h2>
+      <h2><span class="num">04 — Movement · Camera</span>이동 · 카메라</h2>
       <ul>
         <li><b>점프 가능 셀</b> — 셀에 점프 가능 토글을 두고, 그 셀에서 경계를 넘으면 <code>FindCell</code>로 아래 셀을 찾아 낙하를 시작합니다. y가 셀 높이보다 낮아지면 착지로 보고 위치를 맞춥니다. 점프 · 낙하 중이 아니면 셀 높이를 탑니다.</li>
-        <li><b>셀 찾기 범위</b> — 셀이 많으면 전체 순회에서 프레임이 떨어져, 원래 셀 인덱스 주변을 먼저 찾도록 탐색 범위를 두었습니다.</li>
-        <li><b>경계 위치 보정</b> — 현재 셀 밖이면 가장 가까운 경계선 위의 점으로 옮기고, 꼭짓점에 닿으면 이웃 셀로 바꿉니다. 플레이어와 카메라에 적용해 벽을 따라 미끄러지는 효과를 냈습니다.</li>
+        <li><b>경계 위치 보정</b> — 현재 셀 밖으로 나가면 셀의 세 변 중 가장 가까운 변 위의 점으로 XZ만 옮기고 높이는 유지합니다. 그 점이 꼭짓점이면 그 꼭짓점을 공유하는 이웃 셀로 현재 셀을 바꿉니다. 코드에서 확인되는 적용처는 몬스터와 카메라입니다.</li>
+        <li><b>카메라</b> — 카메라는 자기 Navigation과 스폰 셀을 따로 둡니다. 플레이어와 30 이내면 이동에 실패할 때 XZ만 경계로 보정하고 높이는 유지합니다. 30을 넘으면 플레이어 위치로 되돌리고 그 자리의 셀을 다시 찾습니다.</li>
       </ul>
       <div class="figs wide">
         <figure><video src="../assets/img/cd/jump-fall.mp4" poster="../assets/img/cd/jump-fall.jpg" autoplay muted loop playsinline width="914" height="514"></video><figcaption>점프 가능 셀에서 낙하</figcaption></figure>
-        <figure><video src="../assets/img/cd/wall-slide.mp4" poster="../assets/img/cd/wall-slide.jpg" autoplay muted loop playsinline width="1046" height="588"></video><figcaption>경계 위치 보정 — 벽을 따라 미끄러짐</figcaption></figure>
+        <figure><video src="../assets/img/cd/wall-slide.mp4" poster="../assets/img/cd/wall-slide.jpg" autoplay muted loop playsinline width="1046" height="588"></video><figcaption>벽을 따라 미끄러지는 이동</figcaption></figure>
       </div>
-    </section>
-
-    <section id="astar">
-      <h2><span class="num">06 — Path Finding</span>A* 길찾기</h2>
-      <p class="lead">네비게이션 메시의 셀을 노드로 삼아 몬스터가 플레이어까지의 경로를 찾습니다. 기본 구현은 직접 했고, 이후 여러 번의 수정에 AI 도움을 받았습니다.</p>
-      <ul>
-        <li><b>비용</b> — 노드에 <code>F = g + h</code>를 두고 우선순위 큐로 정렬합니다. 간선 비용 g와 휴리스틱 h 모두 셀 중심 사이의 3D 맨해튼 거리(|dx| + |dy| + |dz|)를 씁니다.</li>
-        <li><b>프레임 분할</b> — 탐색 상태(열린 목록, 비용, 이전 셀, 완료 여부, 경로)를 구조체에 담아 한 프레임에 노드 하나씩 진행합니다.</li>
-        <li><b>재탐색</b> — 플레이어를 쫓는 몬스터는 1초마다(아누비스는 0.5초) 경로를 다시 찾습니다.</li>
-        <li><b>직선화</b> — 메시 위에서 2.0 간격으로 가시선 검사를 해 직선으로 갈 수 있는 중간 점을 생략, 지그재그 움직임을 줄였습니다.</li>
-      </ul>
-<pre><code>bool UNavigation::StepPathFinding(PathFindingState&amp; state)
-{
-    if (state.openSet.empty()) return true;           <span class="c">// 경로 없음</span>
-    CellPathNode current = state.openSet.top();
-    state.openSet.pop();
-    if (current.cell == state.endCell) { <span class="c">/* cameFrom을 따라 경로 생성 */</span> return true; }
-
-    for (int neighborIndex : current.cell-&gt;GetNeighbor()) {
-        if (neighborIndex == -1) continue;
-        SHPTR&lt;UCell&gt; neighbor = FindCellWithoutUpdate(neighborIndex);
-        _float newCost = state.costSoFar[current.cell]
-                       + Heuristic(current.cell-&gt;GetCenterPos(), neighbor-&gt;GetCenterPos());
-        if (!state.costSoFar.count(neighbor) || newCost &lt; state.costSoFar[neighbor]) {
-            state.costSoFar[neighbor] = newCost;
-            _float h = Heuristic(neighbor-&gt;GetCenterPos(), state.endCell-&gt;GetCenterPos());
-            state.openSet.push({ neighbor, newCost, h, newCost + h, current.cell });
-            state.cameFrom[neighbor] = current.cell;
-        }
-    }
-    return false;                                     <span class="c">// 다음 프레임에 이어서</span>
-}</code></pre>
-      <span class="code-cap"><span>UNavigation.cpp (예외 처리 줄임)</span></span>
-      <div class="note note-warn"><span class="kr-label">다시 보면</span>재탐색 타이머가 진행 중인 탐색이 있어도 새로 시작합니다. 한 프레임에 노드 하나씩이라 1초 안에 끝나지 않는 먼 거리 탐색은 계속 처음부터 다시 시작되고, 몬스터는 이전 경로를 유지합니다. 또 같은 셀이 큐에 여러 번 들어갈 수 있는데 꺼낼 때 오래된 항목을 건너뛰지 않습니다. 이 비용은 재지 않았습니다. 다시 만든다면 프레임당 노드 수를 예산으로 두고, 탐색 중에는 재시작을 미루겠습니다.</div>
     </section>
 
     <section id="mobs">
-      <h2><span class="num">07 — Monster AI</span>몬스터 4종</h2>
-      <p class="lead">각 몬스터는 자기 경로(AStarPath)로 플레이어를 쫓습니다. AnimController가 조건에 따라 애니메이션 상태를 바꾸면 그 상태의 애니메이션을 재생하고 루트 모션을 적용합니다.</p>
-      <figure><img src="../assets/img/cd/mob-states.png" class="" alt="몬스터 애니메이션 상태 전환 흐름도" width="1305" height="276" loading="lazy"><figcaption>AnimController 상태 전환 흐름 (미라)</figcaption></figure>
+      <h2><span class="num">05 — Monster AI</span>몬스터 4종</h2>
+      <p class="lead">팀장이 만든 애니메이션 컨트롤러 프레임워크가 상태에 맞는 애니메이션을 재생하고 루트 모션을 처리합니다. 저는 그 위에서 몬스터마다 상태를 바꾸는 조건(거리 · 피격 횟수 · 타이머)을 작성했습니다.</p>
+      <ul>
+        <li><b>감지 · 해제 거리 분리</b> — 감지 거리 안으로 들어오면 추적을 시작하고, 그보다 먼 해제 거리 밖으로 나가야 추적을 멈춥니다(<code>CMob::SearchForPlayers</code>). 경계 근처에서 추적이 켜졌다 꺼졌다 깜빡이지 않게 하는 이중 임계값입니다.</li>
+        <li><b>추격 이동</b> — A* 경로는 방향만 정합니다(<code>MoveAlongPath</code>는 다음 목표 점만 갱신). 실제 이동은 현재 애니메이션 상태별 고정 속도로 옮깁니다.</li>
+        <li><b>배회 · 복귀</b> — 플레이어를 찾지 못하면 미라 · 미노타우르스 · 할리퀸은 5초마다 이웃 셀을 무작위로 세 번 건너간 셀을 골라 그쪽으로 경로를 찾습니다. 아누비스는 원래 자리로 돌아갑니다.</li>
+      </ul>
       <div class="tbl">
         <table>
-          <thead><tr><th>몬스터</th><th>패턴</th></tr></thead>
+          <thead><tr><th>몬스터</th><th>감지 / 해제</th><th>패턴</th></tr></thead>
           <tbody>
-            <tr><td>미라</td><td>누운 형태 · 선 형태 2종. 범위에 들어오면 관이 열리며 일어나 도발 후 추적. 손 휘두르기 2종, 맞으면 짧은 경직. 멀어지면 주변 이웃 셀을 골라 배회</td></tr>
-            <tr><td>미노타우르스</td><td>발차기로 멀리 넉백. 넉백된 플레이어가 스페이스바로 일어나지 않으면 거리를 벌렸다 달려와 더 강한 발차기. 보스라 세 번 피격까지만 피격 애니메이션 · 경직, 이후 5초는 리액션 없이 공격(데미지는 그대로)</td></tr>
-            <tr><td>할리퀸</td><td>전용 방에서 전투. 탐지 시 도발로 시작. 멀면 전방 3방향 수리검, 중간이면 점프 돌진, 가까우면 백스텝 · 회축 · 덤블링 발차기. 수리검마다 네비게이션 메시를 달아 기둥 · 벽을 뚫지 않음</td></tr>
-            <tr><td>아누비스</td><td>특정 위치를 지킴. 일정 시간마다 8초 보호막(그동안 피해 없음, 근접 시 넉백). 중거리(15–40)에서 마법진, 근접 시 밀쳐내기. 계단 때문에 높이 차가 있으면 마법진 대신 다가감. 플레이어가 죽거나 멀어지면 원래 자리로 복귀</td></tr>
+            <tr><td>미라</td><td class="num">50 / 80</td><td>누운 형태 · 선 형태 2종. 범위에 들어오면 관이 열리며 일어나 도발 후 추적. 손 휘두르기 2종, 맞으면 짧은 경직. 멀어지면 주변 이웃 셀을 골라 배회</td></tr>
+            <tr><td>미노타우르스</td><td class="num">100 / 120</td><td>발차기로 멀리 넉백. 플레이어가 쓰러져 있으면 물러났다가 달려와 더 강한 발차기(아래 상태도). 보스라 세 번 피격까지만 피격 애니메이션 · 경직, 이후 5초는 리액션 없이 공격(데미지는 그대로)</td></tr>
+            <tr><td>할리퀸</td><td class="num">80 / 150</td><td>전용 방에서 전투. 탐지 시 도발로 시작. 멀면 전방 3방향 수리검, 중간이면 점프 돌진, 가까우면 백스텝 · 회축 · 덤블링 발차기. 수리검마다 네비게이션 메시를 달아 기둥 · 벽을 뚫지 않음</td></tr>
+            <tr><td>아누비스</td><td class="num">70 / 80</td><td>특정 위치를 지킴. 일정 시간마다 8초 보호막(그동안 피해 없음, 근접 시 넉백). 중거리(15–40)에서 마법진, 근접 시 밀쳐내기. 계단 때문에 높이 차가 있으면 마법진 대신 다가감. 플레이어가 죽거나 멀어지면 원래 자리로 복귀</td></tr>
           </tbody>
         </table>
       </div>
+      <figure class="dg dg-sm">
+        <div class="dg-frame">
+          <svg viewBox="0 0 400 580" role="img" aria-label="미노타우르스 상태도: 배회 중 감지 거리 100 이내면 공격 모드. 공격 모드에서는 거리 10 이내면 근접 공격, 멀면 추격하고 공격 종류는 3초마다 교대. 해제 거리 120 이상이면 배회로 복귀. 플레이어가 넉백으로 쓰러진 지 1.5초가 지나면 돌진 모드: 2초 후퇴, 목표 근처까지 달리기, 강한 발차기 1초 뒤 공격 모드로 복귀. 피격은 세 번째까지 경직, 그 뒤 5초 동안 피격 동작 없음, 데미지는 그대로.">
+            <defs>
+              <marker id="mi-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+              <marker id="mi-hp" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd-p" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="100" y="6" width="180" height="48" rx="2"/>
+            <text class="t-b t-mid" x="190" y="27">배회</text>
+            <text class="t-c t-mid" x="190" y="45">WALK</text>
+            <path class="ln" d="M190 54 V94" marker-end="url(#mi-h)"/>
+            <text class="t-s" x="198" y="80">감지 거리 100 이내</text>
+
+            <rect class="grp" x="10" y="98" width="320" height="146" rx="2"/>
+            <text class="t-b t-p" x="22" y="118">공격 모드</text>
+            <rect class="bx" x="24" y="128" width="136" height="52" rx="2"/>
+            <text class="t-b t-mid" x="92" y="150">추격</text>
+            <text class="t-c t-mid" x="92" y="169">WALK2</text>
+            <rect class="bx" x="180" y="128" width="136" height="52" rx="2"/>
+            <text class="t-b t-mid" x="248" y="150">근접 공격</text>
+            <text class="t-c t-mid" x="248" y="169">ATTACK ↔ KICK_1</text>
+            <path class="ln" d="M161 146 H178" marker-end="url(#mi-h)"/>
+            <path class="ln" d="M179 164 H162" marker-end="url(#mi-h)"/>
+            <text class="t-s t-mid" x="170" y="206">거리 10 이내면 공격, 멀면 추격</text>
+            <text class="t-s t-mid" x="170" y="226">공격 종류는 3초마다 교대</text>
+
+            <path class="ln" d="M330 118 H362 V30 H284" marker-end="url(#mi-h)"/>
+            <text class="t-s t-mid" transform="translate(377 80) rotate(-90)">해제 거리 120 이상</text>
+
+            <path class="ln-p" d="M170 244 V298" marker-end="url(#mi-hp)"/>
+            <text class="t-s" x="178" y="266">플레이어가 넉백으로</text>
+            <text class="t-s" x="178" y="284">쓰러진 지 1.5초 초과</text>
+
+            <rect class="grp" x="10" y="302" width="320" height="136" rx="2"/>
+            <text class="t-b t-p" x="22" y="322">돌진 모드</text>
+            <rect class="bx-p" x="22" y="334" width="88" height="58" rx="2"/>
+            <text class="t-b t-mid" x="66" y="358">후퇴</text>
+            <text class="t-s t-mid" x="66" y="378">2초</text>
+            <rect class="bx-p" x="128" y="334" width="88" height="58" rx="2"/>
+            <text class="t-b t-mid" x="172" y="358">달리기</text>
+            <text class="t-s t-mid" x="172" y="378">목표 근처까지</text>
+            <rect class="bx-p" x="234" y="334" width="88" height="58" rx="2"/>
+            <text class="t-b t-mid" x="278" y="358">강한 발차기</text>
+            <text class="t-s t-mid" x="278" y="378"><tspan class="t-c">KICK_2</tspan> · 1초</text>
+            <path class="ln-p" d="M111 363 H126" marker-end="url(#mi-hp)"/>
+            <path class="ln-p" d="M217 363 H232" marker-end="url(#mi-hp)"/>
+            <text class="t-s t-mid" x="170" y="420">쓰러진 순간의 플레이어 위치를 목표로 고정</text>
+
+            <path class="ln-p" d="M330 363 H350 V222 H332" marker-end="url(#mi-hp)"/>
+            <text class="t-s t-mid t-p" transform="translate(366 292) rotate(-90)">1초 뒤 공격 모드로</text>
+
+            <rect class="bx" x="10" y="466" width="320" height="104" rx="2"/>
+            <text class="t-b" x="24" y="490">피격 — 어느 상태에서나</text>
+            <text x="24" y="514">세 번째 피격까지 <tspan class="t-c">hit_1</tspan> 경직</text>
+            <text x="24" y="535">그 뒤 5초 동안 피격 동작 없음</text>
+            <text x="24" y="556">(데미지는 그대로 들어감)</text>
+          </svg>
+        </div>
+        <figcaption>미노타우르스 상태 전환 조건. 플레이어가 죽어도 배회로 돌아가고, 체력이 0이 되면 어느 상태에서든 사망 상태로 바뀝니다.</figcaption>
+      </figure>
       <div class="figs figs-3">
-        <figure><img src="../assets/img/cd/minotaur.jpg" alt="미노타우르스" width="340" height="392" loading="lazy"><figcaption>미노타우르스</figcaption></figure>
+        <figure><img src="../assets/img/cd/minotaur-fight.jpg" alt="넉백으로 쓰러진 플레이어에게 달려오는 미노타우르스" width="1271" height="1030" loading="lazy"><figcaption>미노타우르스 — 쓰러진 플레이어에게 돌진</figcaption></figure>
         <figure><img src="../assets/img/cd/harlequin.jpg" alt="할리퀸 수리검 공격" width="578" height="292" loading="lazy"><figcaption>할리퀸 — 수리검</figcaption></figure>
         <figure><img src="../assets/img/cd/anubis-circle.jpg" alt="아누비스 마법진 공격" width="710" height="563" loading="lazy"><figcaption>아누비스 — 마법진</figcaption></figure>
       </div>
     </section>
 
     <section id="player">
-      <h2><span class="num">08 — Player</span>플레이어</h2>
+      <h2><span class="num">06 — Player</span>플레이어</h2>
       <ul>
-        <li><b>콤보</b> — 좌클릭 · 우클릭 콤보, 스택 최대 3. 공격을 도중에 멈추면 스택 초기화</li>
-        <li><b>구르기</b> — 구르는 동안 충돌 검사를 꺼 피격 회피</li>
-        <li><b>넉백 · 기상</b> — 넉백 후 일정 시간 뒤 스페이스바로 일어남</li>
-        <li><b>연속 공격 스킬</b> — 시전 시 여러 번 공격</li>
-        <li><b>R 감지 스킬</b> — 입력과 토글 로직 (어두워지는 화면과 외곽선 렌더링은 팀원 작업)</li>
+        <li><b>콤보</b> — 좌클릭 · 우클릭 각각 3단계. 앞 단계가 재생 중일 때 다시 눌러야 다음 단계로 이어지고, 아니면 1단계부터 시작합니다.</li>
+        <li><b>스킬 3종(Q · 1 · 2)</b> — 각자 쿨타임이 있고, 다른 스킬이 시전 중이면 시작하지 않아 동시에 쓸 수 없습니다.</li>
+        <li><b>점프 제한</b> — 구르기 · 피격 · 기상 · 콤보 · 스킬 동작 중에는 점프 입력을 받지 않습니다.</li>
+        <li><b>구르기</b> — 구르기 · 점프 · 기상 중에는 피격 콜라이더 크기를 0으로 줄이고, 구르다 벽에 닿으면 직전 위치로 되돌립니다.</li>
+        <li><b>넉백 · 기상</b> — 넉백 공격에 맞으면 몬스터가 보는 방향으로 플레이어를 돌린 뒤, 넉백 애니메이션의 루트 모션으로 약 1.75초 동안 밀어냅니다. 2초가 지나면 Space로 일어나고, 기상 중에는 피격을 무시합니다. 아누비스 보호막에 밀릴 때는 아누비스가 보는 방향의 반대로 돌립니다.</li>
       </ul>
-      <div class="figs wide">
+      <div class="shots">
         <figure><img src="../assets/img/cd/player-combo.jpg" alt="플레이어 콤보 공격" width="475" height="435" loading="lazy"><figcaption>콤보 공격</figcaption></figure>
         <figure><img src="../assets/img/cd/player-roll.jpg" alt="플레이어 구르기" width="230" height="278" loading="lazy"><figcaption>구르기</figcaption></figure>
       </div>
     </section>
 
-    <section id="loader">
-      <h2><span class="num">09 — Level Tool</span>모델 배치 툴</h2>
-      <p>맵 모델 · 오브젝트 · 몬스터의 변환을 한 화면에서 편집하고 바이너리 파일로 저장해 클라이언트에서 불러 쓰는 레벨 툴입니다. ImGuizmo로 이동 · 회전 · 크기를 직접 조작합니다.</p>
+    <section id="astar">
+      <h2><span class="num">07 — Path Finding</span>A* 길찾기</h2>
+      <p class="lead">네비게이션 메시의 셀을 노드로 삼아 몬스터가 플레이어까지의 경로를 찾습니다.</p>
+      <ul>
+        <li><b>비용</b> — 노드에 <code>F = g + h</code>를 두고 우선순위 큐로 정렬합니다. 간선 비용 g와 휴리스틱 h 모두 셀 중심 사이의 3D 맨해튼 거리(|dx| + |dy| + |dz|)를 씁니다.</li>
+        <li><b>프레임 분할</b> — 탐색 상태(열린 목록, 비용, 이전 셀, 완료 여부, 경로)를 구조체에 담아 한 프레임에 노드 하나씩 진행합니다.</li>
+        <li><b>도착 판정</b> — 몬스터의 현재 셀과 플레이어의 현재 셀은 같은 셀 컨테이너의 원소라 포인터로 비교합니다.</li>
+        <li><b>재탐색</b> — 플레이어를 쫓는 몬스터는 1초마다(아누비스는 0.5초) 경로를 다시 찾습니다.</li>
+        <li><b>직선화</b> — 메시 위에서 2.0 간격으로 가시선 검사를 해 직선으로 갈 수 있는 중간 점을 생략, 지그재그 움직임을 줄였습니다.</li>
+      </ul>
+      <figure class="dg wide">
+        <div class="dg-frame dg-steps">
+          <svg viewBox="0 0 200 172" role="img" aria-label="1단계: 시작점에서 셀 중심들을 차례로 이어 도착점까지 가는 지그재그 경로">
+            <path class="mesh" d="M10 150 L10 100 L55 150 Z M10 100 L55 100 L55 150 Z M55 150 L55 100 L100 150 Z M55 100 L120 100 L100 150 Z M100 150 L120 100 L170 150 Z M120 100 L170 100 L170 150 Z M120 100 L120 55 L170 100 Z M120 55 L170 55 L170 100 Z M120 55 L120 10 L170 55 Z M120 10 L170 10 L170 55 Z"/>
+            <path class="ln" d="M18 140 L25 133.3 L40 116.7 L70 133.3 L91.7 116.7 L130 133.3 L153.3 116.7 L136.7 85 L153.3 70 L136.7 40 L153.3 25 L150 18"/>
+            <circle class="dot" cx="25" cy="133.3" r="2"/><circle class="dot" cx="40" cy="116.7" r="2"/><circle class="dot" cx="70" cy="133.3" r="2"/><circle class="dot" cx="91.7" cy="116.7" r="2"/><circle class="dot" cx="130" cy="133.3" r="2"/><circle class="dot" cx="153.3" cy="116.7" r="2"/><circle class="dot" cx="136.7" cy="85" r="2"/><circle class="dot" cx="153.3" cy="70" r="2"/><circle class="dot" cx="136.7" cy="40" r="2"/><circle class="dot" cx="153.3" cy="25" r="2"/>
+            <circle class="dot-p" cx="18" cy="140" r="3.5"/><circle class="dot-p" cx="150" cy="18" r="3.5"/>
+            <text class="t-c t-p" x="12" y="166">S</text><text class="t-c t-p" x="178" y="22">E</text>
+            <text class="t-b" x="8" y="22">① 셀 중심 연결</text>
+            <text class="t-s" x="8" y="40">A* 결과 그대로면</text>
+            <text class="t-s" x="8" y="56">지그재그</text>
+          </svg>
+          <svg viewBox="0 0 200 172" role="img" aria-label="2단계: 시작점에서 다음 점까지 2.0 간격으로 셀 안인지 검사. 꺾이기 전 점까지는 통과, 모퉁이 너머 점은 메시 밖을 지나 실패">
+            <path class="mesh" d="M10 150 L10 100 L55 150 Z M10 100 L55 100 L55 150 Z M55 150 L55 100 L100 150 Z M55 100 L120 100 L100 150 Z M100 150 L120 100 L170 150 Z M120 100 L170 100 L170 150 Z M120 100 L120 55 L170 100 Z M120 55 L170 55 L170 100 Z M120 55 L120 10 L170 55 Z M120 10 L170 10 L170 55 Z"/>
+            <path class="ln-p" d="M18 140 L129.8 133.3"/>
+            <circle class="dot-p" cx="32" cy="139.2" r="1.8"/><circle class="dot-p" cx="46" cy="138.3" r="1.8"/><circle class="dot-p" cx="59.9" cy="137.5" r="1.8"/><circle class="dot-p" cx="73.9" cy="136.7" r="1.8"/><circle class="dot-p" cx="87.9" cy="135.8" r="1.8"/><circle class="dot-p" cx="101.9" cy="135" r="1.8"/><circle class="dot-p" cx="115.8" cy="134.1" r="1.8"/>
+            <circle class="dot" cx="130" cy="133.3" r="2.5"/>
+            <path class="ln dash" d="M18 140 L136.7 85"/>
+            <circle class="dot" cx="30.7" cy="134.1" r="1.8"/><circle class="dot" cx="43.4" cy="128.2" r="1.8"/><circle class="dot" cx="56.1" cy="122.3" r="1.8"/><circle class="dot" cx="68.8" cy="116.5" r="1.8"/><circle class="dot" cx="81.5" cy="110.6" r="1.8"/><circle class="dot" cx="94.2" cy="104.7" r="1.8"/>
+            <path class="ln-p" d="M103 95 L111 103 M111 95 L103 103"/>
+            <circle class="dot" cx="136.7" cy="85" r="2.5"/>
+            <circle class="dot-p" cx="18" cy="140" r="3.5"/>
+            <text class="t-c t-p" x="12" y="166">S</text>
+            <text class="t-b" x="8" y="22">② 2.0 간격 검사</text>
+            <text class="t-s" x="8" y="40">실선 통과</text>
+            <text class="t-s" x="8" y="56">점선은 메시 밖 ✕</text>
+          </svg>
+          <svg viewBox="0 0 200 172" role="img" aria-label="3단계: 직선화 결과. 시작점에서 모퉁이 근처 한 점을 거쳐 도착점으로 가는 두 구간 경로">
+            <path class="mesh" d="M10 150 L10 100 L55 150 Z M10 100 L55 100 L55 150 Z M55 150 L55 100 L100 150 Z M55 100 L120 100 L100 150 Z M100 150 L120 100 L170 150 Z M120 100 L170 100 L170 150 Z M120 100 L120 55 L170 100 Z M120 55 L170 55 L170 100 Z M120 55 L120 10 L170 55 Z M120 10 L170 10 L170 55 Z"/>
+            <path class="ln-p" d="M18 140 L153.3 116.7 L150 18"/>
+            <circle class="dot-p" cx="153.3" cy="116.7" r="3"/>
+            <circle class="dot-p" cx="18" cy="140" r="3.5"/><circle class="dot-p" cx="150" cy="18" r="3.5"/>
+            <text class="t-c t-p" x="12" y="166">S</text><text class="t-c t-p" x="178" y="22">E</text>
+            <text class="t-b" x="8" y="22">③ 직선화 결과</text>
+            <text class="t-s" x="8" y="40">검사에 실패하기</text>
+            <text class="t-s" x="8" y="56">직전 점만 남김</text>
+          </svg>
+        </div>
+        <figcaption>개념도. <code>OptimizePath</code>는 마지막으로 남긴 점에서 다음 점까지 2.0 간격으로 셀 안인지 검사하고, 통과하면 그 사이 점을 생략합니다.</figcaption>
+      </figure>
+<pre><code>if (GetTimeAccumulator() &gt;= 1.0) {                     <span class="c">// 1초마다 새로 시작</span>
+    m_PathFindingState = spNavigation-&gt;StartPathFinding(
+        CurrentMobPos, CurrentPlayerPos, CurrentMobCell, CurrentPlayerCell);
+    m_isPathFinding = true;
+    SetTimeAccumulator(0.0);
+}
+if (m_isPathFinding) {
+    if (spNavigation-&gt;StepPathFinding(m_PathFindingState)) {  <span class="c">// 프레임당 노드 하나</span>
+        m_isPathFinding = false;
+        if (m_PathFindingState.pathFound) {
+            m_AstarPath = spNavigation-&gt;OptimizePath(          <span class="c">// 가시선으로 직선화</span>
+                m_PathFindingState.path, CurrentMobPos, CurrentPlayerPos);
+            m_currentPathIndex = 0;
+        }
+    }
+}</code></pre>
+      <span class="code-cap"><span>CMinotaur.cpp — 플레이어를 찾았을 때의 경로 갱신 (돌진 분기 · 지역 변수 선언 줄임)</span></span>
+    </section>
+
+    <section id="tool">
+      <h2><span class="num">08 — ImGui Tools</span>편집 툴 2종</h2>
+      <p class="lead">편집 로직은 엔진의 Region · Stage에 빌드 플래그(<code>_EDIT_NAVI</code>)로 넣고, Tool 프로젝트의 NavigationView가 이를 호출합니다. 모델 배치(레벨) 툴도 같은 Tool 프로젝트에 있습니다.</p>
+      <h3>네비게이션 편집</h3>
+      <p>맵 모델을 띄우고 픽킹으로 셀을 찍어 메시를 만듭니다. 「Modify Navigation」을 켜면 편집이 시작됩니다.</p>
+      <ul>
+        <li><b>셀 생성</b> — 픽킹할 때마다 그 위치에 큐브를 두고, 세 번째 클릭에서 셀을 만듭니다. 기존 꼭짓점 반경 1.5 안을 찍으면 그 꼭짓점 좌표를 그대로 써서 엔진이 이웃으로 연결하게 했습니다(02 참고).</li>
+        <li><b>셀 번호</b> — 새 셀의 번호는 그때까지의 셀 개수, 즉 만든 순서입니다. 셀을 지우면 번호를 다시 매기고 이웃을 다시 계산합니다.</li>
+        <li><b>되돌리기</b> — BackSpace로 꼭짓점 설정 중이면 마지막 픽킹을, 아니면 마지막 셀을 지웁니다.</li>
+        <li><b>지연 삭제</b> — ImGui가 셀 목록을 순회하는 도중 삭제하지 않도록, 지울 셀을 set에 모아 다음 Tick 맨 앞에서 한꺼번에 지우고 번호 재부여 · 이웃 재계산을 합니다. 엔진 <code>UActorGroup</code>과 같은 지연 삭제 패턴입니다.</li>
+        <li><b>렌더 범위 지정</b> — 셀이 많아지면 디버그 큐브도 늘어 프레임이 떨어져, 그릴 셀의 번호 범위를 정할 수 있게 했습니다.</li>
+        <li><b>셀 검사</b> — Pick_On_Cell로 셀을 골라 번호 · 이웃 번호를 보고, 점프 가능 여부를 바꾸거나 지웁니다. 번호 오류를 이웃 정보로 찾아 고쳤습니다.</li>
+        <li><b>저장 · 불러오기</b> — Region마다 이름을 붙여 <code>Navigation</code> 폴더에 파일로 저장하고, 폴더째 다시 불러옵니다.</li>
+      </ul>
       <div class="figs wide">
-        <figure><img src="../assets/img/cd/model-loader.jpg" alt="모델 배치 툴 화면" width="1188" height="691" loading="lazy"><figcaption>모델 배치</figcaption></figure>
+        <figure><img src="../assets/img/cd/cell-create-1.jpg" alt="픽킹으로 꼭짓점을 찍는 화면" width="1189" height="864" loading="lazy"><figcaption>꼭짓점 픽킹</figcaption></figure>
+        <figure><img src="../assets/img/cd/cell-create-2.jpg" alt="세 꼭짓점으로 셀이 만들어진 화면" width="1197" height="868" loading="lazy"><figcaption>세 번째 클릭에서 셀 생성</figcaption></figure>
+      </div>
+      <h3>모델 배치(레벨) 툴</h3>
+      <p>맵 모델 · 오브젝트 · 몬스터 모델을 목록에서 골라 배치하고, 배치 묶음을 MapLayouts로 저장하고 불러옵니다. 일반 모델(ModelViewer)과 애니메이션 모델(AnimModelViewer)을 따로 다루고, ImGuizmo로 이동 · 회전 · 크기를 직접 조작합니다.</p>
+      <div class="figs wide">
+        <figure><img src="../assets/img/cd/level-tool.jpg" alt="모델 배치 툴 화면 — ModelViewer와 AnimModelViewer 창, MapLayouts 저장과 불러오기 버튼" width="1400" height="814" loading="lazy"><figcaption>모델 배치 — ConvertModels, MapLayouts 저장 · 불러오기</figcaption></figure>
         <figure><img src="../assets/img/cd/guizmo.jpg" alt="ImGuizmo로 몬스터 변환 조작" width="1400" height="816" loading="lazy"><figcaption>ImGuizmo 변환 조작</figcaption></figure>
       </div>
     </section>
 
     <section id="cd-limits">
-      <h2><span class="num">10 — Limits</span>한계와 다시 만든다면</h2>
+      <h2><span class="num">09 — Limits</span>한계와 다시 만든다면</h2>
       <div class="tbl">
         <table>
-          <thead><tr><th>한계</th><th>다시 한다면</th></tr></thead>
+          <thead><tr><th>한계</th><th>다시 만든다면</th></tr></thead>
           <tbody>
-            <tr><td>겹친 층 셀 선택 기준이 함수마다 다름 (절댓값 · 부호 있는 차이)</td><td>발밑 셀(높이 차 ≥ 0)만 후보로 두는 한 가지 기준</td></tr>
-            <tr><td>A* 재탐색이 진행 중인 탐색을 끊을 수 있음 · 비용 미측정</td><td>프레임당 노드 예산, 탐색 중 재시작 지연, 프로파일링</td></tr>
+            <tr><td>셀 번호 하드코딩</td><td>플레이어 시작(23), 캐릭터 Navigation 시작(703), 게임 종료 트리거(1141)가 셀 번호에 묶여 있어, 툴에서 셀 하나만 지워도 번호가 당겨져 어긋납니다. → 맵에 스폰 · 트리거 마커를 두고 위치로 셀을 찾겠습니다.</td></tr>
+            <tr><td>편집 코드가 엔진에 섞임</td><td>편집 로직이 엔진 URegion · UStage 안 <code>_EDIT_NAVI</code> 블록에 있습니다. → Tool 쪽 래퍼로 분리하겠습니다.</td></tr>
+            <tr><td>저장 포맷에 버전 없음</td><td>셀 정보를 순서대로 기록할 뿐이라 구조가 바뀌면 옛 파일을 구분할 수 없습니다. → 매직 · 버전 헤더를 두겠습니다.</td></tr>
+            <tr><td>몬스터 로직 중복</td><td>몬스터 4종이 추격 · 배회 · 복귀의 경로 탐색 블록을 각자 가지고 있습니다. → <code>CMob</code> 또는 경로 추종 컴포넌트로 모으겠습니다.</td></tr>
+            <tr><td>A* 1초 재시작</td><td>프레임당 노드 하나라 60fps 기준 초당 약 60노드를 봅니다. 1초마다 새로 시작하므로 그보다 먼 경로는 끝나기 전에 다시 시작될 수 있습니다. → 프레임당 노드 예산을 두고, 탐색 중에는 재시작을 미루겠습니다.</td></tr>
+            <tr><td>이웃 셀 조회가 선형 탐색</td><td>A*가 이웃 번호로 셀을 찾을 때 컨테이너 전체를 돌며 번호를 비교합니다. → 번호와 배열 위치를 일치시켜 바로 인덱싱하겠습니다.</td></tr>
           </tbody>
         </table>
       </div>
