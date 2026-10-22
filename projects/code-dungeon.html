@@ -309,6 +309,78 @@
           </tbody>
         </table>
       </div>
+      <div class="mtabs" data-tabs>
+      <div class="mtabs-list" role="tablist" aria-label="몬스터 상태 전환도">
+        <button type="button" role="tab" id="mt-tab-mummy" aria-controls="mt-mummy" aria-selected="true">미라</button>
+        <button type="button" role="tab" id="mt-tab-minotaur" aria-controls="mt-minotaur" aria-selected="false" tabindex="-1">미노타우르스</button>
+        <button type="button" role="tab" id="mt-tab-harlequin" aria-controls="mt-harlequin" aria-selected="false" tabindex="-1">할리퀸</button>
+        <button type="button" role="tab" id="mt-tab-anubis" aria-controls="mt-anubis" aria-selected="false" tabindex="-1">아누비스</button>
+      </div>
+      <p class="mtabs-note">상태 이름은 코드의 트리거 이름입니다. 전환 조건 작성: 본인 · 애니메이션 재생 프레임워크(컨트롤러 · 루트 모션): 팀장.</p>
+
+      <div class="mtabs-panel" role="tabpanel" id="mt-mummy" aria-labelledby="mt-tab-mummy" tabindex="0">
+      <figure class="dg dg-sm">
+        <div class="dg-frame">
+          <svg viewBox="0 0 400 664" role="img" aria-label="미라 상태도: 처음 감지하기 전에는 대기. 감지 거리 50 이내로 처음 들어오면 깨어남(WAKEUP, 누운 형은 openLaying, 선 형은 openStanding)을 재생하고 곧바로 도발 모드(TAUNT). taunt 애니메이션이 재생되면 공격 모드: 거리 10 초과면 추격(WALKF), 10 이내면 ATTACK01과 ATTACK02를 번갈아. 해제 거리 80 이상이거나 플레이어가 죽으면 배회(IDLE 또는 WALKF 무작위, WALKF면 5초마다 주변 셀로 경로). 다시 50 이내면 깨어남 없이 도발부터. 피격되면 어느 상태에서나 gotHit 재생, 횟수 제한 없음. 체력 0이면 DEAD.">
+            <defs>
+              <marker id="mu-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+              <marker id="mu-hp" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd-p" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="110" y="6" width="180" height="48" rx="2"/>
+            <text class="t-b t-mid" x="200" y="27">대기</text>
+            <text class="t-s t-mid" x="200" y="45">처음 감지하기 전</text>
+            <path class="ln" d="M200 54 V90" marker-end="url(#mu-h)"/>
+            <text class="t-s" x="208" y="77">감지 거리 50 이내 · 처음</text>
+
+            <rect class="bx" x="40" y="94" width="320" height="52" rx="2"/>
+            <text class="t-b t-mid" x="200" y="116">깨어남</text>
+            <text class="t-c t-mid" x="200" y="135">WAKEUP · openLaying / openStanding</text>
+            <path class="ln" d="M200 146 V182" marker-end="url(#mu-h)"/>
+            <text class="t-s" x="208" y="169">곧바로 도발 모드</text>
+
+            <rect class="bx" x="110" y="186" width="180" height="48" rx="2"/>
+            <text class="t-b t-mid" x="200" y="207">도발</text>
+            <text class="t-c t-mid" x="200" y="225">TAUNT</text>
+            <path class="ln" d="M200 234 V270" marker-end="url(#mu-h)"/>
+            <text class="t-s" x="208" y="257"><tspan class="t-c">taunt</tspan> 재생되면</text>
+
+            <rect class="grp" x="10" y="274" width="320" height="146" rx="2"/>
+            <text class="t-b t-p" x="22" y="294">공격 모드</text>
+            <rect class="bx" x="24" y="304" width="136" height="52" rx="2"/>
+            <text class="t-b t-mid" x="92" y="326">추격</text>
+            <text class="t-c t-mid" x="92" y="345">WALKF</text>
+            <rect class="bx" x="180" y="304" width="136" height="52" rx="2"/>
+            <text class="t-b t-mid" x="248" y="326">근접 공격</text>
+            <text class="t-c t-mid" x="248" y="345">ATTACK01 ↔ 02</text>
+            <path class="ln" d="M161 322 H178" marker-end="url(#mu-h)"/>
+            <path class="ln" d="M179 340 H162" marker-end="url(#mu-h)"/>
+            <text class="t-s t-mid" x="170" y="382">거리 10 이내면 공격, 멀면 추격</text>
+            <text class="t-s t-mid" x="170" y="402">공격은 직전과 다른 쪽으로 번갈아</text>
+
+            <path class="ln" d="M170 420 V470" marker-end="url(#mu-h)"/>
+            <text class="t-s" x="178" y="441">해제 거리 80 이상</text>
+            <text class="t-s" x="178" y="459">또는 플레이어 사망</text>
+
+            <rect class="bx" x="10" y="474" width="320" height="72" rx="2"/>
+            <text class="t-b t-mid" x="170" y="496">배회</text>
+            <text class="t-c t-mid" x="170" y="516">IDLE 또는 WALKF (무작위)</text>
+            <text class="t-s t-mid" x="170" y="535">WALKF면 5초마다 주변 셀로 경로</text>
+
+            <path class="ln-p" d="M330 510 H362 V210 H292" marker-end="url(#mu-hp)"/>
+            <text class="t-s t-mid t-p" transform="translate(377 360) rotate(-90)">다시 50 이내면 깨어남 없이 도발</text>
+
+            <rect class="bx" x="10" y="572" width="380" height="86" rx="2"/>
+            <text class="t-b" x="24" y="596">피격 · 사망 — 어느 상태에서나</text>
+            <text x="24" y="620">맞을 때마다 <tspan class="t-c">gotHit</tspan> 재생 (횟수 제한 없음)</text>
+            <text x="24" y="643">체력 0이면 <tspan class="t-c">DEAD</tspan></text>
+          </svg>
+        </div>
+        <figcaption>미라 상태 전환 조건(<code>CMummyAnimController.cpp</code>). 감지 · 해제 거리와 배회 경로 주기는 <code>CMummy.cpp</code>에서 확인했습니다.</figcaption>
+      </figure>
+      <figure class="mob-png"><img src="../assets/img/cd/mob-states.png" class="" alt="몬스터 애니메이션 상태 전환 흐름도" width="1305" height="276" loading="lazy"><figcaption>AnimController 상태 전환 흐름 (미라)</figcaption></figure>
+      </div>
+
+      <div class="mtabs-panel" role="tabpanel" id="mt-minotaur" aria-labelledby="mt-tab-minotaur" tabindex="0">
       <figure class="dg dg-sm">
         <div class="dg-frame">
           <svg viewBox="0 0 400 580" role="img" aria-label="미노타우르스 상태도: 배회 중 감지 거리 100 이내면 공격 모드. 공격 모드에서는 거리 10 이내면 근접 공격, 멀면 추격하고 공격 종류는 3초마다 교대. 해제 거리 120 이상이면 배회로 복귀. 플레이어가 넉백으로 쓰러진 지 1.5초가 지나면 돌진 모드: 2초 후퇴, 목표 근처까지 달리기, 강한 발차기 1초 뒤 공격 모드로 복귀. 피격은 세 번째까지 경직, 그 뒤 5초 동안 피격 동작 없음, 데미지는 그대로.">
@@ -369,7 +441,153 @@
         </div>
         <figcaption>미노타우르스 상태 전환 조건. 플레이어가 죽어도 배회로 돌아가고, 체력이 0이 되면 어느 상태에서든 사망 상태로 바뀝니다.</figcaption>
       </figure>
-      <div class="figs figs-3">
+      </div>
+
+      <div class="mtabs-panel" role="tabpanel" id="mt-harlequin" aria-labelledby="mt-tab-harlequin" tabindex="0">
+      <figure class="dg dg-sm">
+        <div class="dg-frame">
+          <svg viewBox="0 0 400 760" role="img" aria-label="할리퀸 상태도: 배회 중에는 2초마다 IDLE과 WALK 중 무작위. 감지 거리 80 이내면 도발(TAUNT), Idle break가 재생되면 공격 모드. 서 있을 때 거리 50 초과면 ATTACK1(수리검 3방향 두 번), 40에서 50이면 WALK로 다가감, 10에서 40이면 JUMP로 점프 돌진, 10 미만이면 ATTACK2와 DODGE 중 무작위. Jump Forward가 80% 지나면 웅크림(CROUCH). 웅크린 상태에서 10 미만이면 ATTACK3, 40에서 50이면 다시 JUMP, 10에서 40이거나 50 초과면 ATTACK4(수리검 6개), Attack 4가 80% 지나면 WALK. 해제 거리 150 이상이거나 플레이어가 죽으면 배회로. 피격은 세 번째까지 Get Hit 경직, 그 뒤 HIT_COOLDOWN_DURATION 동안 피격 동작 없음. 체력 0이면 DEATH.">
+            <defs>
+              <marker id="ha-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+              <marker id="ha-hp" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd-p" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="70" y="6" width="260" height="48" rx="2"/>
+            <text class="t-b t-mid" x="200" y="27">배회</text>
+            <text class="t-s t-mid" x="200" y="45"><tspan class="t-c">IDLE</tspan> · <tspan class="t-c">WALK</tspan> 중 2초마다 무작위</text>
+            <path class="ln" d="M200 54 V90" marker-end="url(#ha-h)"/>
+            <text class="t-s" x="208" y="77">감지 거리 80 이내</text>
+
+            <rect class="bx" x="110" y="94" width="180" height="48" rx="2"/>
+            <text class="t-b t-mid" x="200" y="115">도발</text>
+            <text class="t-c t-mid" x="200" y="133">TAUNT</text>
+            <path class="ln" d="M200 142 V178" marker-end="url(#ha-h)"/>
+            <text class="t-s" x="208" y="165"><tspan class="t-c">Idle break</tspan> 재생되면</text>
+
+            <rect class="grp" x="10" y="182" width="320" height="214" rx="2"/>
+            <text class="t-b t-p" x="22" y="202">공격 모드 — 서 있을 때</text>
+            <text class="t-s" x="24" y="237">50 초과</text>
+            <path class="ln" d="M80 232 H114" marker-end="url(#ha-h)"/>
+            <rect class="bx" x="116" y="214" width="202" height="36" rx="2"/>
+            <text x="128" y="237"><tspan class="t-c">ATTACK1</tspan> · 수리검 3방향 ×2</text>
+            <text class="t-s" x="24" y="281">40–50</text>
+            <path class="ln" d="M80 276 H114" marker-end="url(#ha-h)"/>
+            <rect class="bx" x="116" y="258" width="202" height="36" rx="2"/>
+            <text x="128" y="281"><tspan class="t-c">WALK</tspan> · 다가감</text>
+            <text class="t-s" x="24" y="325">10–40</text>
+            <path class="ln-p" d="M80 320 H114" marker-end="url(#ha-hp)"/>
+            <rect class="bx-p" x="116" y="302" width="202" height="36" rx="2"/>
+            <text x="128" y="325"><tspan class="t-c">JUMP</tspan> · 점프 돌진</text>
+            <text class="t-s" x="24" y="369">10 미만</text>
+            <path class="ln" d="M80 364 H114" marker-end="url(#ha-h)"/>
+            <rect class="bx" x="116" y="346" width="202" height="36" rx="2"/>
+            <text x="128" y="369"><tspan class="t-c">ATTACK2</tspan> / <tspan class="t-c">DODGE</tspan> · 무작위</text>
+
+            <path class="ln" d="M330 290 H362 V30 H332" marker-end="url(#ha-h)"/>
+            <text class="t-s t-mid" transform="translate(377 160) rotate(-90)">해제 거리 150 이상 · 플레이어 사망</text>
+
+            <path class="ln-p" d="M318 320 H346 V438 H332" marker-end="url(#ha-hp)"/>
+
+            <rect class="grp" x="10" y="420" width="320" height="202" rx="2"/>
+            <text class="t-b t-p" x="22" y="440">웅크림 — CROUCH</text>
+            <text class="t-s" x="22" y="459"><tspan class="t-c">Jump Forward</tspan> 동작 80%에서 넘어옴</text>
+            <text class="t-s" x="24" y="493">10 미만</text>
+            <path class="ln" d="M80 488 H114" marker-end="url(#ha-h)"/>
+            <rect class="bx" x="116" y="470" width="202" height="36" rx="2"/>
+            <text x="128" y="493"><tspan class="t-c">ATTACK3</tspan></text>
+            <text class="t-s" x="24" y="537">40–50</text>
+            <path class="ln" d="M80 532 H114" marker-end="url(#ha-h)"/>
+            <rect class="bx" x="116" y="514" width="202" height="36" rx="2"/>
+            <text x="128" y="537"><tspan class="t-c">JUMP</tspan> · 다시 점프 돌진</text>
+            <text class="t-s" x="24" y="578">10–40</text>
+            <text class="t-s" x="24" y="597">50 초과</text>
+            <path class="ln" d="M80 584 H114" marker-end="url(#ha-h)"/>
+            <rect class="bx" x="116" y="558" width="202" height="52" rx="2"/>
+            <text x="128" y="580"><tspan class="t-c">ATTACK4</tspan> · 수리검 6개</text>
+            <text class="t-s" x="128" y="600">동작 80%에서 <tspan class="t-c">WALK</tspan>로</text>
+
+            <rect class="bx" x="10" y="646" width="380" height="108" rx="2"/>
+            <text class="t-b" x="24" y="670">피격 · 사망 — 어느 상태에서나</text>
+            <text x="24" y="694">세 번째 피격까지 <tspan class="t-c">Get Hit</tspan> 경직</text>
+            <text x="24" y="716">그 뒤 <tspan class="t-c">HIT_COOLDOWN_DURATION</tspan> 동안 피격 동작 없음</text>
+            <text x="24" y="738">체력 0이면 <tspan class="t-c">DEATH</tspan></text>
+          </svg>
+        </div>
+        <figcaption>할리퀸 상태 전환 조건(<code>CHarlequinnAnimController.cpp</code>). 감지 · 해제 거리는 <code>CHarlequinn.cpp</code>에서 확인했습니다. 피격 뒤 쉬는 시간(<code>HIT_COOLDOWN_DURATION</code>)은 헤더 파일이 없어 값을 확인하지 못했습니다.</figcaption>
+      </figure>
+      </div>
+
+      <div class="mtabs-panel" role="tabpanel" id="mt-anubis" aria-labelledby="mt-tab-anubis" tabindex="0">
+      <figure class="dg dg-sm">
+        <div class="dg-frame">
+          <svg viewBox="0 0 400 786" role="img" aria-label="아누비스 상태도: 원래 자리에서 경계(GUARDIDLE). 감지 거리 70 이내면 전투 자세(TOATTACKIDLE), 재생되면 공격 모드(ATTACKIDLE). 공격 모드에서는 먼저 보호막을 확인해, 보호막이 꺼진 채 3초가 지나면 ATTACK3으로 보호막(8초 동안 피해 없음). 아니면 거리 40 초과면 WALK로 다가감, 15에서 40이면 CAST로 마법진(높이 차가 0.2를 넘으면 WALK), 15 미만이면 ATTACK1과 ATTACK4 중 무작위. 해제 거리 80 이상이거나 플레이어가 죽으면 복귀: WALK로 원래 자리로, 2 이내면 TOGUARDIDLE, 동작 90%에서 GUARDIDLE. 걷는 중 다시 감지되면 곧바로 공격 모드. 피격은 세 번째까지 Hit Reaction 경직, 횟수를 되돌리는 코드가 없어 그 뒤로는 경직 없음. 보호막 중에는 피해 없음. 체력 0이면 DEATH.">
+            <defs>
+              <marker id="an-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+              <marker id="an-hp" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd-p" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="70" y="6" width="260" height="48" rx="2"/>
+            <text class="t-b t-mid" x="200" y="27">경계</text>
+            <text class="t-s t-mid" x="200" y="45"><tspan class="t-c">GUARDIDLE</tspan> · 원래 자리 · 원래 방향</text>
+            <path class="ln" d="M200 54 V90" marker-end="url(#an-h)"/>
+            <text class="t-s" x="208" y="77">감지 거리 70 이내</text>
+
+            <rect class="bx" x="70" y="94" width="260" height="48" rx="2"/>
+            <text class="t-b t-mid" x="200" y="115">전투 자세</text>
+            <text class="t-c t-mid" x="200" y="133">TOATTACKIDLE</text>
+            <path class="ln" d="M200 142 V178" marker-end="url(#an-h)"/>
+            <text class="t-s" x="208" y="165">재생되면 공격 모드</text>
+
+            <rect class="grp" x="10" y="182" width="320" height="266" rx="2"/>
+            <text class="t-b t-p" x="22" y="202">공격 모드 — <tspan class="t-c">ATTACKIDLE</tspan></text>
+            <rect class="bx-p" x="24" y="214" width="294" height="52" rx="2"/>
+            <text x="36" y="236"><tspan class="t-c">ATTACK3</tspan> · 보호막 — 먼저 확인</text>
+            <text class="t-s" x="36" y="256">꺼진 채 3초 지나면 · 8초 동안 피해 없음</text>
+            <text class="t-s" x="24" y="287">보호막 차례가 아니면 거리로</text>
+            <text class="t-s" x="24" y="319">40 초과</text>
+            <path class="ln" d="M80 314 H114" marker-end="url(#an-h)"/>
+            <rect class="bx" x="116" y="296" width="202" height="36" rx="2"/>
+            <text x="128" y="319"><tspan class="t-c">WALK</tspan> · 다가감</text>
+            <text class="t-s" x="24" y="371">15–40</text>
+            <path class="ln" d="M80 366 H114" marker-end="url(#an-h)"/>
+            <rect class="bx" x="116" y="340" width="202" height="52" rx="2"/>
+            <text x="128" y="362"><tspan class="t-c">CAST</tspan> · 마법진</text>
+            <text class="t-s" x="128" y="382">높이 차 0.2 넘으면 <tspan class="t-c">WALK</tspan></text>
+            <text class="t-s" x="24" y="423">15 미만</text>
+            <path class="ln" d="M80 418 H114" marker-end="url(#an-h)"/>
+            <rect class="bx" x="116" y="400" width="202" height="36" rx="2"/>
+            <text x="128" y="423"><tspan class="t-c">ATTACK1</tspan> / <tspan class="t-c">ATTACK4</tspan> · 무작위</text>
+
+            <path class="ln" d="M170 448 V494" marker-end="url(#an-h)"/>
+            <text class="t-s" x="178" y="467">해제 거리 80 이상</text>
+            <text class="t-s" x="178" y="485">또는 플레이어 사망</text>
+
+            <rect class="grp" x="10" y="498" width="320" height="150" rx="2"/>
+            <text class="t-b t-p" x="22" y="518">복귀</text>
+            <rect class="bx" x="24" y="530" width="136" height="52" rx="2"/>
+            <text class="t-b t-mid" x="92" y="552">원래 자리로</text>
+            <text class="t-c t-mid" x="92" y="571">WALK</text>
+            <rect class="bx" x="180" y="530" width="136" height="52" rx="2"/>
+            <text class="t-b t-mid" x="248" y="552">경계 자세로</text>
+            <text class="t-c t-mid" x="248" y="571">TOGUARDIDLE</text>
+            <path class="ln" d="M161 556 H178" marker-end="url(#an-h)"/>
+            <text class="t-s t-mid" x="170" y="606">원래 자리 2 이내면 경계 자세로</text>
+            <text class="t-s t-mid" x="170" y="628">걷는 중 다시 감지되면 곧바로 공격 모드</text>
+
+            <path class="ln-p" d="M316 556 H362 V30 H332" marker-end="url(#an-hp)"/>
+            <text class="t-s t-mid t-p" transform="translate(377 300) rotate(-90)">동작 90%에서 <tspan class="t-c">GUARDIDLE</tspan>로</text>
+
+            <rect class="bx" x="10" y="672" width="380" height="108" rx="2"/>
+            <text class="t-b" x="24" y="696">피격 · 사망 — 어느 상태에서나</text>
+            <text x="24" y="720">세 번째 피격까지 <tspan class="t-c">Hit Reaction</tspan> 경직</text>
+            <text x="24" y="742">횟수를 되돌리는 코드가 없어 그 뒤로는 경직 없음</text>
+            <text x="24" y="764">보호막 중에는 피해 없음 · 체력 0이면 <tspan class="t-c">DEATH</tspan></text>
+          </svg>
+        </div>
+        <figcaption>아누비스 상태 전환 조건(<code>CAnubisAnimController.cpp</code>). 감지 · 해제 거리, 보호막 8초, 원래 자리로 가는 경로는 <code>CAnubis.cpp</code>에서 확인했습니다.</figcaption>
+      </figure>
+      </div>
+      </div>
+      <div class="figs figs-3 figs-4">
+        <figure><img src="../assets/img/cd/minotaur.jpg" alt="미노타우르스" width="340" height="392" loading="lazy"><figcaption>미노타우르스</figcaption></figure>
         <figure><img src="../assets/img/cd/minotaur-fight.jpg" alt="넉백으로 쓰러진 플레이어에게 달려오는 미노타우르스" width="1271" height="1030" loading="lazy"><figcaption>미노타우르스 — 쓰러진 플레이어에게 돌진</figcaption></figure>
         <figure><img src="../assets/img/cd/harlequin.jpg" alt="할리퀸 수리검 공격" width="578" height="292" loading="lazy"><figcaption>할리퀸 — 수리검</figcaption></figure>
         <figure><img src="../assets/img/cd/anubis-circle.jpg" alt="아누비스 마법진 공격" width="710" height="563" loading="lazy"><figcaption>아누비스 — 마법진</figcaption></figure>
@@ -385,6 +603,87 @@
         <li><b>구르기</b> — 구르기 · 점프 · 기상 중에는 피격 콜라이더 크기를 0으로 줄이고, 구르다 벽에 닿으면 직전 위치로 되돌립니다.</li>
         <li><b>넉백 · 기상</b> — 넉백 공격에 맞으면 몬스터가 보는 방향으로 플레이어를 돌린 뒤, 넉백 애니메이션의 루트 모션으로 약 1.75초 동안 밀어냅니다. 2초가 지나면 Space로 일어나고, 기상 중에는 피격을 무시합니다. 아누비스 보호막에 밀릴 때는 아누비스가 보는 방향의 반대로 돌립니다.</li>
       </ul>
+      <figure class="dg dg-sm">
+        <div class="dg-frame">
+          <svg viewBox="0 0 400 692" role="img" aria-label="플레이어 상태도: 입력이 없으면 대기(IDLE), WASD면 이동(WALK, Shift면 RUN, 8방향). Space는 공격 · 뒤로 이동 입력이 없고 구르기 · 피격 · 기상 · 콤보 · 스킬 동작 중이 아닐 때 점프, 점프 · 낙하하는 동안 JUMP. C는 누른 방향으로 구르기(ROLL_F, B, L, R, 방향이 없으면 앞). 좌클릭은 WATTACK1, 2, 3, 우클릭은 SATTACK1, 2, 3으로 앞 단계 재생 중에 다시 눌러야 다음 단계. Q, 1, 2는 쿨타임이 끝났고 다른 스킬이 시전 중이 아닐 때 RATTACK, COMBO5, COMBO9. 넉백이 아닌 공격에 맞으면 HIT_BACK. 넉백 공격에 맞으면 GOTKICKED로 쓰러지고 2초 뒤 Space로 RISE1. 체력 0이면 DEAD, 3.5초 뒤 G로 시작 지점에서 체력 2500으로 부활해 IDLE.">
+            <defs>
+              <marker id="pl-h" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd" d="M0 0 L8 4 L0 8 Z"/></marker>
+              <marker id="pl-hp" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="hd-p" d="M0 0 L8 4 L0 8 Z"/></marker>
+            </defs>
+            <rect class="bx" x="10" y="6" width="150" height="52" rx="2"/>
+            <text class="t-b t-mid" x="85" y="28">대기</text>
+            <text class="t-c t-mid" x="85" y="47">IDLE</text>
+            <rect class="bx" x="200" y="6" width="190" height="52" rx="2"/>
+            <text class="t-b t-mid" x="295" y="28">이동</text>
+            <text class="t-s t-mid" x="295" y="47"><tspan class="t-c">WALK*</tspan> · Shift면 <tspan class="t-c">RUN*</tspan></text>
+            <path class="ln" d="M161 24 H198" marker-end="url(#pl-h)"/>
+            <path class="ln" d="M199 40 H162" marker-end="url(#pl-h)"/>
+            <text class="t-s t-mid" x="200" y="82">WASD 8방향으로 이동, 입력이 모두 없으면 대기</text>
+
+            <text class="t-b t-p" x="10" y="112">입력 — 대기 · 이동 중에</text>
+            <rect class="bx-p" x="10" y="124" width="76" height="70" rx="2"/>
+            <text class="t-c t-mid" x="48" y="164">Space</text>
+            <path class="ln-p" d="M87 159 H98" marker-end="url(#pl-hp)"/>
+            <rect class="bx" x="100" y="124" width="290" height="70" rx="2"/>
+            <text x="112" y="146"><tspan class="t-c">JUMP</tspan> · 점프 · 낙하하는 동안</text>
+            <text class="t-s" x="112" y="166">공격 · 뒤로 이동 입력이 없을 때만</text>
+            <text class="t-s" x="112" y="185">구르기 · 피격 · 기상 · 콤보 · 스킬 중엔 무시</text>
+
+            <rect class="bx-p" x="10" y="202" width="76" height="52" rx="2"/>
+            <text class="t-c t-mid" x="48" y="233">C</text>
+            <path class="ln-p" d="M87 228 H98" marker-end="url(#pl-hp)"/>
+            <rect class="bx" x="100" y="202" width="290" height="52" rx="2"/>
+            <text x="112" y="224"><tspan class="t-c">ROLL_F</tspan> · <tspan class="t-c">B</tspan> · <tspan class="t-c">L</tspan> · <tspan class="t-c">R</tspan></text>
+            <text class="t-s" x="112" y="244">누른 방향으로, 방향이 없으면 앞</text>
+
+            <rect class="bx-p" x="10" y="262" width="76" height="52" rx="2"/>
+            <text class="t-mid" x="48" y="293">좌클릭</text>
+            <path class="ln-p" d="M87 288 H98" marker-end="url(#pl-hp)"/>
+            <rect class="bx" x="100" y="262" width="290" height="52" rx="2"/>
+            <text x="112" y="284"><tspan class="t-c">WATTACK1 → 2 → 3</tspan></text>
+            <text class="t-s" x="112" y="304">앞 단계 재생 중에 다시 눌러야 다음 단계</text>
+
+            <rect class="bx-p" x="10" y="322" width="76" height="52" rx="2"/>
+            <text class="t-mid" x="48" y="353">우클릭</text>
+            <path class="ln-p" d="M87 348 H98" marker-end="url(#pl-hp)"/>
+            <rect class="bx" x="100" y="322" width="290" height="52" rx="2"/>
+            <text x="112" y="344"><tspan class="t-c">SATTACK1 → 2 → 3</tspan></text>
+            <text class="t-s" x="112" y="364">좌클릭과 같은 방식</text>
+
+            <rect class="bx-p" x="10" y="382" width="76" height="52" rx="2"/>
+            <text class="t-c t-mid" x="48" y="413">Q · 1 · 2</text>
+            <path class="ln-p" d="M87 408 H98" marker-end="url(#pl-hp)"/>
+            <rect class="bx" x="100" y="382" width="290" height="52" rx="2"/>
+            <text x="112" y="404"><tspan class="t-c">RATTACK</tspan> · <tspan class="t-c">COMBO5</tspan> · <tspan class="t-c">COMBO9</tspan></text>
+            <text class="t-s" x="112" y="424">쿨타임이 끝났고 다른 스킬이 시전 중이 아닐 때</text>
+
+            <text class="t-b t-p" x="10" y="466">반응 — 어느 상태에서나</text>
+            <rect class="bx" x="10" y="478" width="76" height="52" rx="2"/>
+            <text class="t-mid" x="48" y="509">피격</text>
+            <path class="ln" d="M87 504 H98" marker-end="url(#pl-h)"/>
+            <rect class="bx" x="100" y="478" width="290" height="52" rx="2"/>
+            <text x="112" y="500"><tspan class="t-c">HIT_BACK</tspan></text>
+            <text class="t-s" x="112" y="520">넉백이 아닌 공격에 맞으면</text>
+
+            <rect class="bx" x="10" y="538" width="76" height="70" rx="2"/>
+            <text class="t-mid" x="48" y="578">넉백</text>
+            <path class="ln" d="M87 573 H98" marker-end="url(#pl-h)"/>
+            <rect class="bx" x="100" y="538" width="290" height="70" rx="2"/>
+            <text x="112" y="560"><tspan class="t-c">GOTKICKED</tspan> → <tspan class="t-c">RISE1</tspan> → 대기</text>
+            <text class="t-s" x="112" y="580">넉백 공격에 맞으면 쓰러짐(<tspan class="t-c">dead01</tspan>)</text>
+            <text class="t-s" x="112" y="599">쓰러진 지 2초 뒤 Space로 일어남</text>
+
+            <rect class="bx" x="10" y="616" width="76" height="70" rx="2"/>
+            <text class="t-mid" x="48" y="656">체력 0</text>
+            <path class="ln" d="M87 651 H98" marker-end="url(#pl-h)"/>
+            <rect class="bx" x="100" y="616" width="290" height="70" rx="2"/>
+            <text x="112" y="638"><tspan class="t-c">DEAD</tspan> → <tspan class="t-c">IDLE</tspan></text>
+            <text class="t-s" x="112" y="658">3.5초 뒤 G로 시작 지점에서 부활</text>
+            <text class="t-s" x="112" y="677">체력 2500으로</text>
+          </svg>
+        </div>
+        <figcaption>플레이어 상태 전환 조건(<code>CUserWarriorAnimController.cpp</code>, 넉백 판정은 <code>CWarriorPlayer.cpp</code> 충돌 처리). 상태 이름은 코드의 트리거 이름이고, 시간은 코드의 경과값(초 × 20)을 초로 바꾼 값입니다. 전환 조건 작성: 본인 · 애니메이션 재생 프레임워크: 팀장.</figcaption>
+      </figure>
       <div class="shots">
         <figure><img src="../assets/img/cd/player-combo.jpg" alt="플레이어 콤보 공격" width="475" height="435" loading="lazy"><figcaption>콤보 공격</figcaption></figure>
         <figure><img src="../assets/img/cd/player-roll.jpg" alt="플레이어 구르기" width="230" height="278" loading="lazy"><figcaption>구르기</figcaption></figure>
@@ -479,9 +778,11 @@ if (m_isPathFinding) {
         <figure><img src="../assets/img/cd/cell-create-2.jpg" alt="세 꼭짓점으로 셀이 만들어진 화면" width="1197" height="868" loading="lazy"><figcaption>세 번째 클릭에서 셀 생성</figcaption></figure>
       </div>
       <h3>모델 배치(레벨) 툴</h3>
+      <p>맵 모델 · 오브젝트 · 몬스터의 변환을 한 화면에서 편집하고 바이너리 파일로 저장해 클라이언트에서 불러 쓰는 레벨 툴입니다.</p>
       <p>맵 모델 · 오브젝트 · 몬스터 모델을 목록에서 골라 배치하고, 배치 묶음을 MapLayouts로 저장하고 불러옵니다. 일반 모델(ModelViewer)과 애니메이션 모델(AnimModelViewer)을 따로 다루고, ImGuizmo로 이동 · 회전 · 크기를 직접 조작합니다.</p>
       <div class="figs wide">
         <figure><img src="../assets/img/cd/level-tool.jpg" alt="모델 배치 툴 화면 — ModelViewer와 AnimModelViewer 창, MapLayouts 저장과 불러오기 버튼" width="1400" height="814" loading="lazy"><figcaption>모델 배치 — ConvertModels, MapLayouts 저장 · 불러오기</figcaption></figure>
+        <figure><img src="../assets/img/cd/model-loader.jpg" alt="모델 배치 툴 화면" width="1188" height="691" loading="lazy"><figcaption>모델 배치</figcaption></figure>
         <figure><img src="../assets/img/cd/guizmo.jpg" alt="ImGuizmo로 몬스터 변환 조작" width="1400" height="816" loading="lazy"><figcaption>ImGuizmo 변환 조작</figcaption></figure>
       </div>
     </section>
@@ -512,5 +813,36 @@ if (m_isPathFinding) {
 </footer>
 </div>
 <script src="../assets/js/site.js"></script>
+<script>
+// 몬스터 상태도 탭. 스크립트가 없으면 네 그림이 차례로 모두 보입니다.
+(function () {
+  var box = document.querySelector('[data-tabs]');
+  if (!box) return;
+  var tabs = Array.prototype.slice.call(box.querySelectorAll('[role="tab"]'));
+  var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+  function pick(i, focus) {
+    tabs.forEach(function (t, k) {
+      var on = k === i;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      panels[k].hidden = !on;
+    });
+    if (focus) tabs[i].focus();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { pick(i, false); });
+    t.addEventListener('keydown', function (e) {
+      var n = tabs.length, j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % n;
+      else if (e.key === 'ArrowLeft') j = (i - 1 + n) % n;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = n - 1;
+      if (j !== null) { e.preventDefault(); pick(j, true); }
+    });
+  });
+  box.classList.add('tabs-on');
+  pick(0, false);
+})();
+</script>
 </body>
 </html>

@@ -69,6 +69,11 @@
 /* 한글 라벨은 본문체로 (site.css 규칙: 라틴만 mono 대문자) */
 .log-head .label { font: 600 .8rem/1.4 var(--f-body); letter-spacing: 0; text-transform: none; }
 
+/* ── 에이전트 방식 표 · 경비실 사진 (복원) ── */
+.agtbl td:first-child { white-space: normal; min-width: 7.5em; }
+.agtbl td:last-child { min-width: 9em; }
+.fig-guard { grid-template-columns: minmax(0, 37.5rem); }
+
 /* ── 인용 줄 ── */
 .said { color: var(--ink); }
 

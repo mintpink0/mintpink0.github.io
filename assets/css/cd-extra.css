@@ -50,6 +50,22 @@
 .shots figure { flex: none; max-width: 100%; }
 .shots img { height: 240px; width: auto; max-width: 100%; object-fit: contain; }
 
+/* ── 몬스터 상태도 탭: 스크립트가 없으면 탭 줄을 숨기고 네 그림을 모두 보입니다 ── */
+.mtabs { display: grid; gap: 14px; }
+.mtabs-list { display: none; }
+.mtabs.tabs-on .mtabs-list { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+.mtabs-list [role="tab"] { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 10px 14px 9px; font: 600 .92rem/1.4 var(--f-body); color: var(--ink-3); cursor: pointer; }
+.mtabs-list [role="tab"]:hover { color: var(--ink); }
+.mtabs-list [role="tab"][aria-selected="true"] { color: var(--ink); border-bottom-color: var(--p); }
+.mtabs-note { font-size: .84rem; color: var(--ink-3) !important; }
+.mtabs-panel { display: grid; gap: 14px; min-width: 0; }
+.mtabs-panel[hidden] { display: none; }
+.mob-png img { background: #fff; }
+
+/* 몬스터 사진 4장 */
+.figs-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
+@media (max-width: 640px) { .figs-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 /* 코드: -> 와 >= 가 합자로 바뀌지 않게 */
 .content pre { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
 
@@ -75,4 +91,7 @@
   .dg-frame { padding: 10px; }
   .dg-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .shots img { height: 52mm; max-height: 52mm; }
+  .mtabs-list { display: none !important; }
+  .mtabs-panel[hidden] { display: grid !important; }
+  .figs-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
