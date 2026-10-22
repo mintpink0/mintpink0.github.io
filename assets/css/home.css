@@ -75,6 +75,11 @@
   .h-body { padding: 20px; }
 }
 @media print {
-  .h-play, .h-links { display: none !important; }
-  .h-card { break-inside: avoid; }
+  .h-play { display: none !important; }
+  .h-card { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr) !important; break-inside: auto; }
+  .h-media { margin: 16px 0 16px 16px !important; }
+  .h-links { display: flex !important; flex-wrap: wrap; gap: 2px 14px; margin-top: 10px; }
+  .h-links .btn-main { display: none !important; }
+  .h-links .btn { border: 0 !important; background: none !important; padding: 0 !important; min-height: 0 !important; color: var(--ink-2) !important; font-size: 8.5pt; font-weight: 400; text-decoration: none; }
+  .h-links .btn[href^="http"]::after { content: " " attr(href); }
 }

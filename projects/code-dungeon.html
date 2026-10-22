@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023h">
-<link rel="stylesheet" href="../assets/css/cd-extra.css?v=20261023h">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023i">
+<link rel="stylesheet" href="../assets/css/cd-extra.css?v=20261023i">
 </head>
 <body data-project="code-dungeon">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -43,7 +43,7 @@
 <div class="layout">
   <nav class="toc" aria-label="목차">
     <span class="label">목차</span>
-    <a data-n="01" href="#role">요점과 역할</a>
+    <a data-n="01" href="#role">주요 구현과 역할</a>
     <a data-n="02" href="#flow">툴에서 게임까지</a>
     <a data-n="03" href="#nav">네비게이션 메시 · 계단</a>
     <a data-n="04" href="#move">이동 · 카메라</a>
@@ -57,7 +57,7 @@
   <main class="content">
 
     <section id="role">
-      <h2><span class="num">01</span>요점과 역할</h2>
+      <h2><span class="num">01</span>주요 구현과 역할</h2>
       <ul>
         <li><b>네비게이션 메시</b> — Cell · Navigation · Region · Stage를 직접 구현. 이동 검사, 점프 · 낙하, 경계 위치 보정</li>
         <li><b>툴과 엔진의 연결</b> — 툴에서 꼭짓점을 스냅해 저장하면, 엔진이 불러올 때 셀끼리 이웃으로 연결되도록 맞춤</li>
@@ -75,7 +75,7 @@
 
     <section id="flow">
       <h2><span class="num">02</span>툴에서 게임까지</h2>
-      <p class="lead">네비게이션 메시는 툴에서 찍어 파일로 저장하면 엔진이 읽어 들이고, 게임에서는 캐릭터마다 나눠 사용합니다. 아래 그림은 툴에서 게임까지 단계별로 하는 일을 정리한 것입니다.</p>
+      <p class="lead">네비게이션 메시는 툴에서 찍어 파일로 저장하면 엔진이 읽어 들이고, 게임에서는 캐릭터마다 나눠 사용합니다. 툴에서 게임까지 단계별로 하는 일은 아래 그림과 같습니다.</p>
       <figure class="dg wide">
         <div class="dg-frame">
           <svg class="dg-wide" viewBox="0 0 920 270" role="img" aria-label="데이터 흐름: 툴에서 픽킹으로 셀을 만들고 기존 꼭짓점 1.5 이내면 스냅, Navigation 폴더에 Region 이름의 파일로 셀 단위 저장, 엔진이 읽으며 변과 법선을 다시 계산하고 좌표가 정확히 같은 꼭짓점끼리 이웃으로 연결, 게임에서는 캐릭터마다 Navigation을 복제해 셀 데이터는 공유하고 현재 셀만 각자 가짐. 툴 좌표 보정.">
@@ -237,7 +237,7 @@
 
       <h3>구역을 하나로 합친 결정</h3>
       <p>처음에는 맵을 Region 단위로 나누고, 플레이어가 있는 Region만 사용해 최적화하려 했습니다. 그런데 Region 경계를 넘을 때 이동 판정 버그가 계속 생겼고 체감 성능 이득도 없어서, 맵 전체를 Region 하나로 합쳤습니다. 이웃 Region을 연결하던 코드(<code>Add_NeighborRegion</code>)는 사용되지 않은 채 남아 있습니다.</p>
-      <p>셀이 한 Navigation에 모두 모였으니, 셀을 찾을 때(<code>FindCell</code>)는 현재 셀 번호 앞뒤 25개부터 보고 없으면 25개씩 넓혀 가며, 최악에는 전체를 봅니다. 셀 번호는 툴에서 만든 순서대로 붙어서, 이어서 찍은 셀끼리는 번호도 가깝기 때문입니다.</p>
+      <p>셀 번호는 툴에서 만든 순서대로 붙어서, 이어서 찍은 셀끼리는 번호도 가깝습니다. 그래서 셀이 한 Navigation에 모두 모인 뒤로는 셀을 찾을 때(<code>FindCell</code>) 현재 셀 번호 앞뒤 25개부터 보고, 없으면 25개씩 넓혀 가며, 최악에는 전체를 봅니다.</p>
       <figure class="wide"><img src="../assets/img/cd/navmesh-tool.jpg" alt="구역을 나눠 쓰던 시기의 네비게이션 메시 편집 화면" width="1400" height="838" loading="lazy"><figcaption>통합 전, 구역을 나눠 쓰던 시기의 편집 화면 — Select_Region에 구역이 여러 개이고 구역마다 셀 색이 다릅니다.</figcaption></figure>
 
       <div class="log" id="ts-stairs">
@@ -808,7 +808,7 @@ if (m_isPathFinding) {
   <a class="no-print" href="dx12.html">다음 프로젝트 · DirectX 12 Tank →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023h"></script>
+<script src="../assets/js/site.js?v=20261023i"></script>
 <script>
 // 몬스터 상태도 탭. 스크립트가 없으면 네 그림이 차례로 모두 보입니다.
 (function () {
