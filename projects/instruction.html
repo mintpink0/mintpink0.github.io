@@ -47,10 +47,10 @@
     <span class="label">목차</span>
     <a data-n="01" href="#game">게임과 역할</a>
     <a data-n="02" href="#arch">구조</a>
-    <a data-n="03" href="#ts-build">빌드에서만 난 문제</a>
+    <a data-n="03" href="#director">공포 디렉터</a>
     <a data-n="04" href="#impl">구현 하이라이트</a>
     <a data-n="05" href="#ai">AI와 일한 방식</a>
-    <a data-n="06" href="#ts-schedule">조우 편성 다시 재기</a>
+    <a data-n="06" href="#ts-schedule">문제 해결 사례</a>
     <a data-n="07" href="#limits">한계와 다시 만든다면</a>
   </nav>
 
@@ -199,33 +199,67 @@
         <li><b>의존 방향을 컴파일 단계에서 강제.</b> asmdef로 Core가 Flow를 참조하지 못하게 막아, 「축이 올랐으니 Core에서 바로 불을 끄자」 같은 우회를 차단했습니다.</li>
         <li><b>새 코드의 자리가 정해짐.</b> 새 코드가 고르는 일이면 편성 · 디렉터, 판단하는 일이면 판정 · 점검, 숫자를 올리는 일이면 축, 그리는 일이면 Flow에 둡니다.</li>
       </ul>
-      <div class="note"><span class="kr-label">다시 만든다면</span>Core 입구(<code>NightRun</code>)가 정적 클래스라 테스트마다 초기화가 필요했고 플레이 세션 사이 리셋도 따로 처리했습니다. 인스턴스로 만들고 주입하는 구조를 쓰겠습니다.</div>
     </section>
 
-    <section id="ts-build">
-      <h2><span class="num">03 — Build</span>빌드에서만 난 문제</h2>
-      <p class="lead">두 건 모두 에디터에서는 보이지 않았습니다. 소년 건은 제가 빌드를 플레이하다 발견해 릴리스 · 개발 빌드 모두에서 안 나온다고 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</p>
+    <section id="director">
+      <h2><span class="num">03 — Director</span>공포 디렉터 — 놀람을 배분하는 규칙</h2>
+      <p class="lead">준비된 효과음과 연출이 많았습니다. 이것들을 단순히 무작위로 내보내기보다, 규칙을 두고 조절해 배분하는 편이 공포 요소로 더 효과적이라고 판단했습니다. 놀람이 도배되면 둔해지기 마련이기 때문입니다. 아이디어는 레프트 4 데드 2의 좀비 호드 디렉터에서 얻었습니다.</p>
+      <p>그래서 공포 디렉터는 돌아다니는 AI가 아니라 밤의 리듬을 관리하는 규칙 묶음으로 만들었습니다. 그날 나올 조우는 편성이 정하고, 디렉터는 언제 · 어디서 터뜨릴지를 고릅니다. 코드는 AI가 작성했고, 디렉터를 두자는 방향과 무엇을 기준으로 조절할지는 제가 정했습니다.</p>
 
-      <div class="log">
-        <div class="log-head"><h3>발광이 꺼지고 머리카락 카드가 네모로 보임</h3><span class="label">빌드 전 점검 · AI 발견</span></div>
-        <dl>
-          <dt>발견</dt><dd>빌드 전에 「다른 문제들은 없을지」 점검을 맡겼고, AI가 찾아냈습니다. 제가 먼저 본 문제는 아닙니다.</dd>
-          <dt>원인</dt><dd>빌드는 빌드에 포함된 재질이 쓰는 키워드 조합만 셰이더 변형으로 넣습니다. 실행 중 코드로 켜는 조합(URP Lit <code>_EMISSION</code>, Unlit 알파 테스트 · 반투명)이 빠졌습니다.</dd>
-          <dt>해결</dt><dd>에디터 도구 <code>ShaderKeepBuilder</code>가 빌드 재질을 훑어 빠진 조합마다 키워드를 켠 보존 재질을 생성합니다. <b>빠져 있던 조합 21개</b>(Lit 18 · Unlit 3)를 복구했고, 조합이 다시 빠지면 실패하는 테스트를 추가했습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Editor/ShaderKeepBuilder.cs" target="_blank" rel="noopener">ShaderKeepBuilder.cs</a></dd>
-        </dl>
+      <h3>긴장도에 따라 놀람을 거른다</h3>
+      <div class="dir-pacer">
+        <figure class="pacer-fig">
+          <svg viewBox="0 0 360 250" role="img" aria-label="긴장도 조절기 상태 순환. 축적에서 긴장도 70이면 절정, 내려가 35면 해소, 이어 휴식, 다시 축적. 가짜 놀람은 축적 상태이고 긴장도 50 미만일 때만 허용됩니다.">
+            <defs><marker id="ah-pc" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L8,4 L0,8 z"/></marker></defs>
+            <rect class="box-me" x="14" y="20" width="132" height="64" rx="2"/>
+            <text class="t" x="28" y="46">축적</text>
+            <text class="s" x="28" y="68">가짜 놀람 허용</text>
+            <rect class="box" x="214" y="20" width="132" height="64" rx="2"/>
+            <text class="t" x="228" y="46">절정</text>
+            <text class="s" x="228" y="68">긴장도 70</text>
+            <rect class="box" x="214" y="166" width="132" height="64" rx="2"/>
+            <text class="t" x="228" y="192">해소</text>
+            <text class="s" x="228" y="214">35까지 내려옴</text>
+            <rect class="box" x="14" y="166" width="132" height="64" rx="2"/>
+            <text class="t" x="28" y="192">휴식</text>
+            <text class="s" x="28" y="214">최대 75초</text>
+            <path class="ln" d="M146 52 H212" marker-end="url(#ah-pc)"/>
+            <path class="ln" d="M280 84 V164" marker-end="url(#ah-pc)"/>
+            <path class="ln" d="M214 198 H148" marker-end="url(#ah-pc)"/>
+            <path class="ln" d="M80 166 V86" marker-end="url(#ah-pc)"/>
+            <text class="lb" x="180" y="122" text-anchor="middle">TensionPacer</text>
+            <text class="lb" x="180" y="138" text-anchor="middle">긴장도 0–100</text>
+          </svg>
+        </figure>
+        <ul>
+          <li>사건이 일어날 때마다 긴장도가 오르고(가짜 놀람 +10, 대면 +10 + 10 × 강도), 4초 뒤부터 초당 1.2씩 내려갑니다.</li>
+          <li>상태는 축적 → 절정(70) → 해소(35) → 휴식으로 돕니다. 높은 긴장이 오래 이어지면 45초 동안 강제로 쉽니다.</li>
+          <li>가짜 놀람(사물함 덜컹 · 손전등 깜빡임 · 스쳐 보이는 형체)은 축적 상태이고 긴장도가 50 미만일 때만 냅니다. 하룻밤 상한은 1일차 2회에서 5일차 7회까지이고(강도 단계에 따라 더해짐), 같은 놀람은 밤에 두 번까지입니다.</li>
+        </ul>
       </div>
 
-      <div class="log">
-        <div class="log-head"><h3>빌드에서만 소년이 머리를 박지 않음</h3><span class="label">개발 후반 · 직접 발견</span></div>
-        <dl>
-          <dt>발견</dt><dd>빌드를 플레이하다 발견해, 릴리스와 개발자 빌드 모두에서 안 나온다는 것까지 함께 보고했습니다. <span class="said">「릴리스로 빌드하면 소년 머리박는게 적용이 안된다 · 어제 프리테스트 개발자 빌드본에서도 안 나왔다」</span></dd>
-          <dt>원인</dt><dd>애니메이터가 없는 대역 모델에 <code>AnimationClip.SampleAnimation</code>으로 클립을 재생했는데, 레거시가 아닌 클립은 빌드에서 Animator 없이 샘플링되지 않았습니다. 소리는 났지만 뼈는 움직이지 않았습니다.</dd>
-          <dt>해결</dt><dd>AI가 임시 씬으로 릴리스 빌드를 떠 머리 이동량을 실측했습니다(<b>0m → 0.29m</b>, 에디터와 같게 복구). 클립을 레거시로 전환(GUID · 곡선 유지)하고 대역 생성 도구도 고쳤으며 회귀 테스트를 추가했습니다.</dd>
-        </dl>
-      </div>
-      <figure class="fig-mid"><video src="../assets/img/ins/boy-headbang.mp4" poster="../assets/img/ins/boy-headbang.jpg" autoplay muted loop playsinline width="640" height="360"></video><figcaption>교실 소년이 책상에 머리를 박는 장면</figcaption></figure>
-      <p>에디터에서 된다고 빌드에서도 되는 건 아니었습니다. 플랫폼 차이가 의심되면 작은 빌드로 재현해 숫자로 확인합니다.</p>
+      <h3>조우 한 번의 진행</h3>
+      <ol class="flow-chips" aria-label="조우 진행 상태">
+        <li>대기</li><li>전조</li><li>세워 두고 보기를 기다림</li><li>대면 · 대응</li><li>끝 단서</li><li>끝</li>
+      </ol>
+      <p class="flow-note">방아쇠가 오지 않은 채 시간창이 끝나면 <b>놓침</b>으로 갈라집니다. 상태 이름은 코드(<code>EncounterRunState</code>)와 같습니다.</p>
+      <ul>
+        <li>전조는 강도 3 이상 조우에만 1–8초 붙고, 전조만 주고 물러나는 헛예고도 섞습니다. 헛예고는 조우마다 한 번까지입니다.</li>
+        <li>대면하면 그 조우에 묶인 수칙의 단서를 판정 책에 넘겨, 플레이어가 수칙대로 대응했는지 판정합니다.</li>
+        <li>앞 조우가 끝나야 다음 조우를 엽니다.</li>
+      </ul>
+
+      <h3>플레이어를 그 자리로 부른다</h3>
+      <p>점검 지시를 바꿀 때 이렇게 요구했습니다. <span class="said">「점검이 한번에 떠있는게 아니라, 조절해서 메시지로 계속 업데이트 … 플레이어의 동선이나 위치, 긴장도를 계속해서 계산해서」</span></p>
+      <ul>
+        <li>점검 지시를 밤 시작에 한꺼번에 주지 않고 공간 단위 문자로 하나씩 보냅니다. 다음 공간은 거리, 조우가 걸린 공간인지, 같은 동인지로 점수를 매겨 고르고, 조우 중 · 직후나 긴장이 높을 때는 미룹니다.</li>
+        <li>최종판은 고정 날짜 편성이라(<a href="#ts-schedule">06절</a>) 조우를 날짜표 순서대로 하나씩 엽니다. 앞 조우가 끝나고 15초 뒤 다음을 열고, 시작되지 않으면 「1-3 교실을 순찰하십시오」 같은 유도 문자로 그 공간에 부릅니다.</li>
+        <li>조우가 남은 채 03:30이 되면 시계를 붙들어, 그날의 조우를 모두 보기 전에는 밤이 끝나지 않습니다. <span class="said">「이월은 없어. 의도한 날짜에 무조건 목격해야 해」</span></li>
+      </ul>
+      <p class="code-cap"><span class="tech">TensionDirector · TensionPacer · SurpriseBudget · InspectionDispatcher</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Scripts/Direction/Tension/TensionDirector.cs" target="_blank" rel="noopener">TensionDirector.cs · AI 작성</a></p>
     </section>
+
+
 
     <section id="impl">
       <h2><span class="num">04 — Highlights</span>구현 하이라이트</h2>
@@ -264,24 +298,6 @@
 
       <div class="cards wide">
         <div class="card">
-          <h3>공포 디렉터</h3>
-          <ul>
-            <li>조우를 상태 기계로 진행 — 대기 → 예고 → 등장 준비 → 대면 → 정리 → 끝</li>
-            <li>Left 4 Dead식 긴장도 게이지 — 축적 → 절정(70) → 해소(35) → 휴식</li>
-            <li>긴장도 50 미만일 때만 가짜 놀람 (하룻밤 3–8회)</li>
-          </ul>
-          <span class="tech">TensionDirector · TensionPacer · SurpriseBudget</span>
-        </div>
-        <div class="card">
-          <h3>구운 조명에서 실시간 정전</h3>
-          <ul>
-            <li>직접 플레이하다 본 문제에서 시작했습니다. <span class="said">「소등 조우 때 소등은 되는데 라이팅은 계속 유지돼」</span> 구운 빛이 남는다는 진단과 구현은 AI가 했습니다.</li>
-            <li>라이트맵은 실행 중에 끌 수 없어, 씬 시작 때 어둡게 만든 라이트맵 사본을 만들고 정전 때 <code>lightmapIndex</code>만 교체(앞서 불 꺼진 교실에 쓰던 방식을 소등 방으로 넓힘)</li>
-            <li>라이트 프로브 SH 계수도 낮추고, 형광등 발광은 <code>MaterialPropertyBlock</code>으로 끔(공유 재질 오염 방지)</li>
-          </ul>
-          <span class="tech">Graphics.Blit · LightmapSettings · MaterialPropertyBlock</span>
-        </div>
-        <div class="card">
           <h3>처형 컷신 시선 보정</h3>
           <ul>
             <li><code>Update</code>에서 돌리면 Animator가 덮어써서 <code>LateUpdate</code>에서 보정 회전</li>
@@ -300,7 +316,6 @@
           <span class="tech">GuardRoomLoiter (Core) · GuardRoomCamp (Flow)</span>
         </div>
       </div>
-      <figure class="wide"><img src="../assets/img/ins/blackout-before-after.jpg" alt="과학실 정전 전과 후를 같은 위치 같은 각도에서 찍은 비교" width="1600" height="448" loading="lazy"><figcaption>과학실 정전 전 · 후 — 같은 위치 · 같은 각도 (라이트맵 사본 교체 + 프로브 ×0.05, 손전등만 남음)</figcaption></figure>
       <figure class="wide"><img src="../assets/img/ins/guardroom-stages.jpg" alt="경비실에 머문 시간별 장면 — 0초 평소, 30초 형광등 깜빡임과 무전 잡음, 60초 CCTV에 검은 남자 얼굴, 90초 정전" width="1600" height="903" loading="lazy"><figcaption>경비실에 머문 시간 — 0초 · 30초 · 60초 · 90초</figcaption></figure>
       <div class="figs fig-guard">
         <figure><img src="../assets/img/ins/guard-room.jpg" alt="경비실 내부" width="599" height="454" loading="lazy"><figcaption>경비실 — 오래 머물면 단계별 연출이 시작됨</figcaption></figure>
@@ -489,7 +504,8 @@
     </section>
 
     <section id="ts-schedule">
-      <h2><span class="num">06 — Troubleshooting</span>조우 편성 — 다시 재고 고정 날짜로</h2>
+      <h2><span class="num">06 — Problem Solving</span>문제 해결 사례</h2>
+      <h3 class="case-h">① 조우 편성 — 다시 재고 고정 날짜로</h3>
       <p class="lead">플레이테스트에서 공포 이벤트(조우)가 의도대로 나오지 않았습니다. 시뮬레이터는 미숙한 플레이어 판의 76%에 13종이 모두 배정됐다고 보여 줬지만, 「실제로 마주쳤는가」로 다시 재게 하자 33%뿐이었습니다. AI는 확률 보정을 제안했고, 저는 모든 플레이어가 보게 하려면 보장이 필요하다고 판단해 날짜별 고정 배치와 남은 이벤트가 있으면 밤이 끝나지 않는 장치로 바꿨습니다.</p>
       <div class="log">
         <div class="log-head"><h3>미숙한 플레이어가 조우를 다 못 보는 문제</h3><span class="label">개발 후반 · 시뮬레이션</span></div>
@@ -521,6 +537,50 @@
         </table>
       </div>
       <p class="note">①과 ②, 실행 기준 값은 개발 중 서로 다른 시점에 잰 것이라 이어지는 숫자가 1%p씩 다릅니다(① 끝 54% · ② 시작 55%, ② 끝 75% · 편성 기준 76%).</p>
+
+      <h3 class="case-h">② 구운 조명이라 정전이 되지 않던 문제</h3>
+      <div class="log">
+        <div class="log-head"><h3>소등은 되는데 방은 그대로 밝음</h3><span class="label">직접 발견 · 진단과 구현은 AI</span></div>
+        <dl>
+          <dt>발견</dt><dd>직접 플레이하다 본 문제입니다. <span class="said">「소등 조우 때 소등은 되는데 라이팅은 계속 유지돼」</span></dd>
+          <dt>원인</dt><dd>방의 밝기 대부분이 구워 둔 라이트맵이라 등을 꺼도 빛이 남았습니다. 진단은 AI가 했습니다.</dd>
+          <dt>해결</dt><dd>라이트맵은 실행 중에 끌 수 없어, 씬 시작 때 어둡게 만든 라이트맵 사본을 만들고 정전 때 <code>lightmapIndex</code>만 교체했습니다(앞서 불 꺼진 교실에 쓰던 방식을 소등 방으로 넓힘). 라이트 프로브 SH 계수도 낮추고, 형광등 발광은 <code>MaterialPropertyBlock</code>으로 껐습니다(공유 재질 오염 방지). 구현은 AI가 했습니다.</dd>
+        </dl>
+      </div>
+      <figure class="wide"><img src="../assets/img/ins/blackout-before-after.jpg" alt="과학실 정전 전과 후를 같은 위치 같은 각도에서 찍은 비교" width="1600" height="448" loading="lazy"><figcaption>과학실 정전 전 · 후 — 같은 위치 · 같은 각도 (라이트맵 사본 교체 + 프로브 ×0.05, 손전등만 남음)</figcaption></figure>
+
+      <h3 class="case-h">③ 시야를 돌리면 창가가 밝아지던 문제</h3>
+      <div class="log">
+        <div class="log-head"><h3>AI가 먼저 적용한 안을 같은 조건에서 비교해 되돌림</h3><span class="label">직접 발견 · 측정은 AI</span></div>
+        <dl>
+          <dt>발견</dt><dd>시야를 돌리면 창가 벽이 밝아지는 것을 찾았습니다. 6° 간격으로 한 바퀴 렌더해 잰 화면 평균 밝기가 특정 각도에서 48 → 71로 튀었습니다(측정은 AI).</dd>
+          <dt>원인</dt><dd>오클루전 컬링이 달빛 그림자 캐스터도 시야 기준으로 걸러 냈습니다(진단은 AI).</dd>
+          <dt>판단</dt><dd>AI는 플레이어 카메라의 컬링 끄기를 먼저 적용했습니다. <span class="said">「성능에 큰 문제가 생길 가능성이 있나?」</span>, <span class="said">「달빛을 꺼보고 한번 비교해봐」</span>로 두 안을 같은 조건에서 재게 했고, 에디터 측정 렌더 장당 원래 4.4 · 컬링 끔 5.4 · 달빛 끔 3.5ms라 달빛 끔을 골랐습니다(실내 11곳 × 12방향 화면 차이 0). 판단 기록은 <a href="#ai">05절</a>에도 있습니다.</dd>
+        </dl>
+      </div>
+
+      <h3 class="case-h" id="ts-build">④ 빌드에서만 난 문제</h3>
+      <p>두 건 모두 에디터에서는 보이지 않았습니다. 소년 건은 제가 빌드를 플레이하다 발견해 릴리스 · 개발 빌드 모두에서 안 나온다고 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</p>
+
+      <div class="log">
+        <div class="log-head"><h3>발광이 꺼지고 머리카락 카드가 네모로 보임</h3><span class="label">빌드 전 점검 · AI 발견</span></div>
+        <dl>
+          <dt>발견</dt><dd>빌드 전에 「다른 문제들은 없을지」 점검을 맡겼고, AI가 찾아냈습니다. 제가 먼저 본 문제는 아닙니다.</dd>
+          <dt>원인</dt><dd>빌드는 빌드에 포함된 재질이 쓰는 키워드 조합만 셰이더 변형으로 넣습니다. 실행 중 코드로 켜는 조합(URP Lit <code>_EMISSION</code>, Unlit 알파 테스트 · 반투명)이 빠졌습니다.</dd>
+          <dt>해결</dt><dd>에디터 도구 <code>ShaderKeepBuilder</code>가 빌드 재질을 훑어 빠진 조합마다 키워드를 켠 보존 재질을 생성합니다. <b>빠져 있던 조합 21개</b>(Lit 18 · Unlit 3)를 복구했고, 조합이 다시 빠지면 실패하는 테스트를 추가했습니다. <a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Flow/Editor/ShaderKeepBuilder.cs" target="_blank" rel="noopener">ShaderKeepBuilder.cs</a></dd>
+        </dl>
+      </div>
+
+      <div class="log">
+        <div class="log-head"><h3>빌드에서만 소년이 머리를 박지 않음</h3><span class="label">개발 후반 · 직접 발견</span></div>
+        <dl>
+          <dt>발견</dt><dd>빌드를 플레이하다 발견해, 릴리스와 개발자 빌드 모두에서 안 나온다는 것까지 함께 보고했습니다. <span class="said">「릴리스로 빌드하면 소년 머리박는게 적용이 안된다 · 어제 프리테스트 개발자 빌드본에서도 안 나왔다」</span></dd>
+          <dt>원인</dt><dd>애니메이터가 없는 대역 모델에 <code>AnimationClip.SampleAnimation</code>으로 클립을 재생했는데, 레거시가 아닌 클립은 빌드에서 Animator 없이 샘플링되지 않았습니다. 소리는 났지만 뼈는 움직이지 않았습니다.</dd>
+          <dt>해결</dt><dd>AI가 임시 씬으로 릴리스 빌드를 떠 머리 이동량을 실측했습니다(<b>0m → 0.29m</b>, 에디터와 같게 복구). 클립을 레거시로 전환(GUID · 곡선 유지)하고 대역 생성 도구도 고쳤으며 회귀 테스트를 추가했습니다.</dd>
+        </dl>
+      </div>
+      <figure class="fig-mid"><video src="../assets/img/ins/boy-headbang.mp4" poster="../assets/img/ins/boy-headbang.jpg" autoplay muted loop playsinline width="640" height="360"></video><figcaption>교실 소년이 책상에 머리를 박는 장면</figcaption></figure>
+      <p>에디터에서 된다고 빌드에서도 되는 건 아니었습니다. 플랫폼 차이가 의심되면 작은 빌드로 재현해 숫자로 확인합니다.</p>
     </section>
 
     <section id="limits">

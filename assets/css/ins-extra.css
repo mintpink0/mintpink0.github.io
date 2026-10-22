@@ -120,3 +120,28 @@ figure.wide { margin-block: 16px; }
 .archdg .core-zone { fill: var(--p-soft); fill-opacity: .45; stroke: var(--p); stroke-width: 1.5; stroke-dasharray: 5 4; }
 .archdg .lb-p { fill: var(--p); }
 .archdg { margin-block: 18px; }
+
+/* 공포 디렉터 */
+.dir-pacer { display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: 20px 28px; align-items: start; }
+.pacer-fig { margin: 0; }
+.pacer-fig svg { display: block; width: 100%; height: auto; overflow: visible; }
+.pacer-fig .box { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.pacer-fig .box-me { fill: var(--p-soft); stroke: var(--p); stroke-width: 2; }
+.pacer-fig .t { font: 700 15px/1 var(--f-body); fill: var(--ink); }
+.pacer-fig .s { font: 400 12px/1 var(--f-body); fill: var(--ink-2); }
+.pacer-fig .lb { font: 600 11px/1 var(--f-body); fill: var(--ink-3); }
+.pacer-fig .ln { fill: none; stroke: var(--ink-3); stroke-width: 1.5; }
+.pacer-fig .ah { fill: var(--ink-3); }
+.dir-pacer ul { margin: 0; }
+.content ol.flow-chips, .flow-chips { list-style: none; padding-left: 0; margin: 12px 0 6px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 0; align-items: stretch; }
+.flow-chips li { display: flex; align-items: center; padding: 8px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); font: 600 .9rem/1.35 var(--f-body); color: var(--ink); text-align: center; }
+.flow-chips li + li { margin-left: 26px; position: relative; }
+.flow-chips li + li::before { content: "→"; position: absolute; left: -20px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-weight: 400; }
+.flow-chips li:last-child { background: var(--p-soft); border-color: var(--p); }
+.flow-note { font-size: .88rem; color: var(--ink-3); margin-top: 4px; }
+p.code-cap { margin-top: 12px; }
+.case-h { margin-top: 36px; }
+.case-h:first-of-type { margin-top: 8px; }
+@media (max-width: 640px) {
+  .dir-pacer { grid-template-columns: minmax(0, 1fr); }
+}
