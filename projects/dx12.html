@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DirectX 12 Tank | 이성현 포트폴리오</title>
+<meta name="description" content="3D게임프로그래밍2 개인 과제 — DirectX 12 테셀레이션 지형, 반사 구, 거울 차원이 있는 탱크 게임">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="../assets/css/dx-extra.css">
+</head>
+<body data-project="dx12">
+<div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
+<div class="band band-dx">
+  <img src="../assets/img/dx/terrain.jpg" alt="DirectX 12 탱크 게임 — 테셀레이션 지형 와이어프레임과 반사 구" width="1168" height="720">
+  <div class="band-text wrap">
+    <span class="label">Course Project · C++ · DirectX 12 · HLSL</span>
+    <h1 class="page-title">DirectX 12 Tank</h1>
+    <p class="page-sub">테셀레이션 지형, 반사 구, 거울 차원이 있는 탱크 게임. 「3D게임프로그래밍2」 개인 과제입니다.</p>
+  </div>
+</div>
+<div class="wrap">
+
+<header class="page-head">
+  <p class="print-url">이성현 · 게임 클라이언트 프로그래머 · sum0heily@gmail.com · https://mintpink0.github.io</p>
+  <dl class="facts-strip">
+    <div><dt class="kr-label">기간</dt><dd>2023 2학기</dd></div>
+    <div><dt class="kr-label">인원</dt><dd>1명</dd></div>
+    <div><dt class="kr-label">환경</dt><dd>C++ · DirectX 12 · HLSL</dd></div>
+    <div><dt class="kr-label">범위</dt><dd><b>수업 예제 프레임워크 위 개인 과제</b></dd></div>
+  </dl>
+  <p class="ai-line"><b>예제와 제 작업</b> — 「3D게임프로그래밍2」 과제 02입니다. 수업 예제 프로젝트(LabProject08-1-2)를 받아 그 위에서 작업했습니다. 절마다 수업 예제를 바탕으로 한 부분과 제가 더한 부분을 나눠 적었습니다.</p>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="목차">
+    <span class="label">목차</span>
+    <a data-n="01" href="#summary">요점</a>
+    <a data-n="02" href="#game">게임</a>
+    <a data-n="03" href="#tess">테셀레이션 지형</a>
+    <a data-n="04" href="#mirror">반사 구와 거울 차원</a>
+    <a data-n="05" href="#combat">적과 전투</a>
+    <a data-n="06" href="#limits">한계와 다시 만든다면</a>
+  </nav>
+
+  <main class="content">
+
+    <section id="summary">
+      <h2><span class="num">01 — Summary</span>이 페이지의 요점</h2>
+      <ul>
+        <li><b>만든 것.</b> 높이맵 지형을 카메라 거리에 따라 GPU에서 쪼개고, 주변을 실시간으로 비추는 반사 구를 둔 탱크 게임입니다. 적 10대 중 2대를 부숴 200점을 내면 이깁니다.</li>
+        <li><b>거울 차원.</b> 반사 구에 닿으면 벽 6장이 모두 거울인 방으로 이동합니다. 벽마다 렌더 타깃을 따로 두어 벽끼리 서로를 비추게 했습니다. 대신 이 모드에서는 프레임마다 GPU를 6번 기다립니다.</li>
+        <li><b>경계.</b> 렌더링 프레임워크, 베지어 패치 틀, 동적 큐브 매핑, 스프라이트 애니메이션은 수업 예제를 바탕으로 했습니다. 거울 차원, 적 AI와 파괴 연출, 충돌 반응, 점수, 테셀레이션 수치와 노멀 보간은 제가 더했습니다.</li>
+      </ul>
+    </section>
+
+    <section id="game">
+      <h2><span class="num">02 — Game</span>게임</h2>
+      <p class="lead">탱크를 몰고 지형과 물 위를 다니며 적을 쏩니다. 적 하나를 부수면 100점이고, 200점이 되면 점수 자리에 「YOU WIN!」이 뜹니다.</p>
+      <div class="figs wide">
+        <figure><img src="../assets/img/dx/terrain.jpg" alt="지형 와이어프레임을 켠 화면. 오른쪽에 큰 반사 구가 있고 가운데에 노란 플레이어 탱크와 적 트럭이 보인다." width="1168" height="720" loading="lazy"><figcaption>F4로 지형 와이어프레임을 켠 화면입니다. 오른쪽 큰 구가 반사 구입니다.</figcaption></figure>
+        <figure><img src="../assets/img/dx/mirror.jpg" alt="거울 차원. 사방의 거울 벽에 플레이어 탱크가 여러 겹으로 비친다." width="1150" height="759" loading="lazy"><figcaption>거울 차원입니다. 벽이 서로를 비춰 탱크가 여러 겹으로 보입니다.</figcaption></figure>
+      </div>
+
+      <h3>조작</h3>
+      <div class="tbl keys">
+        <table>
+          <thead><tr><th>입력</th><th>동작</th></tr></thead>
+          <tbody>
+            <tr><td>W / S</td><td>전진 · 후진</td></tr>
+            <tr><td>마우스 이동</td><td>차체 회전</td></tr>
+            <tr><td>왼쪽 버튼 드래그</td><td>포신 위아래 (-70° ~ 20°)</td></tr>
+            <tr><td>방향키</td><td>카메라 위치 조절</td></tr>
+            <tr><td>Space</td><td>누르는 동안 발사, 포구 화염, 스포트라이트</td></tr>
+            <tr><td>F2 / F3</td><td>테셀레이션 고정 20 / 거리 기반</td></tr>
+            <tr><td>F4</td><td>지형 와이어프레임 켜기 · 끄기</td></tr>
+            <tr><td>F6 / F7</td><td>일반 차원 / 거울 차원으로 바로 이동</td></tr>
+            <tr><td>F9</td><td>전체 화면 전환</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>플레이어 탱크는 모델에서 포신, 포탑, 바퀴 4개를 프레임 이름으로 찾아 따로 움직입니다. 이동하면 바퀴가 돌고, 드래그하면 포신만 기울어집니다.</p>
+
+      <h3>맵</h3>
+      <ul>
+        <li><b>물.</b> 높이 155에 깐 평면입니다. 정점 셰이더에서 <code>y += sin(0.7t + 0.7x)·2.95 + cos(0.7t + 0.3z)·2.05</code>로 물결을 만들고, UV 행렬을 매 프레임 밀어 텍스처가 흐르게 했습니다. 물 텍스처에 용암 텍스처의 빨간 채널을 35% 섞었습니다. 물결 수치와 용암 혼합은 제가 정했고, UV 행렬로 흐르게 하는 방식은 수업 예제를 바탕으로 했습니다.</li>
+        <li><b>나무.</b> 3D 모델 두 종(tree1a, tree2)을 번갈아 30그루 놓습니다. 위치는 무작위로 뽑되 지형 높이가 153보다 낮으면 다시 뽑아 물 위에는 놓지 않습니다.</li>
+        <li><b>수면 부유.</b> 플레이어와 적 모두 지형 높이가 155 이하인 곳에 들어가면 높이 150~154 사이를 오르내리며 떠 있습니다.</li>
+      </ul>
+
+      <h3>수업 예제와 제 작업</h3>
+      <div class="split wide">
+        <div>
+          <h4>수업 예제를 바탕으로</h4>
+          <ul>
+            <li>DirectX 12 프레임워크 (LabProject08-1-2)</li>
+            <li>베지어 5×5 도메인 셰이더, 헐 셰이더의 모서리 중점 방식 틀</li>
+            <li>동적 큐브 매핑 (<code>CDynamicCubeMappingObject</code> · <code>Shader</code>)</li>
+            <li>스프라이트 시트 애니메이션 (<code>CMultiSpriteObject</code> · <code>AnimateRowColumn</code>)</li>
+            <li>지형 높이를 따라가는 콜백, 텍스처가 흐르는 물</li>
+          </ul>
+        </div>
+        <div class="mine">
+          <h4>제가 더한 것</h4>
+          <ul>
+            <li>거울 차원 전체 — 벽 6장 렌더 타깃(<code>_Cube</code> 클래스), <code>Environment_RectPS</code>, 진입 · 복귀, 렌더 분기</li>
+            <li>탱크 부품 조작, 적 배회 · 지형 정렬 · 파괴 연출, 충돌 반응, 점수</li>
+            <li>포구에 붙인 발사 화염과 발사 조명, 수면 부유</li>
+            <li>물결 수치와 용암 혼합, 테셀레이션 수치(40 → 4)와 노멀 보간</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="tess">
+      <h2><span class="num">03 — Tessellation</span>테셀레이션 지형</h2>
+      <p class="lead">257×257 높이맵을 패치 441개로 나눠 GPU에서 쪼갭니다. 수업 예제의 베지어 패치 틀을 바탕으로 했고, 거리별 분할 수치와 노멀 보간을 제가 더했습니다.</p>
+
+      <h3>패치 구조</h3>
+      <p>패치 하나는 높이맵 13×13칸을 덮습니다. 그 안에서 3칸 간격으로 고른 제어점 25개(5×5)를 하나의 패치로 GPU에 보냅니다. 가로 · 세로 21개씩, 모두 441개입니다. 이웃 패치는 경계의 제어점 줄을 함께 씁니다.</p>
+      <p>도메인 셰이더는 4차 베른슈타인 가중치로 25점을 섞어 위치를 냅니다. 노멀도 같은 가중치로 보간해 조명에 씁니다.</p>
+
+      <h3>분할 계수</h3>
+      <p>F3을 누르면 거리 기반으로 바뀝니다. 모서리 계수는 그 모서리 양 끝 제어점의 중점에서, 내부 계수는 25점 평균 위치에서 카메라까지 거리를 잽니다. 거리 10 이하는 40, 500 이상은 4이고 그 사이는 직선으로 줄어듭니다. 분할 방식은 <code>integer</code>입니다. F3을 누르기 전과 F2에서는 모든 계수가 20으로 고정입니다.</p>
+
+      <figure class="dg wide">
+        <svg class="dg-wide" viewBox="0 0 760 340" role="img" aria-label="테셀레이션 패치 그림. 왼쪽은 5×5 제어점 패치로, 모서리 제어점 0, 4, 20, 24와 네 모서리의 중점, 25점 평균인 중심을 표시했습니다. 코드는 위 모서리 중점을 계수 0번에, 왼쪽 모서리 중점을 1번에 넣는데, D3D 순서에서 0번은 왼쪽, 1번은 위입니다. 오른쪽 그래프는 카메라 거리 10에서 계수 40, 255에서 22, 500 이상에서 4로 줄어드는 선이고, 고정 모드는 20입니다.">
+          <defs>
+            <marker id="tw-ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0,0 L8,4 L0,8 z"/></marker>
+          </defs>
+          <g transform="translate(24 0)">
+          <!-- 패치 -->
+          <path class="grid" d="M60 50 H280 M60 105 H280 M60 160 H280 M60 215 H280 M60 270 H280 M60 50 V270 M115 50 V270 M170 50 V270 M225 50 V270 M280 50 V270"/>
+          <g class="pt">
+            <circle cx="115" cy="50" r="3.5"/><circle cx="170" cy="50" r="3.5"/><circle cx="225" cy="50" r="3.5"/>
+            <circle cx="60" cy="105" r="3.5"/><circle cx="115" cy="105" r="3.5"/><circle cx="170" cy="105" r="3.5"/><circle cx="225" cy="105" r="3.5"/><circle cx="280" cy="105" r="3.5"/>
+            <circle cx="60" cy="160" r="3.5"/><circle cx="115" cy="160" r="3.5"/><circle cx="225" cy="160" r="3.5"/><circle cx="280" cy="160" r="3.5"/>
+            <circle cx="60" cy="215" r="3.5"/><circle cx="115" cy="215" r="3.5"/><circle cx="170" cy="215" r="3.5"/><circle cx="225" cy="215" r="3.5"/><circle cx="280" cy="215" r="3.5"/>
+            <circle cx="115" cy="270" r="3.5"/><circle cx="170" cy="270" r="3.5"/><circle cx="225" cy="270" r="3.5"/>
+          </g>
+          <g class="pt-c"><circle cx="60" cy="50" r="5.5"/><circle cx="280" cy="50" r="5.5"/><circle cx="60" cy="270" r="5.5"/><circle cx="280" cy="270" r="5.5"/></g>
+          <text class="m end" x="50" y="44">0</text><text class="m" x="290" y="44">4</text>
+          <text class="m end" x="50" y="286">20</text><text class="m" x="290" y="286">24</text>
+          <!-- 모서리 중점 -->
+          <rect class="pt-po" x="163" y="43" width="14" height="14"/>
+          <rect class="pt-po" x="53" y="153" width="14" height="14"/>
+          <rect class="pt-o" x="273" y="153" width="14" height="14"/>
+          <rect class="pt-o" x="163" y="263" width="14" height="14"/>
+          <text class="m mid tp" x="170" y="34">e0 → [0]</text>
+          <text class="m end tp" x="46" y="164">e1 → [1]</text>
+          <text class="m" x="294" y="164">e2 → [2]</text>
+          <text class="m mid" x="170" y="296">e3 → [3]</text>
+          <!-- 중심 -->
+          <path class="pt-c" d="M170 151 L179 160 L170 169 L161 160 z"/>
+          <rect class="panel" x="128" y="178" width="84" height="18" style="stroke:none"/>
+          <text class="lb mid" x="170" y="191">내부: 25점 평균</text>
+          <text class="lb mid tp" x="170" y="316">D3D 순서: [0] 왼쪽 · [1] 위 · [2] 오른쪽 · [3] 아래</text>
+          <text class="s mid" x="170" y="334">패치 = 높이맵 13×13칸 · 제어점 3칸 간격 · 441개</text>
+          </g>
+          <!-- 그래프 -->
+          <text class="t" x="420" y="34">F3: 거리 → 계수</text>
+          <text class="lb end" x="412" y="56">계수</text>
+          <path class="ax" d="M420 70 V270 H720"/>
+          <path class="ln dash" d="M420 170 H720"/>
+          <text class="lb end" x="716" y="163">F2 · 기본: 고정 20</text>
+          <polyline class="ln-p" points="420,70 425,70 670,250 720,250"/>
+          <g class="pt-p"><circle cx="425" cy="70" r="4.5"/><circle cx="547.5" cy="160" r="4.5"/><circle cx="670" cy="250" r="4.5"/></g>
+          <text class="s" x="434" y="66">거리 10 → 40</text>
+          <text class="s" x="556" y="152">255 → 22</text>
+          <text class="s" x="678" y="240">500 → 4</text>
+          <text class="m end" x="412" y="74">40</text><text class="m end" x="412" y="174">20</text><text class="m end" x="412" y="254">4</text>
+          <text class="m mid" x="420" y="288">0</text><text class="m mid" x="545" y="288">250</text><text class="m mid" x="670" y="288">500</text>
+          <text class="s mid" x="570" y="312">카메라까지 거리 (월드 단위)</text>
+        </svg>
+        <svg class="dg-narrow" viewBox="0 0 340 604" role="img" aria-label="테셀레이션 패치 그림. 위는 5×5 제어점 패치로, 모서리 제어점 0, 4, 20, 24와 네 모서리의 중점, 25점 평균인 중심을 표시했습니다. 코드는 위 모서리 중점을 계수 0번에, 왼쪽 모서리 중점을 1번에 넣는데, D3D 순서에서 0번은 왼쪽, 1번은 위입니다. 아래 그래프는 카메라 거리 10에서 계수 40, 255에서 22, 500 이상에서 4로 줄어드는 선이고, 고정 모드는 20입니다.">
+          <path class="grid" d="M70 50 H270 M70 100 H270 M70 150 H270 M70 200 H270 M70 250 H270 M70 50 V250 M120 50 V250 M170 50 V250 M220 50 V250 M270 50 V250"/>
+          <g class="pt">
+            <circle cx="120" cy="50" r="3.5"/><circle cx="170" cy="50" r="3.5"/><circle cx="220" cy="50" r="3.5"/>
+            <circle cx="70" cy="100" r="3.5"/><circle cx="120" cy="100" r="3.5"/><circle cx="170" cy="100" r="3.5"/><circle cx="220" cy="100" r="3.5"/><circle cx="270" cy="100" r="3.5"/>
+            <circle cx="70" cy="150" r="3.5"/><circle cx="120" cy="150" r="3.5"/><circle cx="220" cy="150" r="3.5"/><circle cx="270" cy="150" r="3.5"/>
+            <circle cx="70" cy="200" r="3.5"/><circle cx="120" cy="200" r="3.5"/><circle cx="170" cy="200" r="3.5"/><circle cx="220" cy="200" r="3.5"/><circle cx="270" cy="200" r="3.5"/>
+            <circle cx="120" cy="250" r="3.5"/><circle cx="170" cy="250" r="3.5"/><circle cx="220" cy="250" r="3.5"/>
+          </g>
+          <g class="pt-c"><circle cx="70" cy="50" r="5.5"/><circle cx="270" cy="50" r="5.5"/><circle cx="70" cy="250" r="5.5"/><circle cx="270" cy="250" r="5.5"/></g>
+          <text class="m end" x="60" y="44">0</text><text class="m" x="280" y="44">4</text>
+          <text class="m end" x="60" y="266">20</text><text class="m" x="280" y="266">24</text>
+          <rect class="pt-po" x="163" y="43" width="14" height="14"/>
+          <rect class="pt-po" x="63" y="143" width="14" height="14"/>
+          <rect class="pt-o" x="263" y="143" width="14" height="14"/>
+          <rect class="pt-o" x="163" y="243" width="14" height="14"/>
+          <text class="m mid tp" x="170" y="34">e0 → [0]</text>
+          <text class="m end tp" x="58" y="154">e1→[1]</text>
+          <text class="m" x="282" y="154">e2→[2]</text>
+          <text class="m mid" x="170" y="274">e3 → [3]</text>
+          <path class="pt-c" d="M170 141 L179 150 L170 159 L161 150 z"/>
+          <rect class="panel" x="128" y="166" width="84" height="18" style="stroke:none"/>
+          <text class="lb mid" x="170" y="179">내부: 25점 평균</text>
+          <text class="lb mid tp" x="170" y="298">D3D 순서: [0] 왼쪽 · [1] 위 · [2] 오른쪽 · [3] 아래</text>
+          <text class="s mid" x="170" y="316">패치 = 13×13칸 · 제어점 3칸 간격 · 441개</text>
+          <text class="t" x="20" y="358">F3: 거리 → 계수</text>
+          <text class="lb end" x="44" y="372">계수</text>
+          <path class="ax" d="M50 380 V560 H320"/>
+          <path class="ln dash" d="M50 470 H320"/>
+          <text class="lb end" x="316" y="463">고정 20</text>
+          <polyline class="ln-p" points="50,380 54.5,380 275,542 320,542"/>
+          <g class="pt-p"><circle cx="54.5" cy="380" r="4.5"/><circle cx="164.75" cy="461" r="4.5"/><circle cx="275" cy="542" r="4.5"/></g>
+          <text class="s" x="64" y="384">거리 10 → 40</text>
+          <text class="s" x="174" y="454">255 → 22</text>
+          <text class="s" x="281" y="532">500 → 4</text>
+          <text class="m end" x="44" y="384">40</text><text class="m end" x="44" y="474">20</text><text class="m end" x="44" y="546">4</text>
+          <text class="m mid" x="50" y="576">0</text><text class="m mid" x="162.5" y="576">250</text><text class="m mid" x="275" y="576">500</text>
+          <text class="s mid" x="185" y="598">카메라까지 거리</text>
+        </svg>
+        <figcaption>네모가 모서리 중점입니다. 강조색 테두리 두 개(위 · 왼쪽)는 코드가 넣는 칸과 D3D가 읽는 칸이 어긋난 곳입니다.</figcaption>
+      </figure>
+
+<pre><code>float CalculateTessFactor(float3 f3Position)
+{
+    float fDistToCamera = distance(f3Position, gvCameraPosition);
+    float s = saturate((fDistToCamera - 10.0f) / (500.0f - 10.0f));
+    return (lerp(40.0f, 4.0f, s));
+}
+<span class="c">// HSTerrainTessellationConstant — F3(DYNAMIC_TESSELLATION)일 때</span>
+float3 e0 = 0.5f * (input[0].positionW + input[4].positionW);   <span class="c">// 위 모서리</span>
+float3 e1 = 0.5f * (input[0].positionW + input[20].positionW);  <span class="c">// 왼쪽 모서리</span>
+float3 e2 = 0.5f * (input[4].positionW + input[24].positionW);  <span class="c">// 오른쪽</span>
+float3 e3 = 0.5f * (input[20].positionW + input[24].positionW); <span class="c">// 아래</span>
+output.fTessEdges[0] = CalculateTessFactor(e0);  <span class="c">// [0]은 u=0(왼쪽) 자리</span>
+output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(위) 자리</span>
+<span class="c">// … [2], [3], 내부 계수(25점 평균 위치)</span></code></pre>
+      <span class="code-cap"><span>주석은 이 페이지에서 붙인 설명입니다.</span><span>TerrainTessellationHS.hlsl</span></span>
+
+      <h3>이웃 패치와 계수 맞추기</h3>
+      <p>모서리 중점에서 거리를 재는 이유는 이웃 패치와 같은 점에서 재서 공유 모서리의 계수를 맞추기 위해서입니다. 공유 모서리의 곡선은 같은 제어점 다섯 개로 정해지므로, 계수까지 같으면 양쪽 꼭짓점이 정확히 겹칩니다.</p>
+      <p>그런데 D3D12 사각 패치의 계수 순서는 [0] 왼쪽(u=0), [1] 위(v=0), [2] 오른쪽, [3] 아래입니다. 코드는 [0]에 위 모서리 중점을, [1]에 왼쪽 모서리 중점을 넣어 두 칸이 바뀌어 있습니다.</p>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>계수</th><th>D3D가 읽는 모서리</th><th>코드가 넣는 중점</th><th>결과</th></tr></thead>
+          <tbody>
+            <tr><td class="num">[0]</td><td>왼쪽 (u=0)</td><td>위 모서리 (0–4)</td><td class="bad">바뀜</td></tr>
+            <tr><td class="num">[1]</td><td>위 (v=0)</td><td>왼쪽 모서리 (0–20)</td><td class="bad">바뀜</td></tr>
+            <tr><td class="num">[2]</td><td>오른쪽 (u=1)</td><td>오른쪽 모서리 (4–24)</td><td class="ok">맞음</td></tr>
+            <tr><td class="num">[3]</td><td>아래 (v=1)</td><td>아래 모서리 (20–24)</td><td class="ok">맞음</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>그래서 거리 기반 모드에서는 패치의 왼쪽 · 위 모서리가 이웃과 다른 점에서 거리를 잽니다. 패치 한 변이 96 단위라 두 중점은 수평으로 약 68 단위 떨어져 있고, 그만큼 계수가 몇 단계 달라질 수 있습니다. 계수가 다르면 같은 곡선을 다른 칸 수로 나눠 경계에 틈이 생길 수 있습니다. 코드로 따져 본 결과이고, 실행 화면에서 틈을 확인하지는 않았습니다. 고정 20 모드에서는 모든 계수가 같아 이 문제가 없습니다.</p>
+    </section>
+
+    <section id="mirror">
+      <h2><span class="num">04 — Reflection</span>반사 구와 거울 차원</h2>
+      <p class="lead">일반 차원에는 주변을 비추는 반사 구가 있고, 구에 닿으면 사방이 거울인 방으로 이동합니다. 반사 구는 수업 예제의 동적 큐브 매핑을 바탕으로 했고, 거울 방은 제가 더했습니다.</p>
+
+      <h3>반사 구</h3>
+      <p>지형 중앙 근처, 지면에서 80 위에 반지름 100인 구를 둡니다. 매 프레임 구 중심에 FOV 90° 카메라 6대를 놓고 씬을 6번 그려 256×256 큐브맵 6면을 채웁니다. 픽셀 셰이더는 시선의 반사 벡터로 큐브맵을 샘플링합니다. 물은 <code>Scene::Render</code> 밖에서 따로 그리기 때문에 구에 비치지 않습니다.</p>
+
+      <h3>거울 방</h3>
+      <p>방은 한 변이 약 200인 상자이고 벽 6장이 모두 거울입니다. 큐브맵 한 장 대신 벽마다 1024×1024 2D 렌더 타깃을 하나씩 둡니다. 벽 위치에 FOV 85° 카메라를 두고 방 안쪽을 그린 뒤, 벽 셰이더(<code>Environment_RectPS</code>)가 반사 벡터를 그 벽 면의 UV로 바꿔 샘플링합니다.</p>
+      <p>벽을 그릴 때 다른 벽에는 이미 그려 둔 결과가 붙어 있습니다. 그래서 프레임이 지날 때마다 반사 속 반사가 한 겹씩 깊어지고, 탱크가 여러 겹으로 보입니다(02절 사진). 거울 방에서는 하늘, 플레이어, 포구 화염, 벽만 그리고 지형 · 적 · 나무와 충돌 검사는 건너뜁니다.</p>
+
+      <figure class="dg wide">
+        <svg class="dg-wide" viewBox="0 0 760 336" role="img" aria-label="반사 구와 거울 차원 그림. 왼쪽 일반 차원에는 큐브맵 256, FOV 90도 카메라 6대로 주변을 비추는 반사 구가 있습니다. 구의 충돌 구 반지름 95에 닿으면 오른쪽 거울 방 중앙 높이 162로 이동합니다. 거울 방은 위에서 본 정사각형으로, 벽마다 1024 렌더 타깃과 FOV 85도 카메라가 안쪽을 봅니다. 옆벽 4장에 닿으면 일반 차원의 지형 위 높이 300으로 돌아갑니다.">
+          <defs>
+            <marker id="mw-ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0,0 L8,4 L0,8 z"/></marker>
+            <marker id="mw-ahp" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah-p" d="M0,0 L8,4 L0,8 z"/></marker>
+          </defs>
+          <!-- 일반 차원 -->
+          <text class="t" x="16" y="26">일반 차원 — 반사 구</text>
+          <text class="s" x="16" y="46">큐브맵 256² · FOV 90° 카메라 6대</text>
+          <text class="s" x="16" y="64">물은 따로 그려 구에 비치지 않음</text>
+          <path class="ground" d="M10 252 Q80 228 150 246 T 320 242"/>
+          <circle class="sphere" cx="175" cy="160" r="66"/>
+          <path class="ln" d="M175 160 H213" marker-end="url(#mw-ah)"/>
+          <path class="ln" d="M175 160 H137" marker-end="url(#mw-ah)"/>
+          <path class="ln" d="M175 160 V122" marker-end="url(#mw-ah)"/>
+          <path class="ln" d="M175 160 V198" marker-end="url(#mw-ah)"/>
+          <path class="ln" d="M175 160 L201 134" marker-end="url(#mw-ah)"/>
+          <path class="ln" d="M175 160 L149 186" marker-end="url(#mw-ah)"/>
+          <path class="ax" d="M242 101 L224 112"/>
+          <text class="lb" x="246" y="104">충돌 구 95</text>
+          <rect class="pt-c" x="54" y="228" width="26" height="12" rx="2"/>
+          <text class="lb mid" x="67" y="274">플레이어</text>
+          <!-- 진입 -->
+          <path class="ln-p" d="M262 160 H446" marker-end="url(#mw-ahp)"/>
+          <text class="lb mid tp" x="356" y="148">구에 닿으면</text>
+          <text class="lb mid" x="356" y="178">방 중앙 · 높이 162</text>
+          <!-- 거울 방 -->
+          <text class="t" x="460" y="26">거울 차원 — 벽 6장 (위에서 본 그림)</text>
+          <text class="s" x="460" y="46">벽마다 2D 렌더 타깃 1024² · FOV 85° 카메라</text>
+          <rect class="room" x="460" y="70" width="180" height="180"/>
+          <polygon class="cam" points="550,72 514,112 586,112"/>
+          <polygon class="cam" points="550,248 514,208 586,208"/>
+          <polygon class="cam" points="462,160 502,124 502,196"/>
+          <polygon class="cam" points="638,160 598,124 598,196"/>
+          <path class="wall" d="M460 70 H640 V250 H460 Z" fill="none"/>
+          <g class="pt-p"><circle cx="550" cy="70" r="4"/><circle cx="550" cy="250" r="4"/><circle cx="460" cy="160" r="4"/><circle cx="640" cy="160" r="4"/></g>
+          <rect class="pt-c" x="540" y="155" width="20" height="10" rx="2"/>
+          <text class="lb" x="654" y="118">옆벽 4장에</text>
+          <text class="lb" x="654" y="134">닿으면 복귀</text>
+          <text class="lb" x="654" y="190">천장 · 바닥</text>
+          <text class="lb" x="654" y="206">2장은 생략</text>
+          <text class="lb mid tp" x="550" y="274">벽끼리 서로 비춰 반사가 겹침</text>
+          <!-- 복귀 -->
+          <path class="ln dash" d="M644 236 C 700 330, 300 330, 236 262" marker-end="url(#mw-ah)"/>
+          <text class="lb mid" x="470" y="330">옆벽 OOBB에 닿으면 지형 위 높이 300으로</text>
+        </svg>
+        <svg class="dg-narrow" viewBox="0 0 340 624" role="img" aria-label="반사 구와 거울 차원 그림. 위쪽 일반 차원에는 큐브맵 256, FOV 90도 카메라 6대로 주변을 비추는 반사 구가 있습니다. 충돌 구 반지름 95에 닿으면 아래쪽 거울 방 중앙 높이 162로 이동합니다. 거울 방은 위에서 본 정사각형으로, 벽마다 1024 렌더 타깃과 FOV 85도 카메라가 안쪽을 봅니다. 옆벽 4장에 닿으면 일반 차원의 지형 위 높이 300으로 돌아갑니다.">
+          <defs>
+            <marker id="mn-ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0,0 L8,4 L0,8 z"/></marker>
+            <marker id="mn-ahp" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path class="ah-p" d="M0,0 L8,4 L0,8 z"/></marker>
+          </defs>
+          <text class="t" x="12" y="24">일반 차원 — 반사 구</text>
+          <text class="s" x="12" y="44">큐브맵 256² · FOV 90° 카메라 6대</text>
+          <text class="s" x="12" y="62">물은 따로 그려 구에 비치지 않음</text>
+          <path class="ground" d="M10 226 Q90 204 170 222 T 300 218"/>
+          <circle class="sphere" cx="160" cy="146" r="56"/>
+          <path class="ln" d="M160 146 H194" marker-end="url(#mn-ah)"/>
+          <path class="ln" d="M160 146 H126" marker-end="url(#mn-ah)"/>
+          <path class="ln" d="M160 146 V112" marker-end="url(#mn-ah)"/>
+          <path class="ln" d="M160 146 V180" marker-end="url(#mn-ah)"/>
+          <path class="ln" d="M160 146 L182 124" marker-end="url(#mn-ah)"/>
+          <path class="ln" d="M160 146 L138 168" marker-end="url(#mn-ah)"/>
+          <path class="ax" d="M218 97 L202 108"/>
+          <text class="lb" x="222" y="100">충돌 구 95</text>
+          <rect class="pt-c" x="40" y="204" width="24" height="11" rx="2"/>
+          <text class="lb mid" x="52" y="246">플레이어</text>
+          <path class="ln-p" d="M160 234 V316" marker-end="url(#mn-ahp)"/>
+          <text class="lb tp" x="172" y="266">구에 닿으면</text>
+          <text class="lb" x="172" y="282">방 중앙 · 높이 162</text>
+          <text class="t" x="12" y="344">거울 차원 — 벽 6장</text>
+          <text class="s" x="12" y="364">벽마다 2D 렌더 타깃 1024² · FOV 85°</text>
+          <rect class="room" x="70" y="390" width="180" height="180"/>
+          <polygon class="cam" points="160,392 124,432 196,432"/>
+          <polygon class="cam" points="160,568 124,528 196,528"/>
+          <polygon class="cam" points="72,480 112,444 112,516"/>
+          <polygon class="cam" points="248,480 208,444 208,516"/>
+          <path class="wall" d="M70 390 H250 V570 H70 Z" fill="none"/>
+          <g class="pt-p"><circle cx="160" cy="390" r="4"/><circle cx="160" cy="570" r="4"/><circle cx="70" cy="480" r="4"/><circle cx="250" cy="480" r="4"/></g>
+          <rect class="pt-c" x="150" y="475" width="20" height="10" rx="2"/>
+          <text class="lb mid tp" x="160" y="594">벽끼리 서로 비춰 반사가 겹침</text>
+          <text class="lb mid" x="160" y="612">천장 · 바닥 2장은 그림에서 생략</text>
+          <path class="ln dash" d="M254 480 H312 V226" marker-end="url(#mn-ah)"/>
+          <text class="lb mid" x="334" y="350" transform="rotate(-90 334 350)">옆벽에 닿으면 지형 위 높이 300으로</text>
+        </svg>
+        <figcaption>일반 차원은 한 점에서 본 6방향을 큐브맵 한 장에 담고, 거울 방은 벽마다 자기 위치에서 본 장면을 따로 담습니다.</figcaption>
+      </figure>
+
+      <h3>진입과 복귀</h3>
+      <ul>
+        <li><b>진입</b> — 플레이어 충돌 구가 반사 구의 충돌 구(반지름 95)에 닿으면 방 중앙, 높이 162로 옮깁니다. 방 안에서는 높이 150~154를 오르내리며 떠 있습니다.</li>
+        <li><b>복귀</b> — 옆벽 4장의 OOBB(두께 1)에 닿으면 일반 차원의 정해진 지점(지형 가로 · 세로 40% 지점) 높이 300으로 돌아갑니다. 그 뒤 지형 높이까지 프레임마다 2씩 내려옵니다. 천장과 바닥에는 OOBB가 없습니다.</li>
+        <li><b>강제 전환</b> — F7은 거울 방으로, F6은 일반 차원으로 같은 위치를 써서 바로 옮깁니다.</li>
+      </ul>
+
+      <h3>프레임당 렌더 횟수</h3>
+      <div class="tbl wide stack-tbl">
+        <table>
+          <thead><tr><th>항목</th><th>일반 차원</th><th>거울 차원</th></tr></thead>
+          <tbody>
+            <tr><td>추가 렌더</td><td data-k="일반 차원">씬 6번 (큐브맵 6면)</td><td data-k="거울 차원">씬 6번 (벽 6장)</td></tr>
+            <tr><td>렌더 타깃</td><td data-k="일반 차원">256×256 × 6 (큐브 텍스처 1장)</td><td data-k="거울 차원">1024×1024 × 6 (2D 텍스처 6장)</td></tr>
+            <tr><td>추가 렌더 픽셀 수</td><td data-k="일반 차원">약 39만 (계산값)</td><td data-k="거울 차원">약 629만, 16배 (계산값)</td></tr>
+            <tr><td>추가 렌더에서 그리는 것</td><td data-k="일반 차원">물을 뺀 씬 전체</td><td data-k="거울 차원">하늘 · 플레이어 · 포구 화염 · 벽</td></tr>
+            <tr><td>추가 렌더의 제출 · GPU 대기</td><td data-k="일반 차원">1번 (6면을 한 번에 제출)</td><td data-k="거울 차원">6번 (벽마다 제출하고 기다림)</td></tr>
+            <tr><td>화면 렌더</td><td data-k="일반 차원">1번</td><td data-k="거울 차원">1번</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>거울 모드는 벽 하나를 그릴 때마다 커맨드 리스트를 닫아 제출하고, GPU가 끝날 때까지 기다린 뒤 같은 할당자를 다시 씁니다. 프레임 시간은 재지 않았습니다. 위 숫자는 코드로 센 값이고, 타이머에는 60fps 상한이 걸려 있습니다.</p>
+    </section>
+
+    <section id="combat">
+      <h2><span class="num">05 — Combat</span>적과 전투</h2>
+      <p class="lead">적 AI, 파괴 연출, 충돌 반응, 점수는 제가 더한 부분입니다. 지형 높이를 따라가는 방식은 수업 예제의 콜백을 바탕으로 했습니다.</p>
+      <div class="cards wide">
+        <div class="card">
+          <h3>배회</h3>
+          <ul>
+            <li>탱크와 트럭을 번갈아 10대 놓습니다. 시작 위치는 지형 높이 153 이상인 곳에서 무작위로 고릅니다.</li>
+            <li>1~3초마다 -30° ~ 30° 사이에서 목표 각을 새로 뽑고 초당 10°로 돕니다. 매 프레임 0.3씩 앞으로 갑니다.</li>
+            <li>맵 경계(1 ~ 1998)를 벗어나면 180° 돌아섭니다. 나무에 닿으면 전진을 절반으로 줄이고 옆으로 비켜 갑니다.</li>
+          </ul>
+          <span class="tech">CEnemyObject::RandomMovement</span>
+        </div>
+        <div class="card">
+          <h3>지형 정렬과 부유</h3>
+          <ul>
+            <li>적의 위쪽 벡터와 지형 법선 사이 각도를 구해, 매 프레임 그 각의 10%만큼 기울입니다.</li>
+            <li>지형 높이가 155 이하인 곳에서는 물 위로 보고 법선을 위쪽으로 둔 채 높이 150~154를 초당 7로 오르내립니다.</li>
+          </ul>
+          <span class="tech">UpdateEnemyUp · UpdateEnemyHeight</span>
+        </div>
+        <div class="card">
+          <h3>파괴 연출과 점수</h3>
+          <ul>
+            <li>총알 구(반지름 2)와 적 구(탱크 10, 트럭 15)로 맞았는지 봅니다. 한 번 맞을 때마다 체력이 1 줄고, 50번 맞으면 부서집니다.</li>
+            <li>부서지면 몸체 · 포 · 바퀴 같은 부품이 피보나치 반구 샘플링으로 미리 만든 방향을 따라 1초 동안 흩어지며 돕니다. 그 뒤 적을 끕니다.</li>
+            <li>1대에 100점, 200점이면 Direct2D로 「YOU WIN!」을 씁니다.</li>
+          </ul>
+          <span class="tech">CheckBulletByObjectCollisions · Enemy1DeathAnimation</span>
+        </div>
+        <div class="card">
+          <h3>충돌 반응</h3>
+          <ul>
+            <li>플레이어가 나무 OOBB에 닿으면 속도가 0.7에서 0.35로 줄고, 왼쪽이나 오른쪽으로 0.35씩 비켜 갑니다. 방향은 무작위입니다.</li>
+            <li>적에 닿은 채로 이동하면 입력과 반대 방향으로 0.1씩 밀립니다. 닿아 있는 동안 적은 멈춥니다.</li>
+            <li>거울 방에서는 충돌 검사를 하지 않습니다.</li>
+          </ul>
+          <span class="tech">CGameFramework::ProcessInput</span>
+        </div>
+        <div class="card">
+          <h3>발사와 포구 화염</h3>
+          <ul>
+            <li>총알은 1발을 돌려 씁니다. 속도 400, 사거리 100이라 약 0.25초 뒤 다시 쏠 수 있습니다.</li>
+            <li>Space를 누르는 동안 8×8, 6×6 스프라이트 시트 두 장을 포구 앞에 붙이고 카메라 쪽으로 돌립니다. 한 바퀴는 약 1.5초입니다.</li>
+            <li>같은 동안 플레이어 위치에서 바라보는 방향으로 스포트라이트를 켭니다.</li>
+          </ul>
+          <span class="tech">CMultiSpriteObject::Render · m_pLights[1]</span>
+        </div>
+      </div>
+      <p>스프라이트 시트를 넘기는 부분(<code>AnimateRowColumn</code>)은 수업 예제를 바탕으로 했고, 포구 위치에 붙이고 발사 입력과 조명에 묶은 것은 제가 더했습니다.</p>
+    </section>
+
+    <section id="limits">
+      <h2><span class="num">06 — Limits</span>한계와 다시 만든다면</h2>
+      <div class="tbl wide stack-tbl">
+        <table>
+          <thead><tr><th>문제</th><th>영향</th><th>다시 만든다면</th></tr></thead>
+          <tbody>
+            <tr><td>테셀레이션 계수 순서</td><td data-k="영향">[0] · [1]에 들어가는 모서리가 바뀌어 거리 기반 모드에서 왼쪽 · 위 모서리 계수가 이웃과 다를 수 있습니다. 틈은 화면에서 확인하지 않았습니다(<a href="#tess">03절</a>).</td><td data-k="다시 만든다면">[0]에 0–20, [1]에 0–4 중점을 넣고 F4 와이어프레임으로 경계를 확인</td></tr>
+            <tr><td>노멀 입력 2성분</td><td data-k="영향">테셀레이션 입력 레이아웃의 NORMAL이 <code>R32G32_FLOAT</code>라 z가 0으로 들어옵니다. z 방향 기울기가 지형 조명에 반영되지 않습니다.</td><td data-k="다시 만든다면"><code>R32G32B32_FLOAT</code>로 바꾸기</td></tr>
+            <tr><td>배회 타이머 공유</td><td data-k="영향">타이머가 함수 안 <code>static</code>이라 모든 적이 하나를 함께 씁니다. 적마다 시간을 더해 타이머가 적 수만큼 빨리 차고, 찰 때 그 순간 처리 중인 적 하나만 방향을 바꿉니다. 회전도 늘 한쪽으로만 돕니다.</td><td data-k="다시 만든다면">타이머를 적마다 멤버로 두고, 목표 각과의 차이 부호대로 회전</td></tr>
+            <tr><td>거울 모드 GPU 대기 6번</td><td data-k="영향">1024² 벽 6장을 따로 제출하고 매번 기다려 CPU와 GPU가 번갈아 쉽니다.</td><td data-k="다시 만든다면">벽 6장을 커맨드 리스트 하나로 묶어 한 번 제출, 해상도를 낮추거나 프레임마다 벽 몇 장씩 나눠 갱신</td></tr>
+            <tr><td>총알 1발</td><td data-k="영향">총알이 사라질 때까지 다시 쏠 수 없습니다.</td><td data-k="다시 만든다면">풀을 늘리고 발사 간격을 따로 관리</td></tr>
+            <tr><td>프레임 비용 미측정</td><td data-k="영향">일반 · 거울 모드의 프레임 시간을 재지 않았습니다. 04절의 횟수와 픽셀 수는 코드로 센 값입니다.</td><td data-k="다시 만든다면">GPU 타임스탬프 쿼리로 모드별 패스 시간을 재고 비교</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="foot">
+  <span>이성현 · 게임 클라이언트 프로그래머</span>
+  <a class="no-print" href="code-dungeon.html">← 이전 프로젝트 · Code Dungeon</a>
+</footer>
+</div>
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+/* DirectX 12 Tank 상세 페이지 전용 — site.css의 변수와 결(가는 선 · 2px 모서리 · --p 강조)을 그대로 씁니다. */
+
+/* ── 프로젝트 색 (index의 data-project="dx12"와 같은 값) ── */
+[data-project="dx12"] { --p: #5A6676; --p-soft: #E6E9ED; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-project="dx12"] { --p: #9AA8B8; --p-soft: #1C2127; }
+}
+:root[data-theme="dark"] [data-project="dx12"] { --p: #9AA8B8; --p-soft: #1C2127; }
+
+.band-dx img { object-position: 72% 55%; }
+
+/* ── 인라인 SVG 그림 ── */
+.dg { margin: 0; display: grid; gap: 10px; border-top: 2px solid var(--ink); padding-top: 16px; }
+.dg svg { display: block; width: 100%; max-width: 100%; height: auto; }
+.dg .dg-narrow { display: none; }
+.dg figcaption { font-size: .84rem; color: var(--ink-3); }
+.dg .t { font: 700 13.5px/1 var(--f-body); fill: var(--ink); }
+.dg .s { font: 400 12px/1 var(--f-body); fill: var(--ink-2); }
+.dg .lb { font: 600 11px/1 var(--f-body); fill: var(--ink-3); }
+.dg .m { font: 600 11px/1 var(--f-mono); fill: var(--ink-3); }
+.dg .tp { fill: var(--p); }
+.dg .mid { text-anchor: middle; }
+.dg .end { text-anchor: end; }
+.dg .panel { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.dg .grid { fill: none; stroke: var(--line); stroke-width: 1; }
+.dg .ax { fill: none; stroke: var(--ink-3); stroke-width: 1; }
+.dg .ln { fill: none; stroke: var(--ink-3); stroke-width: 1.5; }
+.dg .ln-p { fill: none; stroke: var(--p); stroke-width: 2; }
+.dg .dash { stroke-dasharray: 5 4; }
+.dg .pt { fill: var(--ink-3); }
+.dg .pt-c { fill: var(--ink); }
+.dg .pt-p { fill: var(--p); }
+.dg .pt-o { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.dg .pt-po { fill: var(--surface); stroke: var(--p); stroke-width: 2; }
+.dg .sphere { fill: var(--p-soft); stroke: var(--p); stroke-width: 2; }
+.dg .wall { stroke: var(--p); stroke-width: 5; stroke-linecap: square; }
+.dg .cam { fill: var(--p); fill-opacity: .14; stroke: var(--p); stroke-width: 1; }
+.dg .room { fill: var(--paper); stroke: none; }
+.dg .ground { fill: none; stroke: var(--ink-2); stroke-width: 2; }
+.dg .ah { fill: var(--ink-3); }
+.dg .ah-p { fill: var(--p); }
+
+/* ── 예제 / 제 작업 경계 ── */
+.split { border: 1px solid var(--line); border-top: 3px solid var(--p); border-radius: var(--r); background: var(--surface); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.split > div { padding: 16px 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.split > div + div { border-left: 1px solid var(--line); }
+.split h4 { margin: 0; font: 700 .95rem/1.4 var(--f-body); color: var(--ink); }
+.split ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: .9rem; color: var(--ink-2); }
+.split .mine h4 { color: var(--p); }
+
+/* 표 보조 */
+.tbl-wrap td:first-child { white-space: normal; }
+.ok { color: var(--ink-2); }
+.bad { color: var(--ink); font-weight: 700; }
+.keys td:first-child { font-family: var(--f-mono); font-size: .86em; }
+.content > section > .tbl { max-width: var(--measure); }
+.content > section > .tbl.wide { max-width: 62rem; }
+
+@media (max-width: 640px) {
+  .dg .dg-wide { display: none; }
+  .dg .dg-narrow { display: block; }
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .split > div + div { border-left: 0; border-top: 1px solid var(--line); }
+  /* 좁은 화면에서 긴 표는 행마다 카드처럼 */
+  .stack-tbl { overflow-x: visible; }
+  .stack-tbl thead { display: none; }
+  .stack-tbl table, .stack-tbl tbody, .stack-tbl tr, .stack-tbl td { display: block; width: 100%; }
+  .stack-tbl tr { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .stack-tbl td, .stack-tbl td + td { border: 0; padding: 3px 0; white-space: normal; }
+  .stack-tbl td:first-child { padding-bottom: 6px; }
+  .stack-tbl td[data-k]::before { content: attr(data-k); display: block; font: 600 .76rem/1.6 var(--f-body); color: var(--ink-3); }
+}
+
+@media print {
+  .dg .dg-narrow { display: none !important; }
+  .dg .dg-wide { display: block !important; }
+  .dg, .split { break-inside: avoid; }
+  .split { background: #fff; }
+}
