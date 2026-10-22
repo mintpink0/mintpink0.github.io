@@ -16,8 +16,8 @@
 .dg figcaption { font-size: .84rem; color: var(--ink-3); }
 .dg .t { font: 700 13.5px/1 var(--f-body); fill: var(--ink); }
 .dg .s { font: 400 12px/1 var(--f-body); fill: var(--ink-2); }
-.dg .lb { font: 600 11px/1 var(--f-body); fill: var(--ink-3); }
-.dg .m { font: 600 11px/1 var(--f-mono); fill: var(--ink-3); }
+.dg .lb { font: 600 12px/1 var(--f-body); fill: var(--ink-3); }
+.dg .m { font: 600 12px/1 var(--f-mono); fill: var(--ink-3); }
 .dg .tp { fill: var(--p); }
 .dg .mid { text-anchor: middle; }
 .dg .end { text-anchor: end; }
@@ -80,3 +80,8 @@
 
 /* 강조: 계수 순서가 어긋난 모서리 */
 .dg .pt-po { fill: rgba(224,122,47,.22); stroke: #E07A2F; stroke-width: 3; }
+
+/* content width — same as INSTRUCTION */
+.content > section > * { max-width: 52rem; }
+.content > section > p, .content > section > ul, .content > section > ol { max-width: 48rem; }
+.content > section > .wide, .content > section > figure.wide { max-width: 52rem; }

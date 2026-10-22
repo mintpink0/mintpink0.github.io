@@ -15,9 +15,9 @@
 /* ── SVG 안 글자 · 선 ── */
 .dg text { font-family: var(--f-body); font-size: 12.5px; fill: var(--ink-2); }
 .dg .t-b { fill: var(--ink); font-weight: 700; font-size: 13.5px; }
-.dg .t-m { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .04em; fill: var(--ink-3); }
-.dg .t-c { font-family: var(--f-mono); font-size: 11px; }
-.dg .t-s { font-size: 11.5px; }
+.dg .t-m { font-family: var(--f-mono); font-size: 12px; letter-spacing: .02em; fill: var(--ink-3); }
+.dg .t-c { font-family: var(--f-mono); font-size: 12px; }
+.dg .t-s { font-size: 12px; }
 .dg .t-p { fill: var(--p); }
 .dg .t-mid { text-anchor: middle; }
 .dg .t-end { text-anchor: end; }
@@ -107,3 +107,8 @@
 @media (max-width: 640px) {
   .band-cd::after { background: linear-gradient(to top, rgba(8,9,10,.95) 0%, rgba(8,9,10,.7) 55%, rgba(8,9,10,.25) 100%); }
 }
+
+/* content width — same as INSTRUCTION */
+.content > section > * { max-width: 52rem; }
+.content > section > p, .content > section > ul, .content > section > ol { max-width: 48rem; }
+.content > section > .wide, .content > section > figure.wide { max-width: 52rem; }

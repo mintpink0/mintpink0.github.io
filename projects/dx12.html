@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023g">
-<link rel="stylesheet" href="../assets/css/dx-extra.css?v=20261023g">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023h">
+<link rel="stylesheet" href="../assets/css/dx-extra.css?v=20261023h">
 </head>
 <body data-project="dx12">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
 <div class="band band-dx">
   <img src="../assets/img/dx/terrain.jpg" alt="DirectX 12 탱크 게임 — 테셀레이션 지형 와이어프레임과 반사 구" width="1168" height="720">
   <div class="band-text wrap">
-    <span class="label">Course Project · C++ · DirectX 12 · HLSL</span>
+    <span class="label">C++ · DirectX 12 · HLSL</span>
     <h1 class="page-title">DirectX 12 Tank</h1>
     <p class="page-sub">테셀레이션 지형, 반사 구, 거울 차원이 있는 탱크 게임. 「3D게임프로그래밍2」 개인 과제입니다.</p>
   </div>
@@ -25,6 +25,7 @@
 
 <header class="page-head">
   <p class="print-url">이성현 · 게임 클라이언트 프로그래머 · sum0heily@gmail.com · https://mintpink0.github.io</p>
+  <p class="print-url">저장소 https://github.com/mintpink0/DX12-tank</p>
   <dl class="facts-strip">
     <div><dt class="kr-label">기간</dt><dd>2023 2학기</dd></div>
     <div><dt class="kr-label">인원</dt><dd>1명</dd></div>
@@ -32,6 +33,9 @@
     <div><dt class="kr-label">범위</dt><dd><b>수업 예제 프레임워크 위 개인 과제</b></dd></div>
   </dl>
   <p class="ai-line"><b>예제와 제 작업</b> — 「3D게임프로그래밍2」 과제 02입니다. 수업 예제 프로젝트(LabProject08-1-2)를 받아 그 위에서 작업했습니다. 절마다 수업 예제를 바탕으로 한 부분과 제가 더한 부분을 나눠 적었습니다.</p>
+  <div class="btns">
+    <a class="btn btn-main" href="https://github.com/mintpink0/DX12-tank" target="_blank" rel="noopener">저장소 (GitHub)</a>
+  </div>
 </header>
 
 <div class="layout">
@@ -47,7 +51,7 @@
 
 
     <section id="game">
-      <h2><span class="num">01 — Game</span>게임</h2>
+      <h2><span class="num">01</span>게임</h2>
       <p class="lead">탱크를 몰고 지형과 물 위를 다니며 적을 쏩니다. 적 하나를 부수면 100점이고, 200점이 되면 점수 자리에 「YOU WIN!」이 뜹니다.</p>
       <div class="figs wide">
         <figure><img src="../assets/img/dx/terrain.jpg" alt="지형 와이어프레임을 켠 화면. 오른쪽에 큰 반사 구가 있고 가운데에 노란 플레이어 탱크와 적 트럭이 보인다." width="1168" height="720" loading="lazy"><figcaption>F4로 지형 와이어프레임을 켠 화면입니다. 오른쪽 큰 구가 반사 구입니다.</figcaption></figure>
@@ -105,7 +109,7 @@
     </section>
 
     <section id="tess">
-      <h2><span class="num">02 — Tessellation</span>테셀레이션 지형</h2>
+      <h2><span class="num">02</span>테셀레이션 지형</h2>
       <p class="lead">257×257 높이맵을 패치 441개로 나눠 GPU에서 쪼갭니다. 수업 예제의 베지어 패치 틀을 바탕으로 했고, 거리별 분할 수치와 노멀 보간을 제가 더했습니다.</p>
 
       <h3>패치 구조</h3>
@@ -240,7 +244,7 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
     </section>
 
     <section id="mirror">
-      <h2><span class="num">03 — Reflection</span>반사 구와 거울 차원</h2>
+      <h2><span class="num">03</span>반사 구와 거울 차원</h2>
       <p class="lead">일반 차원에는 주변을 비추는 반사 구가 있고, 구에 닿으면 사방이 거울인 방으로 이동합니다. 반사 구는 수업 예제의 동적 큐브 매핑을 바탕으로 했고, 거울 방은 제가 더했습니다.</p>
 
       <h3>반사 구</h3>
@@ -362,7 +366,7 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
     </section>
 
     <section id="combat">
-      <h2><span class="num">04 — Combat</span>적과 전투</h2>
+      <h2><span class="num">04</span>적과 전투</h2>
       <p class="lead">적 AI, 파괴 연출, 충돌 반응, 점수는 제가 더한 부분입니다. 지형 높이를 따라가는 방식은 수업 예제의 콜백을 바탕으로 했습니다.</p>
       <div class="cards wide">
         <div class="card">
@@ -422,6 +426,6 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
   <a class="no-print" href="code-dungeon.html">← 이전 프로젝트 · Code Dungeon</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023g"></script>
+<script src="../assets/js/site.js?v=20261023h"></script>
 </body>
 </html>

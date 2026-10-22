@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=20261023g">
-<link rel="stylesheet" href="assets/css/home.css?v=20261023g">
+<link rel="stylesheet" href="assets/css/site.css?v=20261023h">
+<link rel="stylesheet" href="assets/css/home.css?v=20261023h">
 </head>
 <body>
 <div class="wrap">
@@ -54,14 +54,13 @@
         </dl>
         <p class="h-intro">폐교의 야간 경비원이 되어 근무수칙을 지키며 다섯 밤을 버티는 공포 게임입니다. 수칙을 잘 지킬수록 회사 문자 지시가 수칙과 어긋나고, 플레이어는 무엇을 믿을지 고민하게 됩니다.</p>
         <h4>담당 및 주요 구현</h4>
-        <p class="h-duty"><b>담당</b> 시스템 기획 · 프로그래밍 (수칙 판정, 공포 이벤트 배치, 공포 디렉터)</p>
+        <p class="h-duty"><b>담당</b> 시스템 프로그래밍 · 시스템 기획 (수칙 판정, 공포 이벤트 배치, 공포 디렉터)</p>
         <ul class="h-did">
           <li><b>공포 디렉터</b> 레프트 4 데드 2의 디렉터에서 아이디어를 얻어, 긴장도에 따라 놀람의 간격을 조절하고 조우 순서와 플레이어 유도를 관리</li>
           <li><b>조우 설계</b> 대표 조우 · 놀람 8종의 시작 조건과 상태 패턴 설계. 시야 밖 등장, 런타임 NavMesh, 손전등 판정 등을 사용</li>
           <li><b>편성 재설계</b> 플레이테스트에서 조우가 자주 안 나와, 실제로 마주쳤는지로 다시 센 시뮬레이션에서 미숙 플레이어가 조우를 다 본 판이 33%뿐이었음. 날짜별 고정 편성으로 전환</li>
-          <li><b>구조</b> 밖에서 축 값을 넣어 시험할 수 있어야 한다는 기준을 정해 규칙 코드를 Unity와 분리하고, 근무 씬이 생기기 전부터 테스트 씬에서 축 변화를 확인하고 시뮬레이션 · 자동 테스트로 검증</li>
+          <li><b>구조</b> 밖에서 축 값을 넣어 시험할 수 있게 규칙 코드를 Unity와 분리하는 기준을 정해, 시뮬레이션 · 자동 테스트로 검증</li>
           <li><b>런타임 연동</b> 판정 결과로 조명 · CCTV · 조우 몬스터를 움직이는 Unity 코드</li>
-          <li><b>AI 운영</b> 에이전트에게 조사 · 검토 · 밤샘 QA를 맡기고, 규칙 문서와 커밋은 직접 관리</li>
         </ul>
         <p class="h-ai">코드는 대부분 Claude가 작성했습니다. 무엇을 만들지, 어떤 기준으로 확인할지, 무엇을 받아들이고 버릴지는 제가 정했습니다.</p>
         <p class="h-links"><a href="projects/instruction.html" class="btn btn-main">상세보기</a><a class="btn" href="https://github.com/KimJinsun610/NCAI_BrokenCompass" target="_blank" rel="noopener">GitHub</a><a class="btn" href="https://youtu.be/4G3LkPagvS8" target="_blank" rel="noopener">YouTube</a></p>
@@ -117,7 +116,7 @@
           <li><b>환경 매핑</b> 수업 예제의 동적 큐브 매핑으로 주변을 비추는 반사 구</li>
           <li><b>게임플레이</b> 적 배회 · 파괴 연출, 충돌 판정, 물결 수면, 포구 스프라이트 화염</li>
         </ul>
-        <p class="h-links"><a href="projects/dx12.html" class="btn btn-main">상세보기</a></p>
+        <p class="h-links"><a href="projects/dx12.html" class="btn btn-main">상세보기</a><a class="btn" href="https://github.com/mintpink0/DX12-tank" target="_blank" rel="noopener">GitHub</a></p>
       </div>
     </article>
   </section>
@@ -147,7 +146,7 @@
     <h2 class="h-title">Tech Stack<span>기술 스택</span></h2>
     <dl class="h-stack">
       <dt>Core</dt><dd><span>C++</span><span>DirectX 12</span></dd>
-      <dt>Experienced</dt><dd><span>Unity 6 (URP)</span><span>C#</span><span>HLSL</span><span>ImGui · ImGuizmo</span><span>Unity Test Framework (검증 기준 작성)</span><span>Git · Git LFS</span></dd>
+      <dt>Experienced</dt><dd><span>Unity 6 (URP)</span><span>C#</span><span>HLSL</span><span>ImGui · ImGuizmo</span><span>Unity Test Framework</span><span>Git · Git LFS</span></dd>
       <dt>AI Tools</dt><dd><span>Claude (Opus 5.5)</span><span>Unity CLI</span></dd>
     </dl>
   </section>

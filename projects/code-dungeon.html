@@ -8,15 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023g">
-<link rel="stylesheet" href="../assets/css/cd-extra.css?v=20261023g">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023h">
+<link rel="stylesheet" href="../assets/css/cd-extra.css?v=20261023h">
 </head>
 <body data-project="code-dungeon">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
 <div class="band band-cd">
   <img src="../assets/img/cd/band.jpg" alt="Code Dungeon 전투 장면 — 아누비스 마법진, 플레이어 공격, 할리퀸 수리검" width="1688" height="420">
   <div class="band-text wrap">
-    <span class="label">Key Project 02 · C++ · DirectX 12</span>
+    <span class="label">C++ · DirectX 12</span>
     <h1 class="page-title">Code Dungeon</h1>
     <p class="page-sub">탐색과 전투가 섞인 3D 던전 액션 게임. 던전을 이동하며 몬스터 패턴을 익히고 보스를 공략합니다.</p>
   </div>
@@ -57,7 +57,7 @@
   <main class="content">
 
     <section id="role">
-      <h2><span class="num">01 — Summary</span>요점과 역할</h2>
+      <h2><span class="num">01</span>요점과 역할</h2>
       <ul>
         <li><b>네비게이션 메시</b> — Cell · Navigation · Region · Stage를 직접 구현. 이동 검사, 점프 · 낙하, 경계 위치 보정</li>
         <li><b>툴과 엔진의 연결</b> — 툴에서 꼭짓점을 스냅해 저장하면, 엔진이 불러올 때 셀끼리 이웃으로 연결되도록 맞춤</li>
@@ -74,7 +74,7 @@
     </section>
 
     <section id="flow">
-      <h2><span class="num">02 — Data Flow</span>툴에서 게임까지</h2>
+      <h2><span class="num">02</span>툴에서 게임까지</h2>
       <p class="lead">네비게이션 메시는 툴에서 찍어 파일로 저장하면 엔진이 읽어 들이고, 게임에서는 캐릭터마다 나눠 사용합니다. 아래 그림은 툴에서 게임까지 단계별로 하는 일을 정리한 것입니다.</p>
       <figure class="dg wide">
         <div class="dg-frame">
@@ -182,7 +182,7 @@
     </section>
 
     <section id="nav">
-      <h2><span class="num">03 — Navigation Mesh</span>네비게이션 메시와 계단</h2>
+      <h2><span class="num">03</span>네비게이션 메시와 계단</h2>
       <p class="lead">삼각형 셀을 Cell → Navigation(셀 묶음) → Region → Stage 순으로 쌓았습니다. 위 단계가 아래 단계를 SHPTR로 소유하고, 셀끼리의 이웃은 포인터가 아닌 int 인덱스로 가리킵니다.</p>
       <div class="tbl">
         <table>
@@ -273,7 +273,7 @@
     </section>
 
     <section id="move">
-      <h2><span class="num">04 — Movement · Camera</span>이동 · 카메라</h2>
+      <h2><span class="num">04</span>이동 · 카메라</h2>
       <ul>
         <li><b>점프 가능 셀</b> — 셀에 점프 가능 토글을 두고, 그 셀에서 경계를 넘으면 <code>FindCell</code>로 아래 셀을 찾아 낙하를 시작합니다. y가 셀 높이보다 낮아지면 착지로 보고 위치를 맞춥니다. 점프 · 낙하 중이 아닐 때는 셀 높이를 따라 움직입니다.</li>
         <li><b>경계 위치 보정</b> — 현재 셀 밖으로 나가면 셀의 세 변 중 가장 가까운 변 위의 점으로 XZ만 옮기고 높이는 유지합니다. 그 점이 꼭짓점이면 그 꼭짓점을 공유하는 이웃 셀로 현재 셀을 바꿉니다. 이 보정은 몬스터와 카메라에 사용합니다.</li>
@@ -286,7 +286,7 @@
     </section>
 
     <section id="mobs">
-      <h2><span class="num">05 — Monster AI</span>몬스터 4종</h2>
+      <h2><span class="num">05</span>몬스터 4종</h2>
       <p class="lead">팀장이 만든 애니메이션 컨트롤러 프레임워크가 상태에 맞는 애니메이션을 재생하고 루트 모션을 처리합니다. 저는 그 위에서 몬스터마다 상태를 바꾸는 조건(거리 · 피격 횟수 · 타이머)을 작성했습니다.</p>
       <ul>
         <li><b>감지 · 해제 거리 분리</b> — 플레이어가 감지 거리 안으로 들어오면 추적을 시작하고, 그보다 먼 해제 거리 밖으로 나가야 추적을 멈춥니다. 경계 근처에서 추적이 켜졌다 꺼졌다 반복하지 않도록 두 거리를 나눴습니다.</li>
@@ -589,7 +589,7 @@
     </section>
 
     <section id="player">
-      <h2><span class="num">06 — Player</span>플레이어</h2>
+      <h2><span class="num">06</span>플레이어</h2>
       <ul>
         <li><b>콤보</b> — 좌클릭 · 우클릭 각각 3단계. 앞 단계가 재생 중일 때 다시 눌러야 다음 단계로 이어지고, 아니면 1단계부터 시작합니다.</li>
         <li><b>스킬 3종(Q · 1 · 2)</b> — 각각 쿨타임이 있고, 다른 스킬을 시전하는 중에는 사용할 수 없습니다.</li>
@@ -685,7 +685,7 @@
     </section>
 
     <section id="astar">
-      <h2><span class="num">07 — Path Finding</span>A* 길찾기</h2>
+      <h2><span class="num">07</span>A* 길찾기</h2>
       <p class="lead">네비게이션 메시의 셀을 노드로 삼아 몬스터가 플레이어까지의 경로를 찾습니다.</p>
       <ul>
         <li><b>비용</b> — 노드에 <code>F = g + h</code>를 두고 우선순위 큐로 정렬합니다. 간선 비용 g와 휴리스틱 h 모두 셀 중심 사이의 3D 맨해튼 거리(|dx| + |dy| + |dz|)를 사용합니다. 노드마다 계산하는 값이라 제곱근 없이 가벼운 쪽을 골랐습니다. 대신 실제 직선 거리 기준의 최단 경로와는 다를 수 있어, 찾은 경로는 가시선 검사로 직선화해 보완합니다.</li>
@@ -754,7 +754,7 @@ if (m_isPathFinding) {
     </section>
 
     <section id="tool">
-      <h2><span class="num">08 — ImGui Tools</span>편집 툴 2종</h2>
+      <h2><span class="num">08</span>편집 툴 2종</h2>
       <p class="lead">편집 로직은 엔진의 Region · Stage에 빌드 플래그(<code>_EDIT_NAVI</code>)로 넣고, Tool 프로젝트의 NavigationView가 이를 호출합니다. 모델 배치(레벨) 툴도 같은 Tool 프로젝트에 있습니다.</p>
       <h3>네비게이션 편집</h3>
       <p>맵 모델을 띄우고 픽킹으로 셀을 찍어 메시를 만듭니다. 「Modify Navigation」을 켜면 편집이 시작됩니다.</p>
@@ -782,7 +782,7 @@ if (m_isPathFinding) {
     </section>
 
     <section id="cd-limits">
-      <h2><span class="num">09 — Limits</span>한계와 다시 만든다면</h2>
+      <h2><span class="num">09</span>한계와 다시 만든다면</h2>
       <div class="tbl">
         <table>
           <thead><tr><th>한계</th><th>다시 만든다면</th></tr></thead>
@@ -808,7 +808,7 @@ if (m_isPathFinding) {
   <a class="no-print" href="dx12.html">다음 프로젝트 · DirectX 12 Tank →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023g"></script>
+<script src="../assets/js/site.js?v=20261023h"></script>
 <script>
 // 몬스터 상태도 탭. 스크립트가 없으면 네 그림이 차례로 모두 보입니다.
 (function () {
