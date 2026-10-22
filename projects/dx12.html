@@ -41,7 +41,6 @@
     <a data-n="02" href="#tess">테셀레이션 지형</a>
     <a data-n="03" href="#mirror">반사 구와 거울 차원</a>
     <a data-n="04" href="#combat">적과 전투</a>
-    <a data-n="05" href="#limits">한계와 다시 만든다면</a>
   </nav>
 
   <main class="content">
@@ -414,22 +413,6 @@ output.fTessEdges[1] = CalculateTessFactor(e1);  <span class="c">// [1]은 v=0(�
       <p>스프라이트 시트를 넘기는 부분(<code>AnimateRowColumn</code>)은 수업 예제를 바탕으로 했고, 포구 위치에 붙이고 발사 입력과 조명에 묶은 것은 제가 더했습니다.</p>
     </section>
 
-    <section id="limits">
-      <h2><span class="num">05 — Limits</span>한계와 다시 만든다면</h2>
-      <div class="tbl wide stack-tbl">
-        <table>
-          <thead><tr><th>문제</th><th>영향</th><th>다시 만든다면</th></tr></thead>
-          <tbody>
-            <tr><td>테셀레이션 계수 순서</td><td data-k="영향">[0] · [1]에 들어가는 모서리가 바뀌어 거리 기반 모드에서 왼쪽 · 위 모서리 계수가 이웃과 다를 수 있습니다. 틈은 화면에서 확인하지 않았습니다(<a href="#tess">02절</a>).</td><td data-k="다시 만든다면">[0]에 0–20, [1]에 0–4 중점을 넣고 F4 와이어프레임으로 경계를 확인</td></tr>
-            <tr><td>노멀 입력 2성분</td><td data-k="영향">테셀레이션 입력 레이아웃의 NORMAL이 <code>R32G32_FLOAT</code>라 z가 0으로 들어옵니다. z 방향 기울기가 지형 조명에 반영되지 않습니다.</td><td data-k="다시 만든다면"><code>R32G32B32_FLOAT</code>로 바꾸기</td></tr>
-            <tr><td>배회 타이머 공유</td><td data-k="영향">타이머가 함수 안 <code>static</code>이라 모든 적이 하나를 함께 사용합니다. 적마다 시간을 더해 타이머가 적 수만큼 빨리 차고, 찰 때 그 순간 처리 중인 적 하나만 방향을 바꿉니다. 회전도 늘 한쪽으로만 돕니다.</td><td data-k="다시 만든다면">타이머를 적마다 멤버로 두고, 목표 각과의 차이 부호대로 회전</td></tr>
-            <tr><td>거울 모드 GPU 대기 6번</td><td data-k="영향">1024² 벽 6장을 따로 제출하고 매번 기다려 CPU와 GPU가 번갈아 쉽니다.</td><td data-k="다시 만든다면">벽 6장을 커맨드 리스트 하나로 묶어 한 번 제출, 해상도를 낮추거나 프레임마다 벽 몇 장씩 나눠 갱신</td></tr>
-            <tr><td>총알 1발</td><td data-k="영향">총알이 사라질 때까지 다시 쏠 수 없습니다.</td><td data-k="다시 만든다면">풀을 늘리고 발사 간격을 따로 관리</td></tr>
-            <tr><td>프레임 비용 미측정</td><td data-k="영향">일반 · 거울 모드의 프레임 시간을 재지 않았습니다. 03절의 횟수와 픽셀 수는 코드로 센 값입니다.</td><td data-k="다시 만든다면">GPU 타임스탬프 쿼리로 모드별 패스 시간을 재고 비교</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
 
   </main>
 </div>
