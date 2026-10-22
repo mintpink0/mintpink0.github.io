@@ -102,3 +102,7 @@
   .dg, .anat, .sigmap, .rulebox, .sig-row { break-inside: avoid; }
   .anat, .rulebox { background: #fff; }
 }
+
+/* 사용자 제공 사진 */
+.fig-mid { max-width: 40rem; margin-block: 16px; }
+figure.wide { margin-block: 16px; }
