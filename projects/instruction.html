@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023d">
-<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023d">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023e">
+<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023e">
 </head>
 <body data-project="instruction">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -72,15 +72,6 @@
         <figure><img src="../assets/img/ins/inspection.jpg" alt="점검 화면 — 정상 또는 이상 보고" width="525" height="327" loading="lazy"><figcaption>점검 — 정상 / 이상 보고를 판정해 정산</figcaption></figure>
       </div>
 
-      <h3>제가 설계한 조우</h3>
-      <div class="enc-grid wide">
-        <figure class="enc"><img src="../assets/img/ins/enc-girl.jpg" alt="화장실 소녀" loading="lazy"><figcaption><b>화장실 소녀</b><span>목격 전까지 문이 잠긴다</span></figcaption></figure>
-        <figure class="enc"><img src="../assets/img/ins/enc-duck.jpg" alt="도서관 노란 얼굴" loading="lazy"><figcaption><b>도서관 노란 얼굴</b><span>3초 이상 비추면 달아난다</span></figcaption></figure>
-        <figure class="enc"><img src="../assets/img/ins/enc-boy.jpg" alt="교실 소년" loading="lazy"><figcaption><b>교실 소년</b><span>교실을 나가려 하면 놀란다</span></figcaption></figure>
-        <figure class="enc"><img src="../assets/img/ins/enc-dummy.jpg" alt="인체모형" loading="lazy"><figcaption><b>인체모형</b><span>빛을 받는 순간 급습한다</span></figcaption></figure>
-        <figure class="enc"><img src="../assets/img/ins/enc-tree.jpg" alt="사람나무" loading="lazy"><figcaption><b>사람나무</b><span>바라볼수록 끌려간다</span></figcaption></figure>
-        <figure class="enc"><img src="../assets/img/ins/enc-cctv.jpg" alt="CCTV 검은 남자" loading="lazy"><figcaption><b>CCTV 검은 남자</b><span>CCTV 화면 속에 나타난다</span></figcaption></figure>
-      </div>
 
       <h3>팀과 역할</h3>
       <div class="tbl">
@@ -300,6 +291,59 @@
     <section id="impl">
       <h2><span class="num">05 — Highlights</span>구현 하이라이트</h2>
       <p class="lead">판정 결과를 화면으로 옮기는 부분입니다. 무엇이 바뀌어야 하는지와 기준은 제가 정했습니다.</p>
+
+      <h3>조우별 상태 패턴과 구현</h3>
+      <p>조우는 제가 설계했습니다. 공통 진행은 03절의 흐름을 따르고, 조우마다 방아쇠와 갈라지는 조건이 다릅니다.</p>
+      <div class="enc-grid wide">
+        <div class="enc"><img src="../assets/img/ins/enc-girl.jpg" alt="화장실 소녀" loading="lazy">
+          <h4>화장실 소녀</h4><p class="enc-line">목격 전까지 문이 잠긴다</p>
+          <p class="enc-flow">3번 칸 지시 → 칸 앞에 대기 → 1.4m 들어서면 출입문 잠김 → 목격하면 풀림 → 1.6m 안으로 다가가면 덮침</p>
+          <ul><li>코루틴으로 문 잠금 · 고정 자리까지 걷기</li><li>수칙 T4 「변기는 정상입니다」 — 이상이 보여도 [정상] 보고가 정답</li></ul>
+          <span class="tech">Coroutine · StageAnchor</span>
+        </div>
+        <div class="enc"><img src="../assets/img/ins/enc-duck.jpg" alt="도서관 노란 얼굴" loading="lazy">
+          <h4>도서관 노란 얼굴</h4><p class="enc-line">3초 이상 비추면 달아난다</p>
+          <p class="enc-flow">책을 집음 → 문간에서 고개로 따라봄 → 보면 걸어옴(1.25m/s, 등지면 2.1m/s) → 3초 비추면 코앞 0.85m에서 멈췄다 문 밖으로 / 못 비추면 붙잡힘</p>
+          <ul><li>조우 직전 도서관 주변만 런타임 NavMesh 비동기 굽기 + NavMeshAgent</li><li>손전등 원뿔 판정 · 머리뼈만 돌리는 시선</li></ul>
+          <span class="tech">NavMeshBuilder.UpdateNavMeshDataAsync · NavMeshAgent</span>
+        </div>
+        <div class="enc"><img src="../assets/img/ins/enc-boy.jpg" alt="교실 소년" loading="lazy">
+          <h4>교실 소년</h4><p class="enc-line">교실을 나가려 하면 놀란다</p>
+          <p class="enc-flow">화분 보고 → 자리가 화면 밖일 때 앉아 머리 박기 → 3초 바라보면 덮침 / 교실을 나서면 덮침 / 아니면 18초 뒤 사라짐</p>
+          <ul><li>시야 밖 등장 판정(뷰포트 + 레이캐스트 가림)</li><li>바라볼수록 빨라지는 머리 박기(최대 ×3.2)</li></ul>
+          <span class="tech">WorldToViewportPoint · Raycast · Legacy Animation</span>
+        </div>
+        <div class="enc"><img src="../assets/img/ins/enc-dummy.jpg" alt="인체모형" loading="lazy">
+          <h4>인체모형</h4><p class="enc-line">빛을 받는 순간 급습한다</p>
+          <p class="enc-flow">4일차 복도 끝에 서 있기만 함 → 5일차 손전등이 닿으면 0.18초에 고개를 돌림 → 13m/s 돌진 → 불이 켜져 있으면 몸을 뚫고 넘어짐 / 꺼져 있으면 어깨를 스침</p>
+          <ul><li>손전등 원뿔 + Linecast 가림 판정</li><li>달리기 클립 없이 뼈를 직접 돌리는 절차적 달리기</li></ul>
+          <span class="tech">Linecast · 절차적 애니메이션</span>
+        </div>
+        <div class="enc"><img src="../assets/img/ins/enc-tree.jpg" alt="사람나무" loading="lazy">
+          <h4>사람나무</h4><p class="enc-line">바라볼수록 끌려간다</p>
+          <p class="enc-flow">안 볼 때 복도로 옮겨짐 → 5.5m 안이면 가까울수록 끌림 → 바라보면 화면 울렁임 · 감각 축 상승 → 1.2m 안이면 수칙 H1 위반</p>
+          <ul><li>복도 단면을 미리 스캔해 설 자리 탐색, 화면 밖에서만 이동</li><li>거리에 비례한 끌림(1.5m에서 멈춤) · 화면 울렁임은 팀원 작업</li></ul>
+          <span class="tech">RaycastAll</span>
+        </div>
+        <div class="enc"><img src="../assets/img/ins/enc-cctv.jpg" alt="CCTV 검은 남자" loading="lazy">
+          <h4>CCTV 검은 남자</h4><p class="enc-line">CCTV 화면 속에 나타난다</p>
+          <p class="enc-flow">밤 시작에 정한 채널을 2초 봄 → 0.85m/s로 가로지름 → 3초 이어 보면 얼굴 점프스케어 / 10초 안에 채널을 넘기면 수칙 K1 위반</p>
+          <ul><li>카메라별 렌더러 토글로 CCTV에서만 보이게</li><li>걷기 속도에 맞춘 애니메이션 재생 속도</li></ul>
+          <span class="tech">beginCameraRendering · Animator.speed</span>
+        </div>
+        <div class="enc enc-noimg">
+          <h4>달려오는 발소리</h4><p class="enc-line">6초 안에 방으로 피해야 한다</p>
+          <p class="enc-flow">복도를 10m 걸음 → 등 뒤 12m에서 발소리 → 6초 안에 방으로 들어가 끝나고 2초 더 머물면 준수 / 아니면 검은 사람이 옆을 질주</p>
+          <ul><li>걸은 거리를 쌓아 방아쇠로</li><li>수칙 정산 이벤트를 받아 SphereCast로 트인 거리를 재고 질주 연출</li></ul>
+          <span class="tech">EventBus · SphereCastAll</span>
+        </div>
+        <div class="enc enc-noimg">
+          <h4>멀리 보이는 몹</h4><p class="enc-line">똑바로 보면 사각지대로 달아난다</p>
+          <p class="enc-flow">가짜 놀람 → 시선 7–25° 옆, 12–22m에 섬 → 똑바로 보거나 8m 안이거나 2.5–4초 지나면 가려지는 자리로 4.6m/s 질주 후 사라짐</p>
+          <ul><li>24방향 고리로 사각지대 탐색 + 캡슐 가림 검사</li><li>수칙 · 판정 없이 긴장 조절에만 쓰는 놀람</li></ul>
+          <span class="tech">Physics.CheckCapsule</span>
+        </div>
+      </div>
 
       <h3>구간이 오르면 화면에서 바뀌는 것</h3>
       <div class="sigmap wide" role="list">
@@ -623,6 +667,6 @@
   <a class="no-print" href="code-dungeon.html">다음 프로젝트 · Code Dungeon →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023d"></script>
+<script src="../assets/js/site.js?v=20261023e"></script>
 </body>
 </html>

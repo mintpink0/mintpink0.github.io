@@ -154,3 +154,13 @@ p.code-cap { margin-top: 12px; }
 .enc figcaption b { font: 800 1rem/1.4 var(--f-kr); color: var(--ink); }
 .enc figcaption span { font-size: .88rem; color: var(--ink-2); }
 @media (max-width: 640px) { .enc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; } }
+
+/* 조우 카드(상태 패턴) */
+.enc { align-content: start; gap: 8px; }
+.enc h4 { margin: 4px 0 0; font: 800 1.02rem/1.4 var(--f-kr); color: var(--ink); }
+.enc .enc-line { margin: 0; font-size: .9rem; color: var(--p); }
+.enc .enc-flow { margin: 0; font-size: .86rem; line-height: 1.65; color: var(--ink); padding: 8px 10px; background: var(--surface); border-left: 2px solid var(--p); }
+.content .enc ul { font-size: .84rem; gap: 4px; }
+.enc .tech { font: 400 .74rem/1.5 var(--f-mono); color: var(--p); }
+.enc-noimg { border-top: 2px solid var(--ink); padding-top: 12px; }
+@media (max-width: 640px) { .enc-grid { grid-template-columns: minmax(0, 1fr); } }
