@@ -337,3 +337,18 @@ figcaption { font-size: .84rem; color: var(--ink-3); }
   pre { break-after: avoid; }
   span.code-cap { display: block; break-before: avoid; }
 }
+/* ---- print v3: dense flow, no forced section pages ---- */
+@media print {
+  body { font-size: 9.6pt; line-height: 1.55; }
+  .content > section, .content > section:first-child { break-before: auto !important; padding-top: 16px !important; border-top: 1px solid var(--line) !important; }
+  .content > section:first-child { border-top: 0 !important; }
+  .content > section > * + * { margin-top: 9px; }
+  .band { height: 46mm; }
+  .tbl, .card, .log, .agtbl, .anat, .rulebox, .sigmap, .ai-sum, .media-2 { break-inside: auto !important; }
+  figure img, figure video { max-height: 62mm; }
+  figure.wide img { max-height: 70mm; }
+  .figs img, .figs video, .shots img { max-height: 42mm !important; height: auto !important; width: auto !important; max-width: 100%; margin-inline: auto; object-fit: contain; }
+  .dg svg { max-height: 95mm; width: auto; max-width: 100%; margin-inline: auto; }
+  pre { font-size: 7.4pt; line-height: 1.45; padding: 10px 12px; }
+  h2 { font-size: 1.45em; }
+}

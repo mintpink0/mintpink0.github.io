@@ -83,3 +83,10 @@
   .h-links .btn { border: 0 !important; background: none !important; padding: 0 !important; min-height: 0 !important; color: var(--ink-2) !important; font-size: 8.5pt; font-weight: 400; text-decoration: none; }
   .h-links .btn[href^="http"]::after { content: " " attr(href); }
 }
+@media print {
+  .h-card { margin-bottom: 14px; }
+  .h-media { gap: 6px; }
+  .h-shot img { max-height: 40mm; }
+  .h-body { padding-block: 14px !important; }
+  .h-did li { margin-bottom: 2px; }
+}

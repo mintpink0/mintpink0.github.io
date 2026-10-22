@@ -217,3 +217,11 @@ figure.fig-runner { max-width: 52rem; }
   figure.fig-runner img { max-height: none; width: 100%; }
 }
 @media print { .media-2 img, .media-2 video { max-height: 52mm; object-fit: contain; } }
+@media print {
+  .enc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 12px 10px; }
+  .enc .enc-flow { font-size: .8rem; padding: 6px 8px; }
+  .content .enc ul { font-size: .76rem; }
+  .media-2 img, .media-2 video { max-height: 44mm; }
+  .pacer-fig svg { max-height: 60mm; }
+  figure.fig-runner img { max-height: none; }
+}
