@@ -100,3 +100,10 @@
 .code-links { margin: 14px 0 0; font-size: .92rem; line-height: 1.9; color: var(--ink-2); }
 .code-links b { color: var(--ink); margin-right: 10px; }
 @media print { .code-links a::after { content: none; } }
+
+/* 몬스터 썸네일 비율 통일 */
+.figs-4 img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+/* 모바일 상단 띠 글자 가독성 */
+@media (max-width: 640px) {
+  .band-cd::after { background: linear-gradient(to top, rgba(8,9,10,.95) 0%, rgba(8,9,10,.7) 55%, rgba(8,9,10,.25) 100%); }
+}

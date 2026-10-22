@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023e">
-<link rel="stylesheet" href="../assets/css/cd-extra.css?v=20261023e">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023f">
+<link rel="stylesheet" href="../assets/css/cd-extra.css?v=20261023f">
 </head>
 <body data-project="code-dungeon">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -688,7 +688,7 @@
       <h2><span class="num">07 — Path Finding</span>A* 길찾기</h2>
       <p class="lead">네비게이션 메시의 셀을 노드로 삼아 몬스터가 플레이어까지의 경로를 찾습니다.</p>
       <ul>
-        <li><b>비용</b> — 노드에 <code>F = g + h</code>를 두고 우선순위 큐로 정렬합니다. 간선 비용 g와 휴리스틱 h 모두 셀 중심 사이의 3D 맨해튼 거리(|dx| + |dy| + |dz|)를 사용합니다. 맵이 실내 던전이라 기둥 같은 장애물이 많아, 이 거리가 더 유리하다고 판단했습니다.</li>
+        <li><b>비용</b> — 노드에 <code>F = g + h</code>를 두고 우선순위 큐로 정렬합니다. 간선 비용 g와 휴리스틱 h 모두 셀 중심 사이의 3D 맨해튼 거리(|dx| + |dy| + |dz|)를 사용합니다. 노드마다 계산하는 값이라 제곱근 없이 가벼운 쪽을 골랐습니다. 대신 실제 직선 거리 기준의 최단 경로와는 다를 수 있어, 찾은 경로는 가시선 검사로 직선화해 보완합니다.</li>
         <li><b>프레임 분할</b> — 탐색 상태를 구조체에 담아 두고, 한 프레임에 노드 하나씩 탐색을 이어 갑니다.</li>
         <li><b>도착 판정</b> — 몬스터의 현재 셀과 플레이어의 현재 셀은 같은 셀 컨테이너의 원소라 포인터로 비교합니다.</li>
         <li><b>재탐색</b> — 플레이어를 쫓는 몬스터는 1초마다(아누비스는 0.5초) 경로를 다시 찾습니다.</li>
@@ -805,9 +805,10 @@ if (m_isPathFinding) {
 <footer class="foot">
   <span>이성현 · 게임 클라이언트 프로그래머</span>
   <a class="no-print" href="instruction.html">← 이전 프로젝트 · INSTRUCTION</a>
+  <a class="no-print" href="dx12.html">다음 프로젝트 · DirectX 12 Tank →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023e"></script>
+<script src="../assets/js/site.js?v=20261023f"></script>
 <script>
 // 몬스터 상태도 탭. 스크립트가 없으면 네 그림이 차례로 모두 보입니다.
 (function () {

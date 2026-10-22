@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&amp;family=Gothic+A1:wght@700;800&amp;family=IBM+Plex+Sans+KR:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Nanum+Gothic+Coding&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20261023e">
-<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023e">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261023f">
+<link rel="stylesheet" href="../assets/css/ins-extra.css?v=20261023f">
 </head>
 <body data-project="instruction">
 <div class="wrap topbar"><a class="back" href="../index.html">← 이성현 포트폴리오</a></div>
@@ -198,7 +198,7 @@
         <li><b>의존 방향은 컴파일 단계에서 막기.</b> asmdef로 Core가 Flow를 참조하지 못하게 해서, 축이 올랐다고 Core에서 바로 불을 끄는 식의 지름길을 택할 수 없게 했습니다.</li>
         <li><b>새 코드를 둘 곳이 분명함.</b> 무엇을 고르는 코드는 편성 · 디렉터, 판단하는 코드는 판정 · 점검, 수치를 올리는 코드는 축, 화면에 그리는 코드는 Flow에 둡니다.</li>
       </ul>
-      <figure class="fig-mid"><img src="../assets/img/ins/test-runner.png" alt="Unity Test Runner EditMode 화면 — 666개 테스트 모두 통과" width="900" height="760" loading="lazy"><figcaption>Unity Test Runner — EditMode 테스트 666개 통과</figcaption></figure>
+      <figure class="fig-mid"><img src="../assets/img/ins/test-runner-top.png" alt="Unity Test Runner EditMode 화면 — 666개 테스트 모두 통과" width="900" height="116" loading="lazy"><figcaption>Unity Test Runner — EditMode 테스트 666개 통과</figcaption></figure>
     </section>
 
     <section id="director">
@@ -253,7 +253,7 @@
       <p>점검 지시를 바꿀 때 이렇게 요구했습니다. <span class="said">「점검이 한번에 떠있는게 아니라, 조절해서 메시지로 계속 업데이트 … 플레이어의 동선이나 위치, 긴장도를 계속해서 계산해서」</span></p>
       <ul>
         <li>점검 지시를 밤 시작에 한꺼번에 주지 않고 공간 단위 문자로 하나씩 보냅니다. 다음 공간은 거리, 조우가 걸린 공간인지, 같은 동인지로 점수를 매겨 고르고, 조우 중 · 직후나 긴장이 높을 때는 미룹니다.</li>
-        <li>최종판은 날짜별 고정 편성이라(<a href="#ts-schedule">07절</a>) 조우를 날짜표 순서대로 하나씩 진행합니다. 앞 조우가 끝나고 15초 뒤에 다음 조우를 준비하고, 플레이어가 오지 않아 시작되지 않으면 「1-3 교실을 순찰하십시오」 같은 문자로 그 공간으로 부릅니다.</li>
+        <li>최종판은 날짜별 고정 편성이라(<a href="#ts-schedule">07절</a>) 날짜표에 정한 조우를 하나씩 진행합니다. 앞 조우가 끝나고 15초 뒤에 다음 조우를 준비하고, 플레이어가 오지 않아 시작되지 않으면 「1-3 교실을 순찰하십시오」 같은 문자로 그 공간으로 부릅니다.</li>
         <li>조우가 남은 채 03:30이 되면 시계를 붙들어, 그날의 조우를 모두 보기 전에는 밤이 끝나지 않습니다. <span class="said">「이월은 없어. 의도한 날짜에 무조건 목격해야 해」</span></li>
       </ul>
       <p class="code-cap"><span class="tech">TensionDirector · TensionPacer · SurpriseBudget · InspectionDispatcher</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Scripts/Direction/Tension/TensionDirector.cs" target="_blank" rel="noopener">TensionDirector.cs</a></p>
@@ -275,7 +275,7 @@
       <figure class="wide"><img src="../assets/img/ins/tablet-rules-orders.jpg" alt="같은 밤 03:29의 태블릿 — 왼쪽은 근무 수칙 목록, 오른쪽은 회사 문자 지시 목록" width="1820" height="1080" loading="lazy"><figcaption>같은 밤의 근무 수칙과 회사 문자 지시 (태블릿 UI: 김진선 님)</figcaption></figure>
       <p>수칙마다 판정기가 하나씩 붙어 센서 신호를 받고 준수 · 위반을 냅니다. 일반 수칙은 처음 어길 때 그 축이 +12(밤에 한 번), 위협 수칙은 조우마다 실패하면 +20이고, 단서가 왔는데 끝까지 지키면 밤 끝에 신뢰가 +2 오릅니다.</p>
       <p>신뢰 구간(10 · 18 · 26 · 42)이 오를수록 수칙과 반대로 시키는 역설 문자, 수칙서 글자가 바뀌는 변조, 두 수칙이 부딪히는 회피 불가가 차례로 열립니다. 문자가 무엇을 시키든 판정은 늘 수칙서 원본으로 합니다.</p>
-      <p>수칙 수와 지시 비중은 제가 정했습니다. <span class="said">「K3를 모든 밤에, 기존 수칙 칸을 대체」</span>, <span class="said">「수칙 장수는 조우 말고 나머지를 빼는 방안」</span>, <span class="said">「물품 점검이 비중이 더 높은데, 지시 사항과 비중이 균일했으면」</span></p>
+      <p>수칙 수와 지시 비중은 제가 정했습니다. 경비실 수칙 K3를 매일 넣고, 장수가 넘치면 조우에 묶이지 않은 수칙부터 빼게 했으며, 점검 지시와 근무 지시의 비중을 맞추게 했습니다. <span class="said">「물품 점검이 비중이 더 높은데, 지시 사항과 비중이 균일했으면」</span></p>
 
       <h3>난수와 시드</h3>
       <p>편성기가 난수를 밖에서 받도록 만들어, 게임에서는 회차마다 새 난수를 사용하고 테스트에서만 고정 시드를 넣습니다. 시드 값은 그대로 두었고, 개발 중에 바뀐 것은 어떤 항목을 언제 뽑아 고정하느냐였습니다.</p>
@@ -293,37 +293,37 @@
       <h3>조우별 상태 패턴과 구현</h3>
       <p>조우는 제가 설계했습니다. 진행은 03절의 흐름을 공통으로 따르고, 시작 조건과 결과가 갈리는 조건은 조우마다 다릅니다.</p>
       <div class="enc-grid wide">
-        <div class="enc"><img src="../assets/img/ins/enc-girl.jpg" alt="화장실 소녀" loading="lazy">
+        <div class="enc"><img src="../assets/img/ins/enc-girl.jpg" alt="화장실 소녀" width="204" height="162" loading="lazy">
           <h4>화장실 소녀</h4><p class="enc-line">목격 전까지 문이 잠긴다</p>
           <p class="enc-flow">3번 칸 지시 → 칸 앞에 대기 → 1.4m 들어서면 출입문 잠김 → 목격하면 풀림 → 1.6m 안으로 다가가면 덮침</p>
           <ul><li>코루틴으로 문 잠금 · 고정 자리까지 걷기</li><li>수칙 T4 「변기는 정상입니다」 — 이상이 보여도 [정상] 보고가 정답</li></ul>
           <span class="tech">Coroutine · StageAnchor</span>
         </div>
-        <div class="enc"><img src="../assets/img/ins/enc-duck.jpg" alt="도서관 노란 얼굴" loading="lazy">
+        <div class="enc"><img src="../assets/img/ins/enc-duck.jpg" alt="도서관 노란 얼굴" width="292" height="162" loading="lazy">
           <h4>도서관 노란 얼굴</h4><p class="enc-line">3초 이상 비추면 달아난다</p>
           <p class="enc-flow">책을 집음 → 문간에서 고개로 따라봄 → 보면 걸어옴(1.25m/s, 등지면 2.1m/s) → 3초 비추면 코앞 0.85m에서 멈췄다 문 밖으로 / 못 비추면 붙잡힘</p>
           <ul><li>조우 직전 도서관 주변만 런타임 NavMesh 비동기 굽기 + NavMeshAgent</li><li>손전등 원뿔 판정 · 머리뼈만 돌리는 시선</li></ul>
           <span class="tech">NavMeshBuilder.UpdateNavMeshDataAsync · NavMeshAgent</span>
         </div>
-        <div class="enc"><img src="../assets/img/ins/enc-boy.jpg" alt="교실 소년" loading="lazy">
+        <div class="enc"><img src="../assets/img/ins/enc-boy.jpg" alt="교실 소년" width="292" height="162" loading="lazy">
           <h4>교실 소년</h4><p class="enc-line">교실을 나가려 하면 놀란다</p>
           <p class="enc-flow">화분 보고 → 자리가 화면 밖일 때 앉아 머리 박기 → 3초 바라보면 덮침 / 교실을 나서면 덮침 / 아니면 18초 뒤 사라짐</p>
           <ul><li>시야 밖 등장 판정(뷰포트 + 레이캐스트 가림)</li><li>바라볼수록 빨라지는 머리 박기(최대 ×3.2)</li></ul>
           <span class="tech">WorldToViewportPoint · Raycast · Legacy Animation</span>
         </div>
-        <div class="enc"><img src="../assets/img/ins/enc-dummy.jpg" alt="인체모형" loading="lazy">
+        <div class="enc"><img src="../assets/img/ins/enc-dummy.jpg" alt="인체모형" width="292" height="162" loading="lazy">
           <h4>인체모형</h4><p class="enc-line">빛을 받는 순간 급습한다</p>
           <p class="enc-flow">4일차 복도 끝에 서 있기만 함 → 5일차 손전등이 닿으면 0.18초에 고개를 돌림 → 13m/s 돌진 → 불이 켜져 있으면 몸을 뚫고 넘어짐 / 꺼져 있으면 어깨를 스침</p>
           <ul><li>손전등 원뿔 + Linecast 가림 판정</li><li>달리기 클립 없이 뼈를 직접 돌리는 절차적 달리기</li></ul>
           <span class="tech">Linecast · 절차적 애니메이션</span>
         </div>
-        <div class="enc"><img src="../assets/img/ins/enc-tree.jpg" alt="사람나무" loading="lazy">
+        <div class="enc"><img src="../assets/img/ins/enc-tree.jpg" alt="사람나무" width="292" height="162" loading="lazy">
           <h4>사람나무</h4><p class="enc-line">바라볼수록 끌려간다</p>
           <p class="enc-flow">안 볼 때 복도로 옮겨짐 → 5.5m 안이면 가까울수록 끌림 → 바라보면 화면 울렁임 · 감각 축 상승 → 1.2m 안이면 수칙 H1 위반</p>
           <ul><li>복도 단면을 미리 스캔해 설 자리 탐색, 화면 밖에서만 이동</li><li>거리에 비례한 끌림(1.5m에서 멈춤) · 화면 울렁임은 팀원 작업</li></ul>
           <span class="tech">RaycastAll</span>
         </div>
-        <div class="enc"><img src="../assets/img/ins/enc-cctv.jpg" alt="CCTV 검은 남자" loading="lazy">
+        <div class="enc"><img src="../assets/img/ins/enc-cctv.jpg" alt="CCTV 검은 남자" width="292" height="162" loading="lazy">
           <h4>CCTV 검은 남자</h4><p class="enc-line">CCTV 화면 속에 나타난다</p>
           <p class="enc-flow">밤 시작에 정한 채널을 2초 봄 → 0.85m/s로 가로지름 → 3초 이어 보면 얼굴 점프스케어 / 10초 안에 채널을 넘기면 수칙 K1 위반</p>
           <ul><li>카메라별 렌더러 토글로 CCTV에서만 보이게</li><li>걷기 속도에 맞춘 애니메이션 재생 속도</li></ul>
@@ -385,8 +385,7 @@
         </div>
       </div>
       <figure class="wide"><img src="../assets/img/ins/guardroom-stages.jpg" alt="경비실에 머문 시간별 장면 — 0초 평소, 30초 형광등 깜빡임과 무전 잡음, 60초 CCTV에 검은 남자 얼굴, 90초 정전" width="1600" height="903" loading="lazy"><figcaption>경비실에 머문 시간 — 0초 · 30초 · 60초 · 90초</figcaption></figure>
-      <div class="figs fig-guard">
-        <figure><img src="../assets/img/ins/guard-room.jpg" alt="경비실 내부" width="599" height="454" loading="lazy"><figcaption>경비실 — 오래 머물면 단계별 연출이 시작됨</figcaption></figure>
+      <div class="fig-guard-one">
         <figure><video src="../assets/img/ins/guardroom.mp4" poster="../assets/img/ins/guardroom.jpg" autoplay muted loop playsinline width="800" height="450"></video><figcaption>경비실 단계 연출 (영상)</figcaption></figure>
       </div>
 <pre><code>[Test] public void 머문_시간에_따라_깜빡임_CCTV_얼굴_정전으로_간다()
@@ -405,6 +404,17 @@
     <section id="ai">
       <h2><span class="num">06 — Working with AI</span>AI와 일한 방식</h2>
       <p class="lead">Unity 에디터를 띄워 둔 채 Claude 데스크톱 앱(Opus 5.5)을 Unity CLI의 MCP 서버로 연결해 명령을 내렸습니다. 코드 · 씬 수정, 테스트 · 디버깅, 밤새 자동으로 돌린 QA 플레이까지 에디터 작업은 대부분 AI가 했습니다. 저는 무엇을 만들지와 어떤 숫자가 맞는지를 정하고, 결과를 받아들일지 판단했습니다.</p>
+      <div class="tbl ai-sum">
+        <table>
+          <tbody>
+            <tr><th>문제</th><td>플레이테스트에서 조우가 의도대로 나오지 않음 → 실제로 마주쳤는지로 다시 센 시뮬레이션에서 미숙 플레이어 33% (<a href="#ts-schedule">07절 ①</a>)</td></tr>
+            <tr><th>도구</th><td>Claude 데스크톱 앱(Opus 5.5) + Unity CLI. 메인 세션 · QA · 백그라운드 검토 · 조사 에이전트로 나눠 운영</td></tr>
+            <tr><th>AI에게 맡긴 것</th><td>코드 · 씬 수정, 테스트 작성, 밤새 돌린 QA 플레이, 원인 진단</td></tr>
+            <tr><th>제가 판단한 것</th><td>테스트할 수 있는 구조의 기준(<a href="#arch">02절</a>), 공포 디렉터 방향(<a href="#director">03절</a>), 수칙 수 · 지시 비중(<a href="#rules">04절</a>), AI 이월 보정안 기각 → 고정 편성(<a href="#ts-schedule">07절 ①</a>)</td></tr>
+            <tr><th>검증한 방법</th><td>EditMode 테스트 666개, 숙련도마다 400판 시뮬레이션, 같은 조건 비교(렌더 ms · 실내 11곳 × 12방향), 작은 빌드로 재현(0 → 0.29m)</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <h3>에이전트를 나눠 쓴 방식</h3>
       <figure class="dg wide">
@@ -482,12 +492,12 @@
         </svg>
       </figure>
       <div class="tbl agtbl wide">
-        <table>
+        <table class="stack">
           <thead><tr><th>방식</th><th>이렇게 시켰습니다</th><th>결과</th></tr></thead>
           <tbody>
-            <tr><td>조사 → 회의 → 보고</td><td>여러 에이전트에게 분야별 자료를 조사하게 한 뒤 회의 · 검토를 거쳐 보고하게 함. 「긴장감 컨트롤러도 다시 한번 전문가 에이전트들과 회의」</td><td>공포 분위기를 만드는 방법을 여러 자료에서 모아 선택지로 받고, 그중에서 고름. 회의 결과는 제안서 문서로 남김 (예: 「야간근무 3차 회의 — 경비원다운 [근무 지시]」)</td></tr>
-            <tr><td>설계와 QA를 동시에</td><td>「설계만 해볼래? 하면서 에이전트 하나는 계속 버그수정/의도한 대로 작동하는지를 돌려봐」</td><td>QA 에이전트가 새 근무 지시 기능을 플레이로 점검해 버그 2건 수정. 이어서 독립 QA가 5건을 고치고, 판단이 필요한 것은 「남은 제안」으로 따로 보고</td></tr>
-            <tr><td>구현 뒤 독립 · 백그라운드 검토</td><td>「프로젝트에 새로 구현한 부분들 버그 있는지 확인해주고 고쳐줘」</td><td>독립 검토로 버그를 고치고 테스트를 더해 EditMode 666/666. 별도 백그라운드 검토에서는, 금지된 방의 지시가 풀리지 않아 03:30에서 시계가 영영 멈출 수 있는 결함을 AI가 찾아 수정(제가 찾은 결함이 아님)</td></tr>
+            <tr><td data-k="방식">조사 → 회의 → 보고</td><td data-k="이렇게 시켰습니다">여러 에이전트에게 분야별 자료를 조사하게 한 뒤 회의 · 검토를 거쳐 보고하게 함. 「긴장감 컨트롤러도 다시 한번 전문가 에이전트들과 회의」</td><td data-k="결과">공포 분위기를 만드는 방법을 여러 자료에서 모아 선택지로 받고, 그중에서 고름. 회의 결과는 제안서 문서로 남김 (예: 「야간근무 3차 회의 — 경비원다운 [근무 지시]」)</td></tr>
+            <tr><td data-k="방식">설계와 QA를 동시에</td><td data-k="이렇게 시켰습니다">「설계만 해볼래? 하면서 에이전트 하나는 계속 버그수정/의도한 대로 작동하는지를 돌려봐」</td><td data-k="결과">QA 에이전트가 새 근무 지시 기능을 플레이로 점검해 버그 2건 수정. 이어서 독립 QA가 5건을 고치고, 판단이 필요한 것은 「남은 제안」으로 따로 보고</td></tr>
+            <tr><td data-k="방식">구현 뒤 독립 · 백그라운드 검토</td><td data-k="이렇게 시켰습니다">「프로젝트에 새로 구현한 부분들 버그 있는지 확인해주고 고쳐줘」</td><td data-k="결과">독립 검토로 버그를 고치고 테스트를 더해 EditMode 666/666. 별도 백그라운드 검토에서는, 금지된 방의 지시가 풀리지 않아 03:30에서 시계가 영영 멈출 수 있는 결함을 AI가 찾아 수정(제가 찾은 결함이 아님)</td></tr>
           </tbody>
         </table>
       </div>
@@ -526,7 +536,7 @@
           <tbody>
             <tr><td><span class="tag tag-yes">채택</span></td><td data-k="AI 안">시체 낙하를 2일차로 고정하고 강도를 낮추는 추천안</td><td data-k="제 판단"><q>강도를 낮춰서 조금 더 일찍</q></td><td data-k="결과">13종을 모두 본 회차가 늘어남(시뮬레이션, 수치는 <a href="#ts-schedule">07절 표</a>)</td></tr>
             <tr><td><span class="tag">위임</span></td><td data-k="AI 안">QA 뒤 제가 결정할 항목을 추천과 함께 정리해 보고</td><td data-k="제 판단"><q>1,2,3을 추천한 대로 하고, 4의 권장부분도 처리해줘</q></td><td data-k="결과">추천안대로 반영하고 QA를 한 번 더</td></tr>
-            <tr><td><span class="tag tag-no">기각</span></td><td data-k="AI 안">못 본 조우를 다음 뽑기로 넘겨 더 잘 뽑히게 하고(이월), 조우를 막던 조건을 풀어 주는 안 — 예상 75 → 85~90%</td><td data-k="제 판단">날짜마다 정해 둔 조우를 그날 보여 주는 기획 의도를 우선했습니다. <q>모든 연출에서 축 조건 제거. 날짜 편성 … 이월은 없어. 의도한 날짜에 무조건 목격해야 해</q></td><td data-k="결과">고정 날짜 편성으로 전환 (<a href="#ts-schedule">07절</a>)</td></tr>
+            <tr><td><span class="tag tag-no">기각</span></td><td data-k="AI 안">못 본 조우를 다음 뽑기로 넘겨 더 잘 뽑히게 하고(이월), 조우를 막던 조건을 풀어 주는 안 — 예상 75 → 85–90%</td><td data-k="제 판단">날짜마다 정해 둔 조우를 그날 보여 주는 기획 의도를 우선했습니다. <q>모든 연출에서 축 조건 제거. 날짜 편성 … 이월은 없어. 의도한 날짜에 무조건 목격해야 해</q></td><td data-k="결과">고정 날짜 편성으로 전환 (<a href="#ts-schedule">07절</a>)</td></tr>
             <tr><td><span class="tag tag-back">채택 후 되돌림</span></td><td data-k="AI 안">고정 편성 변주 — 같은 날 순서 섞기 · 날마다 빈 칸 · 수칙을 어기면 다음 날 후속 조우</td><td data-k="제 판단"><q>축 조건을 제거하고 너무 고정이니 매력이 떨어진 느낌</q>이라 셋을 채택했다가, <q>후속 개념은 없애줘. 버그가 너무 많을 것 같네</q></td><td data-k="결과">후속은 두 번에 걸쳐 모두 빼고 순서 섞기 · 빈 칸만 남김</td></tr>
             <tr><td><span class="tag tag-back">되돌림</span></td><td data-k="AI 안">시야를 돌리면 창가 벽이 밝아지는 문제에 플레이어 카메라 오클루전 컬링 끄기를 먼저 적용(렌더 장당 약 +1ms)</td><td data-k="제 판단"><q>성능에 큰 문제가 생길 가능성이 있나?</q> → 대안으로 <q>달빛을 꺼보고 한번 비교해봐</q></td><td data-k="결과">컬링 끄기는 되돌리고 달빛 끄기를 채택. 렌더 장당 원래 4.4ms, 컬링 끔 5.4ms, 달빛 끔 3.5ms(에디터 측정)이고 실내 화면 차이는 없었음</td></tr>
             <tr><td><span class="tag">폐기</span></td><td data-k="대상">AI와 따로 만들어 사용하던 디버그 콘솔</td><td data-k="제 판단"><q>우리 것은 폐지하고(가독성이 떨어짐) 진선님 것에 합쳐 줘</q></td><td data-k="결과">김진선 님 개발자 모드 한 곳으로 합침(합치는 방식은 제가 <q>진선님 파일에 통째로</q>를 고름)</td></tr>
@@ -536,8 +546,12 @@
       <p>창가 조명 문제는 제가 발견하고, 두 안을 같은 조건에서 비교하게 한 뒤 골랐습니다(<a href="#ts-schedule">07절</a> ③).</p>
       <div class="note"><span class="kr-label">맡긴 결정도 있습니다</span>모든 값을 제가 정하지는 않았습니다. QA 뒤에는 결정할 항목만 정리해 받아 위 표의 위임처럼 답했습니다. <span class="said">「결정이 필요한 것들을 너가 적절하게 판단해서 고쳐줘」</span>처럼 작은 결정을 AI에 맡긴 경우도 개정 기록에 그대로 남아 있습니다.</div>
 
-      <h3>AI가 놓친 것을 다시 짚은 경우</h3>
-      <p>도서관 노란 얼굴이 벽과 책장을 뚫고 다니는 것을 제가 찾았습니다. 원인은 벽이 반영되지 않은 옛 NavMesh였고, AI가 이를 찾아 전용 에이전트 타입으로 실행 중에 NavMesh를 다시 굽도록 고쳤습니다.</p>
+      <h3>AI 결과물에서 잡은 오류</h3>
+      <ul>
+        <li><b>먼저 적용된 컬링 끄기</b> — 창가가 밝아지는 문제에 AI가 플레이어 카메라의 컬링 끄기를 먼저 적용했습니다. 성능 영향을 묻고 달빛 끄기와 같은 조건에서 비교하게 해, 컬링 끄기를 되돌렸습니다(<a href="#ts-schedule">07절</a> ③).</li>
+        <li><b>확인하지 않은 문장</b> — AI가 쓴 설계 문서가 확인하지 않은 문장 때문에 여러 번 틀려, 「재지 않은 것을 적지 마십시오」 규칙을 넣었습니다(아래 규칙 상자).</li>
+      </ul>
+      <p>도서관 노란 얼굴이 벽과 책장을 뚫고 다니는 것은 제가 찾았고, 원인(벽이 반영되지 않은 옛 NavMesh)은 AI가 찾아 실행 중에 NavMesh를 다시 굽도록 고쳤습니다.</p>
 
       <h3>AI에게 건 규칙</h3>
       <div class="rulebox wide">
@@ -564,14 +578,14 @@
     <section id="ts-schedule">
       <h2><span class="num">07 — Problem Solving</span>문제 해결 사례</h2>
       <h3 class="case-h">① 조우 편성 — 다시 재고 고정 날짜로</h3>
-      <p class="lead">플레이테스트에서 공포 이벤트(조우)가 의도대로 나오지 않았습니다. 시뮬레이터에서는 미숙한 플레이어 판의 76%에 13종이 모두 배정됐지만, 실제로 마주쳤는지로 다시 세게 하자 33%뿐이었습니다. AI는 확률 보정을 제안했습니다. 저는 모든 플레이어가 보게 하려면 확률이 아니라 보장이 필요하다고 판단해, 조우를 날짜별로 고정하고 남은 조우가 있으면 밤이 끝나지 않게 바꿨습니다.</p>
+      <p class="lead">플레이테스트에서 공포 이벤트(조우)가 의도대로 나오지 않았습니다. 시뮬레이터에서는 미숙한 플레이어 판의 76%에 13종이 모두 배정됐지만, 실제로 마주쳤는지로 다시 세어 보게 하자 33%뿐이었습니다. AI는 확률 보정을 제안했습니다. 저는 모든 플레이어가 보게 하려면 확률이 아니라 보장이 필요하다고 판단해, 조우를 날짜별로 고정하고 남은 조우가 있으면 밤이 끝나지 않게 바꿨습니다.</p>
       <div class="log">
         <div class="log-head"><h3>미숙한 플레이어가 조우를 다 못 보는 문제</h3><span class="label">개발 후반 · 시뮬레이션</span></div>
         <dl>
           <dt>상황</dt><dd>감각 수치와 확률로 조우를 뽑던 방식(확률 편성)에서는, 미숙한 플레이어는 밤 후반 조우가 꺼져 13종을 다 보지 못했고 붙잡힘 원인도 배치 축에 쏠렸습니다. 13종은 측정 당시 기준이고, 이후 한 종을 빼 지금은 12종입니다.</dd>
-          <dt>측정</dt><dd>실제 편성 코드를 그대로 사용하는 시뮬레이터로 숙련도별 가상 플레이어 400판을 돌리게 했습니다. 미숙 플레이어가 13종을 모두 본 회차는 <b>21%</b>였습니다. Core가 Unity와 분리돼 있어 가능했습니다.</dd>
+          <dt>측정</dt><dd>실제 편성 코드를 그대로 사용하는 시뮬레이터로 숙련도마다 가상 플레이어 400판을 돌리게 했습니다. 미숙 플레이어가 13종을 모두 본 회차는 <b>21%</b>였습니다. Core가 Unity와 분리돼 있어 가능했습니다.</dd>
           <dt>조정</dt><dd>날짜 흐름을 바꾸고, 시체 낙하를 2일차로 고정해 강도를 낮췄습니다(수치는 아래 표).</dd>
-          <dt>다시 재기</dt><dd>플레이테스트에서 의도한 조우가 종종 나오지 않았습니다. 그래서 <span class="said">「5번 놓치는 경우 분석」</span>을 지시해, 편성됐는지가 아니라 실제로 마주쳤는지로 다시 세게 했습니다. 미숙한 플레이어는 <b>33%</b>로, 편성 기준 76%보다 크게 낮았습니다. 시뮬레이션에서는 위험한 분위기 때문에 늦은 조우가 꺼졌고, 시뮬레이션 밖에서는 정해진 시간 안에 그 공간에 들어가거나 머물지 못하면, 또는 일찍 퇴근하면 조우를 놓쳤습니다. 직접 플레이에서는 조우를 보기 전에 퇴근 트리거가 켜지거나, 플레이어가 움직이지 않는 사이 시간이 흘러 밤이 끝났습니다.</dd>
+          <dt>다시 재기</dt><dd>플레이테스트에서 의도한 조우가 종종 나오지 않았습니다. 그래서 <span class="said">「5번 놓치는 경우 분석」</span>을 지시해, 편성됐는지가 아니라 실제로 마주쳤는지로 다시 세어 보게 했습니다. 미숙한 플레이어는 <b>33%</b>로, 편성 기준 76%보다 크게 낮았습니다. 시뮬레이션에서는 위험한 분위기 때문에 늦은 조우가 꺼졌고, 시뮬레이션 밖에서는 정해진 시간 안에 그 공간에 들어가거나 머물지 못하면, 또는 일찍 퇴근하면 조우를 놓쳤습니다. 직접 플레이에서는 조우를 보기 전에 퇴근 트리거가 켜지거나, 플레이어가 움직이지 않는 사이 시간이 흘러 밤이 끝났습니다.</dd>
           <dt>다시 보고</dt><dd>이후 직접 플레이에서도 같은 일이 있었습니다. <span class="said">「… 수칙과 지시로 트리거는 된 것 같은데 연출이 안 나왔어」</span> AI 분석으로 조기 퇴근이 남은 조우를 지워 버리는 것 등을 찾았고, 남은 조우가 있으면 조기 퇴근부터 막도록 고쳤습니다.</dd>
           <dt>판단</dt><dd>AI의 이월 보정안 대신, 축 조건을 없애고 날마다 정해진 조우를 보여 주는 <b>고정 날짜 편성</b>으로 바꿨습니다. 03:30에 남은 조우가 있으면 시계를 붙들어, 그날의 조우가 끝나기 전에는 다음 날로 넘어가지 않게 했습니다. 이후 AI 변주안 중 같은 날 순서 섞기 · 날마다 빈 칸만 남겼습니다(<a href="#ai">06절 판단 기록</a>).</dd>
           <dt>검증</dt><dd>PlayScene에서 4 · 5일차를 진행해 날짜표대로 나오는지 확인하고 편성 테스트로 묶었습니다.</dd>
@@ -594,7 +608,9 @@
           </tbody>
         </table>
       </div>
-      <p class="note">①과 ②, 실행 기준 값은 개발 중 서로 다른 시점에 잰 것이라 이어지는 숫자가 1%p씩 다릅니다(① 끝 54% · ② 시작 55%, ② 끝 75% · 편성 기준 76%).</p>
+      <details class="fold"><summary>표의 ①②와 실행 기준 수치가 조금씩 다른 이유</summary>
+        <p>①과 ②, 실행 기준 값은 개발 중 서로 다른 시점에 잰 것이라 이어지는 숫자가 1%p씩 다릅니다(① 끝 54% · ② 시작 55%, ② 끝 75% · 편성 기준 76%).</p>
+      </details>
 
       <h3 class="case-h">② 구운 조명이라 정전이 되지 않던 문제</h3>
       <div class="log">
@@ -618,7 +634,7 @@
       </div>
 
       <h3 class="case-h" id="ts-build">④ 빌드에서만 난 문제</h3>
-      <p>두 건 모두 에디터에서는 보이지 않았습니다. 소년 건은 제가 빌드를 플레이하다 발견해 릴리스 · 개발 빌드 모두에서 안 나온다고 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</p>
+      <p>두 건 모두 에디터에서는 보이지 않았습니다. 소년 건은 제가 빌드를 플레이하다 발견해 릴리스 · 개발자 빌드 모두에서 안 나온다고 좁혀 보고했고, 셰이더 건은 빌드 전 점검에서 AI가 찾았습니다.</p>
 
       <div class="log">
         <div class="log-head"><h3>발광이 꺼지는 문제</h3><span class="label">빌드 전 점검 · AI 발견</span></div>
@@ -663,6 +679,6 @@
   <a class="no-print" href="code-dungeon.html">다음 프로젝트 · Code Dungeon →</a>
 </footer>
 </div>
-<script src="../assets/js/site.js?v=20261023e"></script>
+<script src="../assets/js/site.js?v=20261023f"></script>
 </body>
 </html>

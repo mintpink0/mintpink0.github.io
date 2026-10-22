@@ -164,3 +164,22 @@ p.code-cap { margin-top: 12px; }
 .enc .tech { font: 400 .74rem/1.5 var(--f-mono); color: var(--p); }
 .enc-noimg { border-top: 2px solid var(--ink); padding-top: 12px; }
 @media (max-width: 640px) { .enc-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* AI 활용 요약 · 접기 · 경비실 영상 */
+.ai-sum th { width: 8.5rem; text-align: left; white-space: nowrap; color: var(--p); font-weight: 700; vertical-align: top; }
+.ai-sum td { color: var(--ink); }
+.ai-sum { margin: 6px 0 22px; }
+details.fold { margin-top: 10px; font-size: .9rem; color: var(--ink-2); }
+details.fold summary { cursor: pointer; color: var(--ink-3); }
+details.fold p { margin-top: 8px; }
+.fig-guard-one { max-width: 37.5rem; }
+.fig-guard-one figure { margin: 0; }
+@media (max-width: 640px) {
+  .ai-sum th { width: auto; white-space: normal; }
+  table.stack thead { display: none; }
+  table.stack, table.stack tbody, table.stack tr, table.stack td { display: block; width: 100%; }
+  table.stack tr { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  table.stack td, table.stack td + td { border: 0; padding: 3px 0; white-space: normal; min-width: 0; }
+  table.stack td[data-k]::before { content: attr(data-k); display: block; font: 600 .76rem/1.6 var(--f-body); color: var(--ink-3); }
+}
+@media print { details.fold { display: block; } }

@@ -77,3 +77,6 @@
   .dg, .split { break-inside: avoid; }
   .split { background: #fff; }
 }
+
+/* 강조: 계수 순서가 어긋난 모서리 */
+.dg .pt-po { fill: rgba(224,122,47,.22); stroke: #E07A2F; stroke-width: 3; }
