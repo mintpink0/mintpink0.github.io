@@ -199,6 +199,7 @@
         <li><b>의존 방향을 컴파일 단계에서 강제.</b> asmdef로 Core가 Flow를 참조하지 못하게 막아, 「축이 올랐으니 Core에서 바로 불을 끄자」 같은 우회를 차단했습니다.</li>
         <li><b>새 코드의 자리가 정해짐.</b> 새 코드가 고르는 일이면 편성 · 디렉터, 판단하는 일이면 판정 · 점검, 숫자를 올리는 일이면 축, 그리는 일이면 Flow에 둡니다.</li>
       </ul>
+      <figure class="fig-mid"><img src="../assets/img/ins/test-runner.png" alt="Unity Test Runner EditMode 화면 — 666개 테스트 모두 통과" width="900" height="760" loading="lazy"><figcaption>Unity Test Runner — EditMode 테스트 666개 통과</figcaption></figure>
     </section>
 
     <section id="director">
@@ -298,15 +299,6 @@
 
       <div class="cards wide">
         <div class="card">
-          <h3>처형 컷신 시선 보정</h3>
-          <ul>
-            <li><code>Update</code>에서 돌리면 Animator가 덮어써서 <code>LateUpdate</code>에서 보정 회전</li>
-            <li>머리 뼈가 아니라 얼굴 중심에서 재서 시선 오차 0.04–0.77° (대역 3종, 사람 나무의 먼 옆 얼굴은 최대 4.2°)</li>
-            <li>팀원의 컷신 Timeline은 그대로 두고 재생 인스턴스만 보정</li>
-          </ul>
-          <span class="tech">LateUpdate · Quaternion.FromToRotation · Timeline</span>
-        </div>
-        <div class="card">
           <h3>경비실 버티기 방지</h3>
           <ul>
             <li>수치를 정해 지시했습니다. <span class="said">「약 30초 형광등 깜빡임·무전 잡음(문구 없음) · 약 60초 CCTV가 검은 남자 얼굴 · 약 90초 정전, 그래도 남으면 붙잡힘 …」</span></li>
@@ -332,7 +324,6 @@
     Assert.IsTrue(g.ConsumeCapture());      <span class="c">// 정전 뒤에도 남으면 붙잡힘</span>
 }</code></pre>
       <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 AI 검토에서 찾은 문제, 곧 밖에서 2초 머물다 문턱으로 돌아온 뒤 다시 1초 나가면 두 시간이 합쳐져 경비실을 나간 것으로 처리되던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs · AI 작성</a></span>
-      <figure class="fig-mid"><img src="../assets/img/ins/test-runner.png" alt="Unity Test Runner EditMode 화면 — 666개 테스트 모두 통과" width="900" height="760" loading="lazy"><figcaption>Unity Test Runner — EditMode 테스트 666개 통과</figcaption></figure>
     </section>
 
     <section id="ai">
