@@ -94,7 +94,7 @@
     <section id="arch">
       <h2><span class="num">02 — Architecture</span>구조 — 규칙(Core)과 화면(Flow)</h2>
       <p class="lead">판정 로직은 Unity를 모르는 일반 C#으로, 화면에 그리는 일은 MonoBehaviour로 나눴습니다. Core는 Flow를 모르게 asmdef로 막고, Core→Flow는 EventBus 이벤트로만 알립니다.</p>
-      <p>구조는 AI에게 여러 안을 받은 뒤, 판정 시스템이 없어도 밖에서 축 값을 넣어 볼 수 있는 안으로 골라 달라고 했습니다. 근무 씬이 저장소에 처음 올라온 9월 17일보다 앞서, AI가 만든 축 읽기 인터페이스(<code>IFearAxisReader</code>)와 그것을 구현한 인스펙터 슬라이더로 테스트 씬에서 조도 · 청각 변화를 먼저 확인했습니다(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/583b914" target="_blank" rel="noopener">커밋</a>). 테스트 씬과 슬라이더는 10월 3일에 지웠고(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/ebf74d6" target="_blank" rel="noopener">커밋</a>), 인터페이스는 지금도 실제 축 시스템이 구현합니다.</p>
+      <p>구조는 AI에게 여러 안을 받은 뒤, 판정 시스템이 없어도 밖에서 축 값을 넣어 볼 수 있는 안으로 골라 달라고 했습니다. 근무 씬이 저장소에 처음 올라온 9월 17일보다 앞서, 축 읽기 인터페이스(<code>IFearAxisReader</code>)와 그것을 구현한 인스펙터 슬라이더로 테스트 씬에서 조도 · 청각 변화를 먼저 확인했습니다(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/583b914" target="_blank" rel="noopener">커밋</a>). 테스트 씬과 슬라이더는 10월 3일에 지웠고(<a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/commit/ebf74d6" target="_blank" rel="noopener">커밋</a>), 인터페이스는 지금도 실제 축 시스템이 구현합니다.</p>
       <figure class="dg wide archdg">
         <svg class="dg-wide" viewBox="0 0 760 352" role="img" aria-label="구조도. 센서(Flow)가 JudgeSignal을 NightRun.Send와 Tick으로 Core에 보냅니다. Core 안에서 판정 책이 공포 축과 구간을 올리고, 공포 디렉터가 언제 무엇을 터뜨릴지 정하고, 점검표가 보고를 정산합니다. Core는 EventBus의 BandChanged, Captured, DirectionEmitted 이벤트로만 Flow의 조명·소리, 붙잡힘, 조우 연출에 알립니다.">
           <defs>
@@ -205,7 +205,7 @@
     <section id="director">
       <h2><span class="num">03 — Director</span>공포 디렉터 — 놀람을 배분하는 규칙</h2>
       <p class="lead">준비된 효과음과 연출이 많았습니다. 이것들을 단순히 무작위로 내보내기보다, 규칙을 두고 조절해 배분하는 편이 공포 요소로 더 효과적이라고 판단했습니다. 놀람이 도배되면 둔해지기 마련이기 때문입니다. 아이디어는 레프트 4 데드 2의 좀비 호드 디렉터에서 얻었습니다.</p>
-      <p>그래서 공포 디렉터는 돌아다니는 AI가 아니라 밤의 리듬을 관리하는 규칙 묶음으로 만들었습니다. 그날 나올 조우는 편성이 정하고, 디렉터는 언제 · 어디서 터뜨릴지를 고릅니다. 코드는 AI가 작성했고, 디렉터를 두자는 방향과 무엇을 기준으로 조절할지는 제가 정했습니다.</p>
+      <p>그래서 공포 디렉터는 돌아다니는 AI가 아니라 밤의 리듬을 관리하는 규칙 묶음으로 만들었습니다. 그날 나올 조우는 편성이 정하고, 디렉터는 언제 · 어디서 터뜨릴지를 고릅니다. 디렉터를 두자는 방향과 무엇을 기준으로 조절할지는 제가 정했습니다.</p>
 
       <h3>긴장도에 따라 놀람을 거른다</h3>
       <div class="dir-pacer">
@@ -257,14 +257,14 @@
         <li>최종판은 고정 날짜 편성이라(<a href="#ts-schedule">06절</a>) 조우를 날짜표 순서대로 하나씩 엽니다. 앞 조우가 끝나고 15초 뒤 다음을 열고, 시작되지 않으면 「1-3 교실을 순찰하십시오」 같은 유도 문자로 그 공간에 부릅니다.</li>
         <li>조우가 남은 채 03:30이 되면 시계를 붙들어, 그날의 조우를 모두 보기 전에는 밤이 끝나지 않습니다. <span class="said">「이월은 없어. 의도한 날짜에 무조건 목격해야 해」</span></li>
       </ul>
-      <p class="code-cap"><span class="tech">TensionDirector · TensionPacer · SurpriseBudget · InspectionDispatcher</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Scripts/Direction/Tension/TensionDirector.cs" target="_blank" rel="noopener">TensionDirector.cs · AI 작성</a></p>
+      <p class="code-cap"><span class="tech">TensionDirector · TensionPacer · SurpriseBudget · InspectionDispatcher</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Scripts/Direction/Tension/TensionDirector.cs" target="_blank" rel="noopener">TensionDirector.cs</a></p>
     </section>
 
 
 
     <section id="impl">
       <h2><span class="num">04 — Highlights</span>구현 하이라이트</h2>
-      <p class="lead">판정 결과를 화면으로 옮기는 부분입니다. 무엇이 바뀌어야 하는지와 기준은 제가 정했고, 코드는 대부분 AI가 작성했습니다.</p>
+      <p class="lead">판정 결과를 화면으로 옮기는 부분입니다. 무엇이 바뀌어야 하는지와 기준은 제가 정했습니다.</p>
 
       <h3>구간이 오르면 화면에서 바뀌는 것</h3>
       <div class="sigmap wide" role="list">
@@ -286,7 +286,7 @@
         </div>
       </div>
       <figure class="wide"><img src="../assets/img/ins/band-0-4.jpg" alt="같은 복도를 조도 구간 0과 조도 구간 4에서 찍은 비교 — 구간 4에서는 천장 등이 붉어지고 화면이 어두워짐" width="1600" height="448" loading="lazy"><figcaption>같은 복도 · 같은 위치 — 조도 구간 0(출근 직후)과 조도 구간 4(조도 축 92)</figcaption></figure>
-      <p>조도와 배치 변화는 제가 요구했습니다. <span class="said">「조도 구간 3 변화에 구간 4 효과처럼 일부 조명만 빨개지거나 깜빡이는 현상」</span>, <span class="said">「축이 오를 때마다 벽이나 천장에 오브젝트가 생긴다던가, 복도에 가짜 문들이 늘어난다던가 하는 기괴한 변화」</span>(개발 후반). 소품 자리 찾기와 생성 코드는 AI가 작성했습니다.</p>
+      <p>조도와 배치 변화는 제가 요구했습니다. <span class="said">「조도 구간 3 변화에 구간 4 효과처럼 일부 조명만 빨개지거나 깜빡이는 현상」</span>, <span class="said">「축이 오를 때마다 벽이나 천장에 오브젝트가 생긴다던가, 복도에 가짜 문들이 늘어난다던가 하는 기괴한 변화」</span>(개발 후반).</p>
 
       <h3>안 볼 때만 바꾼다</h3>
       <p>설계 문서(CLAUDE.md)에 <span class="said">「시야 규약은 예외가 없습니다.」</span>라고 적어 둔 규칙입니다. 배치 변화와 등장은 플레이어가 보고 있지 않을 때만 일어나고, 보이는지 판단할 수 없으면 보이는 것으로 처리해 움직이지 않습니다.</p>
@@ -324,7 +324,7 @@
     Stay(g, GuardRoomLoiter.CaptureGraceSeconds);
     Assert.IsTrue(g.ConsumeCapture());      <span class="c">// 정전 뒤에도 남으면 붙잡힘</span>
 }</code></pre>
-      <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 AI 검토에서 찾은 문제, 곧 밖에서 2초 머물다 문턱으로 돌아온 뒤 다시 1초 나가면 두 시간이 합쳐져 경비실을 나간 것으로 처리되던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs · AI 작성</a></span>
+      <span class="code-cap"><span>같은 파일의 테스트 11개 중에는 AI 검토에서 찾은 문제, 곧 밖에서 2초 머물다 문턱으로 돌아온 뒤 다시 1초 나가면 두 시간이 합쳐져 경비실을 나간 것으로 처리되던 문제의 회귀 테스트도 있습니다.</span><a href="https://github.com/KimJinsun610/NCAI_BrokenCompass/blob/main/horror%20house/Assets/_Game/Tests/EditMode/GuardRoomLoiterTests.cs" target="_blank" rel="noopener">GuardRoomLoiterTests.cs</a></span>
     </section>
 
     <section id="ai">
@@ -532,11 +532,11 @@
 
       <h3 class="case-h">② 구운 조명이라 정전이 되지 않던 문제</h3>
       <div class="log">
-        <div class="log-head"><h3>소등은 되는데 방은 그대로 밝음</h3><span class="label">직접 발견 · 진단과 구현은 AI</span></div>
+        <div class="log-head"><h3>소등은 되는데 방은 그대로 밝음</h3><span class="label">직접 발견</span></div>
         <dl>
           <dt>발견</dt><dd>직접 플레이하다 본 문제입니다. <span class="said">「소등 조우 때 소등은 되는데 라이팅은 계속 유지돼」</span></dd>
           <dt>원인</dt><dd>방의 밝기 대부분이 구워 둔 라이트맵이라 등을 꺼도 빛이 남았습니다. 진단은 AI가 했습니다.</dd>
-          <dt>해결</dt><dd>라이트맵은 실행 중에 끌 수 없어, 씬 시작 때 어둡게 만든 라이트맵 사본을 만들고 정전 때 <code>lightmapIndex</code>만 교체했습니다(앞서 불 꺼진 교실에 쓰던 방식을 소등 방으로 넓힘). 라이트 프로브 SH 계수도 낮추고, 형광등 발광은 <code>MaterialPropertyBlock</code>으로 껐습니다(공유 재질 오염 방지). 구현은 AI가 했습니다.</dd>
+          <dt>해결</dt><dd>라이트맵은 실행 중에 끌 수 없어, 씬 시작 때 어둡게 만든 라이트맵 사본을 만들고 정전 때 <code>lightmapIndex</code>만 교체했습니다(앞서 불 꺼진 교실에 쓰던 방식을 소등 방으로 넓힘). 라이트 프로브 SH 계수도 낮추고, 형광등 발광은 <code>MaterialPropertyBlock</code>으로 껐습니다(공유 재질 오염 방지).</dd>
         </dl>
       </div>
       <figure class="wide"><img src="../assets/img/ins/blackout-before-after.jpg" alt="과학실 정전 전과 후를 같은 위치 같은 각도에서 찍은 비교" width="1600" height="448" loading="lazy"><figcaption>과학실 정전 전 · 후 — 같은 위치 · 같은 각도 (라이트맵 사본 교체 + 프로브 ×0.05, 손전등만 남음)</figcaption></figure>
